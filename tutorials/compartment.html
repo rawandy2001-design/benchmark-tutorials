@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="light dark" name="color-scheme"/><title>Compartment · Single-cell Hi-C tutorials</title><style>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="light dark" name="color-scheme"/><title>Compartment evaluation · Single-cell Hi-C tutorials</title><style>
 *{box-sizing:border-box}body{margin:0;color:#243347;background:#fff;font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
 .topbar{border-bottom:1px solid #dae2ec;padding:16px 30px;color:#173653}.brand{font-weight:650}.modules{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:14px;margin-top:10px}.modules a{text-decoration:none;padding-bottom:3px}.modules .active{font-weight:700;border-bottom:2px solid #2463a0}
 .layout{max-width:1440px;margin:auto;padding:30px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:42px}
@@ -99,7 +99,26 @@ nav .toc-subsections{padding-left:12px;margin-left:5px;border-left:1px solid #dc
 nav .toc-subsections a{font-size:13px;line-height:1.45;margin-bottom:9px}
 h3{scroll-margin-top:18px}
 .method-title{font-size:18px;font-weight:650;line-height:1.4;margin:26px 0 12px;scroll-margin-top:18px}
-</style><link data-tutorial-theme="system" href="../assets/theme.css?v=e7eea573e359" rel="stylesheet"/><script data-tutorial-theme-script="true" src="../assets/theme.js?v=cbcb3f508e0c"></script></head><body><header class="topbar"><div class="topbar-heading"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="theme-picker" hidden="">
+</style><link data-tutorial-theme="system" href="../assets/theme.css?v=e7eea573e359" rel="stylesheet"/><script data-tutorial-theme-script="true" src="../assets/theme.js?v=cbcb3f508e0c"></script><style id="native-notebook-layout">
+/* Native notebook inputs and saved outputs. */
+.code_cell{margin:18px 0 24px;min-width:0}
+.code_cell .input,.output_area{display:flex;align-items:flex-start;min-width:0}
+.code_cell .input_area{flex:1;min-width:0;overflow:hidden;border:1px solid var(--border,#dce4ee);border-radius:6px;background:var(--code-bg,#f5f7fb)}
+.code_cell .input_area pre{margin:0;border:0;border-radius:0;white-space:pre}
+.code_cell .input_area .highlight{margin:0}
+.input_prompt,.output_prompt{flex:0 0 58px;box-sizing:border-box;padding:14px 8px 2px 0;text-align:right;font:12px/1.5 Consolas,monospace;color:var(--muted,#68798b)}
+.output_wrapper{margin-top:8px;min-width:0}
+.output_area .output_subarea{flex:1;min-width:0;overflow-x:auto}
+.output_text pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.output_html table{margin:0 0 10px}
+.output_area:empty{display:none}
+.ansi-bold{font-weight:700}.ansi-italic{font-style:italic}
+.ansi-red-fg,.ansi-red-intense-fg{color:var(--syntax-error,#b42318)}
+.ansi-green-fg,.ansi-green-intense-fg{color:var(--syntax-string,#315f90)}
+.ansi-yellow-fg,.ansi-yellow-intense-fg{color:var(--syntax-prompt,#8a4300)}
+.ansi-blue-fg,.ansi-blue-intense-fg{color:var(--link,#2463a0)}
+@media(max-width:600px){.input_prompt,.output_prompt{flex-basis:42px;font-size:10px;padding-right:5px}.code_cell .input_area pre{padding:12px}}
+</style></head><body><header class="topbar"><div class="topbar-heading"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="theme-picker" hidden="">
 <button aria-controls="theme-menu" aria-expanded="false" aria-haspopup="menu" aria-label="Color mode: System. Choose color mode" class="theme-toggle" id="theme-toggle" title="Color mode: System" type="button">
 <svg aria-hidden="true" class="theme-icon" viewbox="0 0 24 24"><rect height="13" rx="2" width="18" x="3" y="4"></rect><path d="M8 21h8M12 17v4"></path></svg>
 <span class="theme-label">System</span><span aria-hidden="true" class="theme-chevron">▾</span></button>
@@ -107,296 +126,1210 @@ h3{scroll-margin-top:18px}
 <button aria-checked="true" data-theme-value="system" role="menuitemradio" type="button">System</button>
 <button aria-checked="false" data-theme-value="light" role="menuitemradio" type="button">Light</button>
 <button aria-checked="false" data-theme-value="dark" role="menuitemradio" type="button">Dark</button>
-</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="active" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-evaluation-design">1. Inputs and evaluation design</a></summary><div class="toc-subsections"><a href="#1.-Define-the-evaluated-conditions">1.1. Define the native analysis branches</a><a href="#2.-Prepare-identities-and-exact-sample-membership">1.2. Prepare the original metadata and cell tables</a><a href="#3.-Arrange-the-cell-number-gradient-and-raw-reference">1.3. Arrange the cell-number series and raw reference</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Compartment-calling">2. Compartment calling</a></summary><div class="toc-subsections"><a href="#4.-Call-CpG-based-compartments">2.1. Call CpG-based compartments</a><a href="#5.-Call-Self-PCA-compartments">2.2. Call Self-PCA compartments</a><a href="#6.-Call-Ref-PCA-compartments">2.3. Call Ref-PCA compartments</a><a href="#7.-Supply-native-scGHOST-outputs-at-500-kb">2.4. Run the separate scGHOST workflow at 500 kb</a><a href="#8.-Declare-native-tracks-and-contact-sources">2.5. Collect the native caller outputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Structural-and-cell-level-evaluation">3. Structural and cell-level evaluation</a></summary><div class="toc-subsections"><a href="#9.-Compare-boundary-locations-and-compartment-tracks">3.1. Compare boundaries and compartment tracks</a><a href="#10.-Calculate-saddle-strength-on-the-matched-contact-map">3.2. Calculate the original saddle strength</a><a href="#11.-Evaluate-existing-cell-cluster-assignments">3.3. Use the original cell-clustering utility</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Run-the-workflow-and-read-outputs">4. Run the workflow and read outputs</a></summary><div class="toc-subsections"><a href="#12.-Validate-and-evaluate-the-configured-workflow">4.1. Run the original collection and result notebook</a><a href="#13.-Read-the-output-files">4.2. Read the native outputs</a><a href="#14.-Continue-to-the-other-tutorials">4.3. Continue to the other tutorials</a><a href="#Software-and-implementation">4.4. Software and original implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="compartment.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-00"><div class="text_cell_render border-box-sizing rendered_html"><h1 id="Compartment-calling-and-evaluation-tutorial">Compartment calling and evaluation tutorial<a class="anchor-link" href="#Compartment-calling-and-evaluation-tutorial">¶</a></h1><p>This tutorial follows the original <a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/readme.md">daydayupzzl/compartment source</a>,
-commit <code>e068313</code>. The calling scripts, helper modules and original evaluation
-notebook are restored from that version.</p>
-<p>The workflow reads raw, scHiCluster-imputed and Higashi-imputed contact maps,
-calls compartments with CpG, Self-PCA or Ref-PCA, collects their native outputs
-and evaluates them with the original notebook. scGHOST follows its separate
-upstream workflow at 500 kb.</p>
-<p>Commands below are displayed as text. Reading this tutorial does not run a job.
-The Lee2019 example uses the original source's dataset key <code>Lee</code> and the
-cell-type label <code>L2/3</code>. Native source files retain their original server paths;
-set the dataset's actual resource and output locations before execution.</p>
-<p>Use the <a href="../index.html#Shared-path-prefix">shared path setup</a> from the analysis
-checkout:</p>
-<div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
-<span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
+</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="active" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#1.-Data-preparation">1. Data preparation</a></summary><div class="toc-subsections"><a href="#1.1.-Imports-and-configuration">1.1. Imports and configuration</a><a href="#1.2.-Read-data">1.2. Read data</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#2.-Boundary-and-track-evaluation">2. Boundary and track evaluation</a></summary><div class="toc-subsections"><a href="#2.1.-Single-cell">2.1. Single cell</a><a href="#2.2.-Bulk-level">2.2. Bulk level</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#3.-Saddle-strength">3. Saddle strength</a></summary><div class="toc-subsections"><a href="#3.1.-Single-cell">3.1. Single cell</a><a href="#3.2.-Bulk-level">3.2. Bulk level</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="compartment.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-00"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Compartment-evaluation">Compartment evaluation<a class="anchor-link" href="#Compartment-evaluation">¶</a></h1>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-01"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.-Data-preparation">1. Data preparation<a class="anchor-link" href="#1.-Data-preparation">¶</a></h2>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-02"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.1.-Imports-and-configuration">1.1. Imports and configuration<a class="anchor-link" href="#1.1.-Imports-and-configuration">¶</a></h3>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-03">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cooler</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">pearsonr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
 </pre></div>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-group-01"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h2 id="Inputs-and-evaluation-design">1. Inputs and evaluation design<a class="anchor-link" href="#Inputs-and-evaluation-design">¶</a></h2></div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-01"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="1.-Define-the-evaluated-conditions">1.1. Define the native analysis branches<a class="anchor-link" href="#1.-Define-the-evaluated-conditions">¶</a></h3><p>The source readme describes these resolutions and input modalities:</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Resolution</th>
-<th>Compartment callers</th>
-<th>Input modalities</th>
-<th>Levels</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>100 kb</td>
-<td>CpG, Self-PCA, Ref-PCA</td>
-<td>Raw, scHiCluster, Higashi</td>
-<td>Single cell, pseudo-bulk</td>
-</tr>
-<tr>
-<td>500 kb</td>
-<td>The same callers, plus external scGHOST</td>
-<td>Raw, scHiCluster, Higashi</td>
-<td>Single cell, pseudo-bulk</td>
-</tr>
-</tbody>
-</table></div>
-<p>Caller and input modality remain separate choices. In the original evaluation,
-the method keys are <code>pca</code>, <code>cpg</code> and <code>higashi</code>; the method key <code>higashi</code> denotes
-Ref-PCA, whereas a datatype named <code>higashi</code> denotes the imputed input.</p>
-<p>The supplied collection script and result notebook are configured for 100 kb.
-Run a separate resolution condition with its matching source paths and resources.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-02"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="2.-Prepare-identities-and-exact-sample-membership">1.2. Prepare the original metadata and cell tables<a class="anchor-link" href="#2.-Prepare-identities-and-exact-sample-membership">¶</a></h3><p>Native calling reads a headerless, two-column table containing the original
-cell IDs and their <code>.cool</code> paths. The <code>npy</code> mode reads the original chromosome
-sparse-matrix arrays. Keep the table and sparse-array row order consistent
-with the original <code>label_info.pickle</code> metadata.</p>
-<p>The collection script uses <code>label_info["cell type"]</code> to select the target
-cell type by row index. Its path conventions include <code>cell_table_100K.tsv</code>,
-<code>.compartment.nc</code> outputs and Ref-PCA HDF5 files.</p>
-<p>Configure the actual paths in the native source. The three input modalities
-use the same biological sample definitions within each evaluated condition.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-03"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="3.-Arrange-the-cell-number-gradient-and-raw-reference">1.3. Arrange the cell-number series and raw reference<a class="anchor-link" href="#3.-Arrange-the-cell-number-gradient-and-raw-reference">¶</a></h3><p>The original collection script builds the cell-number series from the selected
-type's metadata count: 100, 200, 300, and so on, with the all-cell condition.
-Its reference is the selected cell type's all-cell raw pseudo-bulk PCA track:</p>
-<div class="highlight"><pre><span></span>All raw cells of the selected type → merged raw matrix → Self-PCA track
-</pre></div>
-<p>The result notebook reads the reference from
-<code>raw_bulk_num_pca_call[f"{chr_name}_bulkall"]</code>. Keep that reference key and the
-native sample filenames consistent when preparing the cache.</p>
-<p>Ref-PCA's merged background used to fit its projection axes is a separate
-input to calling; the raw all-cell PCA track above is used for evaluation.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-group-02"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h2 id="Compartment-calling">2. Compartment calling<a class="anchor-link" href="#Compartment-calling">¶</a></h2></div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-04"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="4.-Call-CpG-based-compartments">2.1. Call CpG-based compartments<a class="anchor-link" href="#4.-Call-CpG-based-compartments">¶</a></h3><p>The original <a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/CpG/calling.py">CpG caller</a> combines contact weights
-with the CpG-density profile for the same genome and resolution. Its core
-calculation is:</p>
-<div class="highlight"><pre><span></span><span class="c1"># matrix is the normalized sparse chromosome matrix.</span>
-<span class="c1"># cpg_ratio is the matched per-bin CpG-density Series.</span>
-<span class="n">comp</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">cpg_ratio</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])[:,</span> <span class="mi">0</span><span class="p">]</span>
-</pre></div>
-<p>Set the genome-resource paths in <code>main()</code>, then run the native interface:</p>
-<div class="highlight"><pre><span></span>python<span class="w"> </span>compartment/tool/CpG/calling.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--dataset<span class="w"> </span>Lee<span class="w"> </span>--cell_table_path<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">COMPARTMENT_CELL_TABLE</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output_prefix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">COMPARTMENT_CPG_PREFIX</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--resolution<span class="w"> </span><span class="m">100000</span><span class="w"> </span>--mode<span class="w"> </span>cool<span class="w"> </span>--cpu<span class="w"> </span><span class="m">10</span>
-</pre></div>
-<p>The source selects the 100-kb or 500-kb CpG file from <code>--resolution</code>.
-Samples at the same genome and resolution share that CpG profile.
-The native aggregate output is <code>&lt;output_prefix&gt;.compartment.nc</code>.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-05"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="5.-Call-Self-PCA-compartments">2.2. Call Self-PCA compartments<a class="anchor-link" href="#5.-Call-Self-PCA-compartments">¶</a></h3><p><a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/Self-PCA/calling.py">Self-PCA</a> fits each target matrix independently.
-The native defaults use <code>sqrtvc</code> normalization, distance-dependent expectation
-correction, a bin-to-bin correlation matrix and two-component PCA. Compartment
-contrast selects the principal component; CpG information calibrates its sign.</p>
-<div class="highlight"><pre><span></span>python<span class="w"> </span>compartment/tool/Self-PCA/calling.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--dataset<span class="w"> </span>Lee<span class="w"> </span>--cell_table_path<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">COMPARTMENT_CELL_TABLE</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output_prefix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">COMPARTMENT_PCA_PREFIX</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--resolution<span class="w"> </span><span class="m">100000</span><span class="w"> </span>--mode<span class="w"> </span>cool<span class="w"> </span>--cpu<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--norm_type<span class="w"> </span>sqrtvc<span class="w"> </span>--exp_type<span class="w"> </span>dicrete
-</pre></div>
-<p><code>dicrete</code> is the option spelling in the original source. Configure its native
-genome and CpG resource paths before calling each raw or imputed sample set.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-06"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="6.-Call-Ref-PCA-compartments">2.3. Call Ref-PCA compartments<a class="anchor-link" href="#6.-Call-Ref-PCA-compartments">¶</a></h3><p>Ref-PCA retains the original Higashi analysis and backend modules. It builds a
-merged raw background, applies the native masks and chromosome-arm split,
-fits PCA models and projects the target matrices onto those axes.</p>
-<p>Run in the original Higashi environment, with its native JSON and data paths:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/compartment/tool/Ref-PCA"</span>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-04">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="s1">'Tan'</span> <span class="c1"># dataset</span>
+<span class="n">target_cell_type</span> <span class="o">=</span> <span class="s1">'Neuron'</span> <span class="c1"># cell type</span>
+<span class="n">is_denoise</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">label_method</span> <span class="o">=</span> <span class="s1">'pca_raw'</span>
+<span class="n">resolution</span> <span class="o">=</span> <span class="mi">100000</span>
 
-python<span class="w"> </span>calling_single_cell.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--config<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">COMPARTMENT_CONFIG</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--data_type<span class="w"> </span>higashi<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--calib<span class="w"> </span>--output<span class="w"> </span>scCompartment.Higashi.100K.hdf5
+<span class="n">data_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'raw'</span><span class="p">,</span> <span class="s1">'schicluster'</span><span class="p">,</span> <span class="s1">'higashi'</span><span class="p">]</span>
+<span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'pca'</span><span class="p">,</span> <span class="s1">'cpg'</span><span class="p">,</span> <span class="s1">'higashi'</span><span class="p">]</span>
 
-python<span class="w"> </span>calling_bulk.py<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--config<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">COMPARTMENT_CONFIG</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--temp<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">COMPARTMENT_TEMP_DIR</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--bulk<span class="w"> </span>bulk100<span class="w"> </span>--data_type<span class="w"> </span>higashi<span class="w"> </span>--calib<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output<span class="w"> </span>scCompartment_bulk100.hdf5
+<span class="c1"># ------------ bulk_num  ------------------</span>
+<span class="n">sc_label_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">/100K_cool/label_info.pickle"</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sc_label_file</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">label_info</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">sc_cell_type_info</span> <span class="o">=</span> <span class="n">label_info</span><span class="p">[</span><span class="s2">"cell type"</span><span class="p">]</span>
+<span class="n">sc_cell_index_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ct</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sc_cell_type_info</span><span class="p">)</span> <span class="k">if</span> <span class="n">ct</span> <span class="o">==</span> <span class="n">target_cell_type</span><span class="p">]</span>
+
+<span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sc_cell_index_list</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'total'</span><span class="p">,</span><span class="n">total</span><span class="p">)</span>
+<span class="n">merge_nums</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">total</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">merge_nums</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">total</span><span class="p">:</span>
+    <span class="n">merge_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'all'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'merge_nums'</span><span class="p">,</span><span class="n">merge_nums</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_bulk_num_paths</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">'higashi'</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_bulk_num/exp1_nbr_5_impute/</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">hdf5_base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'scCompartment_bulk</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">.hdf5'</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">'schicluster'</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/schicluster/data/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_bulk_num/</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">hdf5_base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'scCompartment_bulk</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">_scHiCluster.hdf5'</span>
+    <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">'raw'</span><span class="p">:</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_bulk_num/raw/</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">hdf5_base</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'scCompartment_bulk</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">_raw.hdf5'</span>
+
+    <span class="n">pca</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">.pca.bulk</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">.compartment.nc'</span>
+    <span class="n">cpg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">.cpg.bulk</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">.compartment.nc'</span>
+    <span class="n">higashi</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_bulk_num/'</span><span class="p">,</span><span class="n">hdf5_base</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">base</span><span class="p">,</span> <span class="n">higashi</span><span class="p">,</span> <span class="n">pca</span><span class="p">,</span> <span class="n">cpg</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_bulk_cell_index</span><span class="p">(</span><span class="n">bulk_dir</span><span class="p">,</span> <span class="n">target_cell_type</span><span class="p">,</span> <span class="n">merge_num</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="n">target_cell_type</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[</span><span class="se">\\</span><span class="s1">/:*?"&lt;&gt;|]'</span><span class="p">,</span> <span class="s1">'_'</span><span class="p">,</span> <span class="n">target_cell_type</span><span class="p">)</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bulk_dir</span><span class="p">,</span> <span class="s1">'cell_table_100K.tsv'</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">type</span> <span class="o">!=</span><span class="s1">'raw'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">target_cell_type</span><span class="si">}</span><span class="s1">_bulk_num_</span><span class="si">{</span><span class="n">merge_num</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">target_cell_type</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Lee'</span><span class="p">,</span><span class="s1">'Tian'</span><span class="p">]:</span>
+    <span class="n">chrom_size_path</span> <span class="o">=</span> <span class="s1">'/home/zzl/schicluster/files/chromsize/hg38.autosomal.chrom.sizes'</span>
+    <span class="n">cpg_file</span> <span class="o">=</span> <span class="s1">'/home/zzl/Higashi/higashi/cpg_hg38.txt'</span>
+    <span class="n">chromosomes_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"chr1"</span><span class="p">,</span><span class="s2">"chr2"</span><span class="p">,</span><span class="s2">"chr3"</span><span class="p">,</span><span class="s2">"chr4"</span><span class="p">,</span><span class="s2">"chr5"</span><span class="p">,</span>
+			  <span class="s2">"chr6"</span><span class="p">,</span><span class="s2">"chr7"</span><span class="p">,</span><span class="s2">"chr8"</span><span class="p">,</span><span class="s2">"chr9"</span><span class="p">,</span><span class="s2">"chr10"</span><span class="p">,</span>
+			  <span class="s2">"chr11"</span><span class="p">,</span><span class="s2">"chr12"</span><span class="p">,</span><span class="s2">"chr13"</span><span class="p">,</span><span class="s2">"chr14"</span><span class="p">,</span><span class="s2">"chr15"</span><span class="p">,</span>
+			  <span class="s2">"chr16"</span><span class="p">,</span><span class="s2">"chr17"</span><span class="p">,</span><span class="s2">"chr18"</span><span class="p">,</span><span class="s2">"chr19"</span><span class="p">,</span><span class="s2">"chr20"</span><span class="p">,</span><span class="s2">"chr21"</span><span class="p">,</span><span class="s2">"chr22"</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">chrom_size_path</span> <span class="o">=</span> <span class="s1">'/home/zzl/schicluster/files/chromsize/mm10.chrom.sizes'</span>
+    <span class="n">cpg_file</span> <span class="o">=</span> <span class="s1">'/home/zzl/Higashi/higashi/cpg_mm10.txt'</span>
+    <span class="n">chromosomes_to_use</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"chr1"</span><span class="p">,</span><span class="s2">"chr2"</span><span class="p">,</span><span class="s2">"chr3"</span><span class="p">,</span><span class="s2">"chr4"</span><span class="p">,</span><span class="s2">"chr5"</span><span class="p">,</span>
+			  <span class="s2">"chr6"</span><span class="p">,</span><span class="s2">"chr7"</span><span class="p">,</span><span class="s2">"chr8"</span><span class="p">,</span><span class="s2">"chr9"</span><span class="p">,</span><span class="s2">"chr10"</span><span class="p">,</span>
+			  <span class="s2">"chr11"</span><span class="p">,</span><span class="s2">"chr12"</span><span class="p">,</span><span class="s2">"chr13"</span><span class="p">,</span><span class="s2">"chr14"</span><span class="p">,</span><span class="s2">"chr15"</span><span class="p">,</span>
+			  <span class="s2">"chr16"</span><span class="p">,</span><span class="s2">"chr17"</span><span class="p">,</span><span class="s2">"chr18"</span><span class="p">,</span><span class="s2">"chr19"</span><span class="p">]</span>
+
+<span class="n">chrom_sizes_all</span> <span class="o">=</span> <span class="n">cooler</span><span class="o">.</span><span class="n">read_chromsizes</span><span class="p">(</span><span class="n">chrom_size_path</span><span class="p">,</span> <span class="n">all_names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">chrom_sizes</span> <span class="o">=</span> <span class="n">chrom_sizes_all</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">chromosomes_to_use</span><span class="p">]</span>
 </pre></div>
-<p>The JSON supplies the dataset, resolution, temporary directory, chromosome list,
-neighbor settings and cytoband path. The source also has native paths for
-scHiCluster tables and CpG calibration resources; set them for the same run.
-Outputs retain the <code>compartment</code>, <code>compartment_raw</code> and <code>compartment_zscore</code> groups.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-07"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="7.-Supply-native-scGHOST-outputs-at-500-kb">2.4. Run the separate scGHOST workflow at 500 kb<a class="anchor-link" href="#7.-Supply-native-scGHOST-outputs-at-500-kb">¶</a></h3><p>The source readme links to the <a href="https://github.com/ma-compbio/scGHOST">official scGHOST repository</a>
-for its installation and native single-cell workflow. Follow that workflow for
-the 500-kb condition and retain its original cell identities and genomic bins.
-The readme describes pseudo-bulk results as bin-level averages of the selected
-single-cell outputs.</p>
-<p>The restored <code>get_data.py</code> and <code>get_result.ipynb</code> use the three method keys
-<code>pca</code>, <code>cpg</code> and <code>higashi</code>. They do not contain a scGHOST output reader; the
-external scGHOST analysis is kept separate from this supplied notebook example.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-08"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="8.-Declare-native-tracks-and-contact-sources">2.5. Collect the native caller outputs<a class="anchor-link" href="#8.-Declare-native-tracks-and-contact-sources">¶</a></h3><p>After calling, use the original <a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/Evaluation/get_data.py">collection script</a>
-to gather the selected type's tracks. It reads the NetCDF and Ref-PCA HDF5 files
-using the native metadata and row indices:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/compartment/tool/evaluation"</span>
-python<span class="w"> </span>get_data.py<span class="w"> </span>Lee<span class="w"> </span><span class="s1">'L2/3'</span>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>total 1260
+merge_nums [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 'all']
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-05">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"/home/zzl/data/schicluster/all_data/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">target_cell_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span><span class="w"> </span><span class="s1">'_'</span><span class="p">)</span><span class="si">}</span><span class="s2">.pkl"</span>
+<span class="n">data_to_save</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'single_cell_call'</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">'bulk_num_call'</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s1">'raw_bulk_num_pca_call'</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_to_save</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Data saved to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
-<p>The cached pickle contains three dictionaries:</p>
-<div class="table-wrap"><table>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-06"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.2.-Read-data">1.2. Read data<a class="anchor-link" href="#1.2.-Read-data">¶</a></h3>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-07">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">loaded_data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">single_cell_call</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s1">'single_cell_call'</span><span class="p">]</span>
+<span class="n">bulk_num_call</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s1">'bulk_num_call'</span><span class="p">]</span>
+<span class="n">raw_bulk_num_pca_call</span> <span class="o">=</span> <span class="n">loaded_data</span><span class="p">[</span><span class="s1">'raw_bulk_num_pca_call'</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-08"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2.-Boundary-and-track-evaluation">2. Boundary and track evaluation<a class="anchor-link" href="#2.-Boundary-and-track-evaluation">¶</a></h2>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-09"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.1.-Single-cell">2.1. Single cell<a class="anchor-link" href="#2.1.-Single-cell">¶</a></h3>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-10">
+<div class="input">
+<div class="prompt input_prompt">In [71]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_single_cell_overall_metrics</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">label_method</span> <span class="o">==</span> <span class="s1">'pca_raw'</span><span class="p">:</span>
+        <span class="n">golden_label_source</span> <span class="o">=</span> <span class="n">raw_bulk_num_pca_call</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"label_method '</span><span class="si">{</span><span class="n">label_method</span><span class="si">}</span><span class="s2">' not supported yet."</span><span class="p">)</span>
+
+    <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">method</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">all_cell_f1s</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">all_cell_boundary_counts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">all_cell_corrs</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">cell_idx</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sc_cell_index_list</span><span class="p">)),</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">|Processing cells"</span><span class="p">):</span>
+                <span class="n">chr_f1s</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">chr_boundary_counts</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">chr_corrs</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">for</span> <span class="n">chr_name</span> <span class="ow">in</span> <span class="n">chromosomes_to_use</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">pred_vec</span> <span class="o">=</span> <span class="n">single_cell_call</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="n">chr_name</span><span class="p">][</span><span class="n">cell_idx</span><span class="p">]</span>  <span class="c1"># (n_bins,)</span>
+                    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Warning: Missing data for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">/cell</span><span class="si">{</span><span class="n">cell_idx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># --- 1. F1 Score ---</span>
+                    <span class="n">ref_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">_bulkall"</span>
+                    <span class="k">if</span> <span class="n">ref_key</span> <span class="ow">in</span> <span class="n">golden_label_source</span><span class="p">:</span>
+                        <span class="n">label_vec</span> <span class="o">=</span> <span class="n">golden_label_source</span><span class="p">[</span><span class="n">ref_key</span><span class="p">]</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">boundary_overlap_metrics</span><span class="p">(</span><span class="n">pred_vec</span><span class="p">,</span> <span class="n">label_vec</span><span class="p">,</span> <span class="n">denoise</span><span class="o">=</span><span class="n">is_denoise</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">chr_f1s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Error computing F1 for </span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">, cell </span><span class="si">{</span><span class="n">cell_idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                            <span class="k">continue</span>
+
+                    <span class="c1"># --- 2. Boundary Count ---</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">denoised_vec</span> <span class="o">=</span> <span class="n">denoise_ab_vector</span><span class="p">(</span><span class="n">pred_vec</span><span class="p">)</span>
+                        <span class="n">n_bound</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">find_boundaries</span><span class="p">(</span><span class="n">denoised_vec</span><span class="p">))</span>
+                        <span class="n">chr_boundary_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_bound</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">pass</span>
+
+                    <span class="c1"># # --- 3. label Correlation ---</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">denoised_vec</span><span class="p">,</span> <span class="n">label_vec</span><span class="p">)</span>
+                        <span class="n">chr_corrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="k">if</span> <span class="n">chr_f1s</span><span class="p">:</span>
+                    <span class="n">all_cell_f1s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">chr_f1s</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">chr_boundary_counts</span><span class="p">:</span>
+                    <span class="n">all_cell_boundary_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">chr_boundary_counts</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">chr_corrs</span><span class="p">:</span>
+                    <span class="n">all_cell_corrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">chr_corrs</span><span class="p">))</span>
+
+            <span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">'f1'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">all_cell_f1s</span><span class="p">),</span>
+                <span class="s1">'boundary_count'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">all_cell_boundary_counts</span><span class="p">),</span>
+                <span class="s1">'corr'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">all_cell_corrs</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">result_dict</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-11">
+<div class="input">
+<div class="prompt input_prompt">In [73]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_single_cell_overall_metrics</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>pca|raw|Processing cells: 100%|██████████| 1198/1198 [00:44&lt;00:00, 26.63it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.053112873916011084, 'boundary_count': 29.579474562867937, 'corr': 0.03842473947349981}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>pca|schicluster|Processing cells: 100%|██████████| 1198/1198 [00:58&lt;00:00, 20.53it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.1324542372570242, 'boundary_count': 191.20775854494332, 'corr': 0.107772091895227}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>pca|higashi|Processing cells: 100%|██████████| 1198/1198 [00:52&lt;00:00, 22.78it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.23797923169664367, 'boundary_count': 57.7977330638784, 'corr': 0.6602117267042791}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>cpg|raw|Processing cells: 100%|██████████| 1198/1198 [01:17&lt;00:00, 15.55it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.18667541399050758, 'boundary_count': 83.26227923732536, 'corr': 0.6023333929663371}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>cpg|schicluster|Processing cells: 100%|██████████| 1198/1198 [00:55&lt;00:00, 21.72it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.17164066284824497, 'boundary_count': 98.75937966786749, 'corr': 0.5865416874535115}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>cpg|higashi|Processing cells: 100%|██████████| 1198/1198 [00:48&lt;00:00, 24.48it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.2552433815020373, 'boundary_count': 44.78011598277831, 'corr': 0.6241915245650256}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>higashi|raw|Processing cells: 100%|██████████| 1198/1198 [00:52&lt;00:00, 22.73it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.30174435387454573, 'boundary_count': 40.914155170898866, 'corr': 0.7464033417015056}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>higashi|schicluster|Processing cells: 100%|██████████| 1198/1198 [00:47&lt;00:00, 25.33it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.21302348306173657, 'boundary_count': 70.93928477286707, 'corr': 0.4875225677523689}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>higashi|higashi|Processing cells: 100%|██████████| 1198/1198 [00:57&lt;00:00, 20.82it/s]</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'f1': 0.2978615938458857, 'boundary_count': 53.66545119058079, 'corr': 0.7106366727542782}
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-12">
+<div class="input">
+<div class="prompt input_prompt">In [74]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span> <span class="n">results</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">dt</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">data_types</span>
+<span class="p">})</span><span class="o">.</span><span class="n">T</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt output_prompt">Out[74]:</div>
+<div class="output_html rendered_html output_subarea output_execute_result"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
 <thead>
-<tr>
-<th>Key</th>
-<th>Contents</th>
+<tr style="text-align: right;">
+<th></th>
+<th></th>
+<th>f1</th>
+<th>boundary_count</th>
+<th>corr</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>single_cell_call</code></td>
-<td>Per-cell tracks by method, input modality and chromosome</td>
+<th rowspan="3" valign="top">pca</th>
+<th>raw</th>
+<td>0.053113</td>
+<td>29.579475</td>
+<td>0.038425</td>
 </tr>
 <tr>
-<td><code>bulk_num_call</code></td>
-<td>Pseudo-bulk tracks across cell-number conditions</td>
+<th>schicluster</th>
+<td>0.132454</td>
+<td>191.207759</td>
+<td>0.107772</td>
 </tr>
 <tr>
-<td><code>raw_bulk_num_pca_call</code></td>
-<td>Raw pseudo-bulk PCA tracks, including the all-cell reference</td>
+<th>higashi</th>
+<td>0.237979</td>
+<td>57.797733</td>
+<td>0.660212</td>
+</tr>
+<tr>
+<th rowspan="3" valign="top">cpg</th>
+<th>raw</th>
+<td>0.186675</td>
+<td>83.262279</td>
+<td>0.602333</td>
+</tr>
+<tr>
+<th>schicluster</th>
+<td>0.171641</td>
+<td>98.759380</td>
+<td>0.586542</td>
+</tr>
+<tr>
+<th>higashi</th>
+<td>0.255243</td>
+<td>44.780116</td>
+<td>0.624192</td>
+</tr>
+<tr>
+<th rowspan="3" valign="top">higashi</th>
+<th>raw</th>
+<td>0.301744</td>
+<td>40.914155</td>
+<td>0.746403</td>
+</tr>
+<tr>
+<th>schicluster</th>
+<td>0.213023</td>
+<td>70.939285</td>
+<td>0.487523</td>
+</tr>
+<tr>
+<th>higashi</th>
+<td>0.297862</td>
+<td>53.665451</td>
+<td>0.710637</td>
 </tr>
 </tbody>
-</table></div>
-<p>The original output-name rule gives <code>Lee_L2_3.pkl</code> for this dataset/type pair.
-The script's native path variables determine where that cache is written.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-group-03"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h2 id="Structural-and-cell-level-evaluation">3. Structural and cell-level evaluation<a class="anchor-link" href="#Structural-and-cell-level-evaluation">¶</a></h2></div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-09"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="9.-Compare-boundary-locations-and-compartment-tracks">3.1. Compare boundaries and compartment tracks<a class="anchor-link" href="#9.-Compare-boundary-locations-and-compartment-tracks">¶</a></h3><p>The original <a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/Evaluation/tools.py">boundary metric</a> optionally denoises
-both vectors, then finds their sign-change boundaries. A predicted boundary
-counts as matched if any reference boundary lies within one bin. This is the
-source's per-prediction matching rule; a reference boundary can be reused.</p>
-<div class="highlight"><pre><span></span><span class="n">TP</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">pb</span> <span class="ow">in</span> <span class="n">pred_bound</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">true_bound</span> <span class="o">-</span> <span class="n">pb</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">tolerance</span><span class="p">))</span>
+</table>
+</div></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-13"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.2.-Bulk-level">2.2. Bulk level<a class="anchor-link" href="#2.2.-Bulk-level">¶</a></h3>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-14">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_bulk_overall_metrics</span><span class="p">(</span><span class="n">bulknum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">bulk_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bulknum</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">label_method</span> <span class="o">==</span> <span class="s1">'pca_raw'</span><span class="p">:</span>
+        <span class="n">golden_label_source</span> <span class="o">=</span> <span class="n">raw_bulk_num_pca_call</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"label_method '</span><span class="si">{</span><span class="n">label_method</span><span class="si">}</span><span class="s2">' not supported yet."</span><span class="p">)</span>
+
+    <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">method</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">chr_f1s</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">chr_boundary_counts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">chr_corrs</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">chr_name</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">chromosomes_to_use</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">|chr"</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">_bulk</span><span class="si">{</span><span class="n">bulk_str</span><span class="si">}</span><span class="s2">"</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pred_vec</span> <span class="o">=</span> <span class="n">bulk_num_call</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>  <span class="c1"># (n_bins,)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Warning: Missing data for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># --- 1. F1 Score vs golden label (bulkall) ---</span>
+                <span class="n">ref_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">_bulkall"</span>
+                <span class="k">if</span> <span class="n">ref_key</span> <span class="ow">in</span> <span class="n">golden_label_source</span><span class="p">:</span>
+                    <span class="n">label_vec</span> <span class="o">=</span> <span class="n">golden_label_source</span><span class="p">[</span><span class="n">ref_key</span><span class="p">]</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">boundary_overlap_metrics</span><span class="p">(</span><span class="n">pred_vec</span><span class="p">,</span> <span class="n">label_vec</span><span class="p">,</span> <span class="n">denoise</span><span class="o">=</span><span class="n">is_denoise</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">chr_f1s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Error computing F1 for </span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                        <span class="k">pass</span>
+
+                <span class="c1"># --- 2. Boundary Count ---</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">denoised_vec</span> <span class="o">=</span> <span class="n">denoise_ab_vector</span><span class="p">(</span><span class="n">pred_vec</span><span class="p">)</span>
+                    <span class="n">n_bound</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">find_boundaries</span><span class="p">(</span><span class="n">denoised_vec</span><span class="p">))</span>
+                    <span class="n">chr_boundary_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_bound</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+                <span class="c1"># --- 3. CpG Correlation ---</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">denoised_vec</span><span class="p">,</span> <span class="n">label_vec</span><span class="p">)</span>
+                    <span class="n">chr_corrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+            <span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">'f1'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">chr_f1s</span><span class="p">),</span>
+                <span class="s1">'boundary_count'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">chr_boundary_counts</span><span class="p">),</span>
+                <span class="s1">'corr'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">chr_corrs</span><span class="p">)</span>
+            <span class="p">}</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2"> =&gt; F1: </span><span class="si">{</span><span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="s1">'f1'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, "</span>
+                  <span class="sa">f</span><span class="s2">"Boundary: </span><span class="si">{</span><span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="s1">'boundary_count'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, "</span>
+                  <span class="sa">f</span><span class="s2">"Corr: </span><span class="si">{</span><span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="s1">'corr'</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_dict</span>
 </pre></div>
-<p>Precision, recall, F1 and Jaccard follow the original formulas. The notebook also
-reports boundary counts. Its track-correlation calculation uses the denoised
-predicted vector and the corresponding reference vector:</p>
-<div class="highlight"><pre><span></span><span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">denoised_vec</span><span class="p">,</span> <span class="n">label_vec</span><span class="p">)</span>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-15">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">bulk_num</span> <span class="o">=</span> <span class="mi">100</span>
 </pre></div>
-<p>The original notebook summarizes chromosome values within each cell or
-pseudo-bulk condition and then reports the corresponding method/input results.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-10"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="10.-Calculate-saddle-strength-on-the-matched-contact-map">3.2. Calculate the original saddle strength<a class="anchor-link" href="#10.-Calculate-saddle-strength-on-the-matched-contact-map">¶</a></h3><p>The notebook reads the corresponding raw or imputed contact matrix, computes
-its original observed/expected representation and calls <code>compute_saddle</code>:</p>
-<div class="highlight"><pre><span></span><span class="n">oe_mat</span> <span class="o">=</span> <span class="n">get_OE_matrix</span><span class="p">(</span><span class="n">contact_mat</span><span class="p">)</span>
-<span class="n">saddle_result</span> <span class="o">=</span> <span class="n">compute_saddle</span><span class="p">(</span><span class="n">oe_mat</span><span class="p">,</span> <span class="n">ab_vec</span><span class="p">)</span>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-16">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">bulkall_metrics</span> <span class="o">=</span> <span class="n">compute_bulk_overall_metrics</span><span class="p">(</span><span class="n">bulknum</span><span class="o">=</span><span class="n">bulk_num</span><span class="p">)</span>
 </pre></div>
-<p>The source uses <code>pd.qcut(..., 50, duplicates='drop')</code> to group the compartment
-scores. Saddle contrast uses the first ten and last ten groups, retaining
-that fixed rule when repeated scores reduce the available groups.</p>
-<div class="highlight"><pre><span></span>saddle strength = (sum(AA) + sum(BB)) / (sum(AB) + sum(BA) + 1e-8)
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>pca|raw|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 218.50it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>pca|raw =&gt; F1: 0.5040, Boundary: 56.89, Corr: 0.7814
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>pca|schicluster|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 595.12it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>pca|schicluster =&gt; F1: 0.4885, Boundary: 63.95, Corr: 0.8626
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>pca|higashi|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 659.34it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>pca|higashi =&gt; F1: 0.3064, Boundary: 42.37, Corr: 0.8282
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>cpg|raw|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 597.73it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cpg|raw =&gt; F1: 0.2774, Boundary: 38.79, Corr: 0.6807
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>cpg|schicluster|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 491.03it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cpg|schicluster =&gt; F1: 0.2453, Boundary: 29.26, Corr: 0.6725
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>cpg|higashi|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 497.67it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cpg|higashi =&gt; F1: 0.2267, Boundary: 27.95, Corr: 0.8117
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>higashi|raw|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 467.59it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>higashi|raw =&gt; F1: 0.2770, Boundary: 38.79, Corr: 0.8092
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>higashi|schicluster|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 528.21it/s]
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>higashi|schicluster =&gt; F1: 0.2940, Boundary: 44.05, Corr: 0.8617
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>higashi|higashi|chr: 100%|██████████| 19/19 [00:00&lt;00:00, 482.76it/s]</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>higashi|higashi =&gt; F1: 0.3016, Boundary: 45.37, Corr: 0.8583
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-17">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span> <span class="n">bulkall_metrics</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">dt</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">data_types</span>
+<span class="p">})</span><span class="o">.</span><span class="n">T</span>
+<span class="n">df</span>
 </pre></div>
-<p>The helper also returns the saddle matrix and the four block means <code>AA</code>,
-<code>BB</code>, <code>AB</code> and <code>BA</code>, using the source's original naming and formulas.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-11"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="11.-Evaluate-existing-cell-cluster-assignments">3.3. Use the original cell-clustering utility<a class="anchor-link" href="#11.-Evaluate-existing-cell-cluster-assignments">¶</a></h3><p>The restored <a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/CpG/tools.py">CpG/tools.py</a> contains the original
-<code>clustering_metrics</code> helper. It fits K-means to the supplied feature matrix,
-using <code>random_state=0</code>. When <code>n_clusters</code> is omitted, it uses the number of
-distinct reference cell labels.</p>
-<div class="highlight"><pre><span></span><span class="n">sil_score</span><span class="p">,</span> <span class="n">ch_score</span><span class="p">,</span> <span class="n">ari</span><span class="p">,</span> <span class="n">ami</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">clustering_metrics</span><span class="p">(</span><span class="n">emb</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">)</span>
-</pre></div>
-<p>The outputs are silhouette score, Calinski–Harabasz, ARI, AMI and V-measure.
-<code>emb</code> is the actual cell-by-feature matrix and <code>true_labels</code> follows its real
-cell order. This utility is separate from the structural-metric cells in
-<code>get_result.ipynb</code>; the restored source has no <code>native_labels</code> configuration mode.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-group-04"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h2 id="Run-the-workflow-and-read-outputs">4. Run the workflow and read outputs<a class="anchor-link" href="#Run-the-workflow-and-read-outputs">¶</a></h2></div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-12"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="12.-Validate-and-evaluate-the-configured-workflow">4.1. Run the original collection and result notebook<a class="anchor-link" href="#12.-Validate-and-evaluate-the-configured-workflow">¶</a></h3><p>Configure the native paths in the collection script, then collect the completed
-calls and open the original <a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/Evaluation/get_result.ipynb">result notebook</a>:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/compartment/tool/evaluation"</span>
-python<span class="w"> </span>get_data.py<span class="w"> </span>Lee<span class="w"> </span><span class="s1">'L2/3'</span>
-jupyter<span class="w"> </span>notebook<span class="w"> </span>get_result.ipynb
-</pre></div>
-<p>In the notebook, set <code>dataset='Lee'</code>, <code>target_cell_type='L2/3'</code>, the matching
-resolution/resources and the populated pickle path. Use its read-data and
-metric cells with the cache produced by <code>get_data.py</code>.</p>
-<p>The source's setup cell also includes a block that writes empty dictionaries
-to the cache. Retain the collected pickle rather than rerunning that empty-cache
-write block when loading completed caller outputs.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-13"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="13.-Read-the-output-files">4.2. Read the native outputs<a class="anchor-link" href="#13.-Read-the-output-files">¶</a></h3><div class="table-wrap"><table>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+<div class="output_html rendered_html output_subarea output_execute_result"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
 <thead>
-<tr>
-<th>Native artifact</th>
-<th>Contents</th>
+<tr style="text-align: right;">
+<th></th>
+<th></th>
+<th>f1</th>
+<th>boundary_count</th>
+<th>corr</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>CpG/Self-PCA <code>.compartment.nc</code></td>
-<td>Cell or sample compartment tracks and genomic bins</td>
+<th rowspan="3" valign="top">pca</th>
+<th>raw</th>
+<td>0.504006</td>
+<td>56.894737</td>
+<td>0.781426</td>
 </tr>
 <tr>
-<td>Ref-PCA <code>.hdf5</code></td>
-<td>Quantile, raw and z-score profiles with native bin coordinates</td>
+<th>schicluster</th>
+<td>0.488542</td>
+<td>63.947368</td>
+<td>0.862573</td>
 </tr>
 <tr>
-<td>Dataset/type <code>.pkl</code> cache</td>
-<td>The three dictionaries gathered by <code>get_data.py</code></td>
+<th>higashi</th>
+<td>0.306384</td>
+<td>42.368421</td>
+<td>0.828175</td>
 </tr>
 <tr>
-<td>Result-notebook tables</td>
-<td>Boundary F1/counts, track correlation and saddle summaries</td>
+<th rowspan="3" valign="top">cpg</th>
+<th>raw</th>
+<td>0.277417</td>
+<td>38.789474</td>
+<td>0.680657</td>
 </tr>
 <tr>
-<td><code>clustering_metrics</code> return values</td>
-<td>Original K-means-based cell-clustering scores</td>
+<th>schicluster</th>
+<td>0.245323</td>
+<td>29.263158</td>
+<td>0.672543</td>
+</tr>
+<tr>
+<th>higashi</th>
+<td>0.226676</td>
+<td>27.947368</td>
+<td>0.811660</td>
+</tr>
+<tr>
+<th rowspan="3" valign="top">higashi</th>
+<th>raw</th>
+<td>0.277004</td>
+<td>38.789474</td>
+<td>0.809227</td>
+</tr>
+<tr>
+<th>schicluster</th>
+<td>0.294009</td>
+<td>44.052632</td>
+<td>0.861720</td>
+</tr>
+<tr>
+<th>higashi</th>
+<td>0.301636</td>
+<td>45.368421</td>
+<td>0.858290</td>
 </tr>
 </tbody>
-</table></div>
-<p>Output directories and prefixes follow the native script settings. The result
-notebook displays its dictionaries and DataFrames; a unified CSV/manifest export
-is not part of this restored source.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-14"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="14.-Continue-to-the-other-tutorials">4.3. Continue to the other tutorials<a class="anchor-link" href="#14.-Continue-to-the-other-tutorials">¶</a></h3><p><a href="data_preparation.html">Data preparation</a> describes the input and imputation
-workflows. <a href="embedding.html">Embedding</a>, <a href="tad.html">Domain/TAD</a>,
-<a href="loop.html">Loop</a> and <a href="loop_figures.html">Loop figures</a> cover the other tasks.
-Return to the <a href="../index.html">tutorial index</a> to choose a workflow.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-software-notes"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="Software-and-implementation">4.4. Software and original implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h3><div class="table-wrap"><table>
+</table>
+</div></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-18"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.-Saddle-strength">3. Saddle strength<a class="anchor-link" href="#3.-Saddle-strength">¶</a></h2>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-19"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3.1.-Single-cell">3.1. Single cell<a class="anchor-link" href="#3.1.-Single-cell">¶</a></h3>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-20">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_matrix_from_cool_or_raw</span><span class="p">(</span><span class="n">chr_name</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">imputation_type</span><span class="p">,</span> <span class="n">cell_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">imputation_type</span> <span class="o">==</span> <span class="s1">'raw'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> not found."</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="n">cell_index</span><span class="p">]</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> not found."</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">cooler</span><span class="o">.</span><span class="n">Cooler</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">balance</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">chr_name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Q</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-21">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_single_cell_strength</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">'saddle strength'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">'saddle strength'</span><span class="p">:</span>
+        <span class="n">metric_key</span> <span class="o">=</span> <span class="s1">'saddle_strength'</span>
+    <span class="k">elif</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'AA'</span><span class="p">,</span> <span class="s1">'BB'</span><span class="p">,</span> <span class="s1">'AB'</span><span class="p">,</span> <span class="s1">'BA'</span><span class="p">]:</span>
+        <span class="n">metric_key</span> <span class="o">=</span> <span class="n">metric</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"metric must be one of: 'saddle strength', 'AA', 'BB', 'AB', 'BA'"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_sc_matrix_path</span><span class="p">(</span><span class="n">datatype</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'raw'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_cool/raw/'</span>
+        <span class="k">elif</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'higashi'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_cool/exp1_nbr_5_impute/'</span>
+        <span class="k">elif</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'schicluster'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/schicluster/data/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K/'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unsupported datatype: </span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">method</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">all_cell_metrics</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">cell_idx</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sc_cell_index_list</span><span class="p">)),</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">|Cells"</span><span class="p">):</span>
+                <span class="n">chr_metrics</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">for</span> <span class="n">chr_name</span> <span class="ow">in</span> <span class="n">chromosomes_to_use</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="c1"># --- 1. compartment---</span>
+                        <span class="n">ab_vec</span> <span class="o">=</span> <span class="n">single_cell_call</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="n">chr_name</span><span class="p">][</span><span class="n">cell_idx</span><span class="p">]</span>
+
+                        <span class="c1"># --- 2. contact matrix ---</span>
+                        <span class="n">sc_base</span> <span class="o">=</span> <span class="n">get_sc_matrix_path</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'raw'</span><span class="p">:</span>
+                            <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sc_base</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">_sparse_adj.npy"</span><span class="p">)</span>
+                            <span class="n">contact_mat</span> <span class="o">=</span> <span class="n">load_matrix_from_cool_or_raw</span><span class="p">(</span><span class="n">chr_name</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">imputation_type</span><span class="o">=</span><span class="n">datatype</span><span class="p">,</span> <span class="n">cell_index</span><span class="o">=</span><span class="n">cell_idx</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">cell_table_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sc_base</span><span class="p">,</span> <span class="s1">'cell_table_100K.tsv'</span><span class="p">)</span>
+                            <span class="n">cell_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">cell_table_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                            <span class="n">cool_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">cell_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.cool'</span><span class="p">)]</span>
+                            <span class="k">if</span> <span class="n">cell_idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cool_files</span><span class="p">):</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Warning: cell_idx </span><span class="si">{</span><span class="n">cell_idx</span><span class="si">}</span><span class="s2"> out of range for </span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2"> cool files"</span><span class="p">)</span>
+                                <span class="k">continue</span>
+                            <span class="n">file_path</span> <span class="o">=</span> <span class="n">cool_files</span><span class="p">[</span><span class="n">cell_idx</span><span class="p">]</span>
+                            <span class="n">contact_mat</span> <span class="o">=</span> <span class="n">load_matrix_from_cool_or_raw</span><span class="p">(</span><span class="n">chr_name</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">imputation_type</span><span class="o">=</span><span class="n">datatype</span><span class="p">,</span> <span class="n">cell_index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+                        <span class="c1"># --- 3.OE ---</span>
+                        <span class="n">oe_mat</span> <span class="o">=</span> <span class="n">get_OE_matrix</span><span class="p">(</span><span class="n">contact_mat</span><span class="p">)</span>
+
+                        <span class="c1"># --- 4.saddle ---</span>
+                        <span class="n">saddle_result</span> <span class="o">=</span> <span class="n">compute_saddle</span><span class="p">(</span><span class="n">oe_mat</span><span class="p">,</span> <span class="n">ab_vec</span><span class="p">)</span>
+
+                        <span class="c1"># --- 5. metric ---</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">saddle_result</span><span class="p">[</span><span class="n">metric_key</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                            <span class="n">chr_metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Warning: NaN </span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">, cell </span><span class="si">{</span><span class="n">cell_idx</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error processing </span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">, cell </span><span class="si">{</span><span class="n">cell_idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                        <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">chr_metrics</span><span class="p">:</span>
+                    <span class="n">all_cell_metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">chr_metrics</span><span class="p">))</span>
+
+            <span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">all_cell_metrics</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2"> =&gt; </span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_dict</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-22">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">ss</span> <span class="o">=</span> <span class="n">compute_single_cell_strength</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">'saddle strength'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-23"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3.2.-Bulk-level">3.2. Bulk level<a class="anchor-link" href="#3.2.-Bulk-level">¶</a></h3>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-24">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_bulk_strength</span><span class="p">(</span><span class="n">bulknum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'saddle strength'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">'saddle strength'</span><span class="p">:</span>
+        <span class="n">metric_key</span> <span class="o">=</span> <span class="s1">'saddle_strength'</span>
+    <span class="k">elif</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'AA'</span><span class="p">,</span> <span class="s1">'BB'</span><span class="p">,</span> <span class="s1">'AB'</span><span class="p">,</span> <span class="s1">'BA'</span><span class="p">]:</span>
+        <span class="n">metric_key</span> <span class="o">=</span> <span class="n">metric</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"metric must be one of: 'saddle strength', 'AA', 'BB', 'AB', 'BA'"</span><span class="p">)</span>
+
+    <span class="n">bulk_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bulknum</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bulk_matrix_path</span><span class="p">(</span><span class="n">datatype</span><span class="p">,</span> <span class="n">merge_num</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'raw'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_bulk_num/raw/</span><span class="si">{</span><span class="n">merge_num</span><span class="si">}</span><span class="s1">/'</span>
+        <span class="k">elif</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'higashi'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/Higashi/temp/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_bulk_num/exp1_nbr_5_impute/</span><span class="si">{</span><span class="n">merge_num</span><span class="si">}</span><span class="s1">/'</span>
+        <span class="k">elif</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'schicluster'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'/home/zzl/data/schicluster/data/</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/100K_bulk_num/</span><span class="si">{</span><span class="n">merge_num</span><span class="si">}</span><span class="s1">/'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unsupported datatype: </span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">bulk_cell_index_cache</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+        <span class="n">bulk_cell_index_cache</span><span class="p">[</span><span class="n">datatype</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">mn</span> <span class="ow">in</span> <span class="p">[</span><span class="n">bulknum</span><span class="p">]:</span>
+            <span class="n">bulk_base</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_bulk_num_paths</span><span class="p">(</span><span class="n">mn</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">datatype</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">get_bulk_cell_index</span><span class="p">(</span><span class="n">bulk_base</span><span class="p">,</span> <span class="n">target_cell_type</span><span class="p">,</span> <span class="n">mn</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">datatype</span><span class="p">)</span>
+            <span class="n">bulk_cell_index_cache</span><span class="p">[</span><span class="n">datatype</span><span class="p">][</span><span class="n">mn</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+
+    <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">method</span><span class="p">:</span> <span class="p">{}</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="n">chr_metrics</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">chr_name</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">chromosomes_to_use</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">|Chr"</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">_bulk</span><span class="si">{</span><span class="n">bulk_str</span><span class="si">}</span><span class="s2">"</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">ab_vec</span> <span class="o">=</span> <span class="n">bulk_num_call</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+
+                    <span class="n">bulk_dir</span> <span class="o">=</span> <span class="n">get_bulk_matrix_path</span><span class="p">(</span><span class="n">datatype</span><span class="p">,</span> <span class="n">bulknum</span><span class="p">)</span>
+                    <span class="c1"># chr_bins = chr_bins_dict[chr_name]</span>
+                    <span class="n">cell_idx</span> <span class="o">=</span> <span class="n">bulk_cell_index_cache</span><span class="p">[</span><span class="n">datatype</span><span class="p">][</span><span class="n">bulknum</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">'raw'</span><span class="p">:</span>
+                        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bulk_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">_sparse_adj.npy"</span><span class="p">)</span>
+                        <span class="n">contact_mat</span> <span class="o">=</span> <span class="n">load_matrix_from_cool_or_raw</span><span class="p">(</span>
+                            <span class="n">chr_name</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">imputation_type</span><span class="o">=</span><span class="n">datatype</span><span class="p">,</span> <span class="n">cell_index</span><span class="o">=</span><span class="n">cell_idx</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">cell_table_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bulk_dir</span><span class="p">,</span> <span class="s1">'cell_table_100K.tsv'</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cell_table_path</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cell table missing: </span><span class="si">{</span><span class="n">cell_table_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                        <span class="n">cell_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">cell_table_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                        <span class="n">cool_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">cell_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.cool'</span><span class="p">)]</span>
+                        <span class="k">if</span> <span class="n">cell_idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cool_files</span><span class="p">):</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"    Warning: cell_idx </span><span class="si">{</span><span class="n">cell_idx</span><span class="si">}</span><span class="s2"> out of range for bulk </span><span class="si">{</span><span class="n">bulknum</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                            <span class="k">continue</span>
+                        <span class="n">file_path</span> <span class="o">=</span> <span class="n">cool_files</span><span class="p">[</span><span class="n">cell_idx</span><span class="p">]</span>
+                        <span class="n">contact_mat</span> <span class="o">=</span> <span class="n">load_matrix_from_cool_or_raw</span><span class="p">(</span>
+                            <span class="n">chr_name</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">imputation_type</span><span class="o">=</span><span class="n">datatype</span><span class="p">,</span> <span class="n">cell_index</span><span class="o">=</span><span class="kc">None</span>
+                        <span class="p">)</span>
+
+                    <span class="n">oe_mat</span> <span class="o">=</span> <span class="n">get_OE_matrix</span><span class="p">(</span><span class="n">contact_mat</span><span class="p">)</span>
+
+                    <span class="n">saddle_result</span> <span class="o">=</span> <span class="n">compute_saddle</span><span class="p">(</span><span class="n">oe_mat</span><span class="p">,</span> <span class="n">ab_vec</span><span class="p">)</span>
+
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">saddle_result</span><span class="p">[</span><span class="n">metric_key</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="n">chr_metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Warning: NaN </span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">, bulk</span><span class="si">{</span><span class="n">bulk_str</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Warning: Missing data for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">datatype</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error processing </span><span class="si">{</span><span class="n">chr_name</span><span class="si">}</span><span class="s2">, bulk</span><span class="si">{</span><span class="n">bulk_str</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+            <span class="n">result_dict</span><span class="p">[</span><span class="n">method</span><span class="p">][</span><span class="n">datatype</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">chr_metrics</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_dict</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-25">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">bulk_ss</span> <span class="o">=</span> <span class="n">compute_bulk_strength</span><span class="p">(</span><span class="n">bulknum</span><span class="o">=</span><span class="n">bulk_num</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'saddle strength'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>pca|raw|Chr: 100%|██████████| 19/19 [00:05&lt;00:00,  3.76it/s]
+pca|schicluster|Chr: 100%|██████████| 19/19 [00:04&lt;00:00,  4.50it/s]
+pca|higashi|Chr: 100%|██████████| 19/19 [00:04&lt;00:00,  4.44it/s]
+cpg|raw|Chr: 100%|██████████| 19/19 [00:02&lt;00:00,  7.31it/s]
+cpg|schicluster|Chr: 100%|██████████| 19/19 [00:04&lt;00:00,  4.58it/s]
+cpg|higashi|Chr: 100%|██████████| 19/19 [00:04&lt;00:00,  4.29it/s]
+higashi|raw|Chr: 100%|██████████| 19/19 [00:02&lt;00:00,  7.19it/s]
+higashi|schicluster|Chr: 100%|██████████| 19/19 [00:04&lt;00:00,  4.36it/s]
+higashi|higashi|Chr: 100%|██████████| 19/19 [00:04&lt;00:00,  4.63it/s]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-26">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">methods</span> <span class="ow">in</span> <span class="n">bulk_ss</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">saddle_strength</span> <span class="ow">in</span> <span class="n">methods</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">data_type</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">saddle_strength</span><span class="p">])</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'data_type'</span><span class="p">,</span> <span class="s1">'method'</span><span class="p">,</span> <span class="s1">'saddle_strength'</span><span class="p">])</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+<div class="output_html rendered_html output_subarea output_execute_result"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
 <thead>
-<tr>
-<th>Stage</th>
-<th>Native software context</th>
+<tr style="text-align: right;">
+<th></th>
+<th>data_type</th>
+<th>method</th>
+<th>saddle_strength</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>CpG/Self-PCA</td>
-<td>NumPy, pandas, SciPy, scikit-learn, Cooler, Xarray, PyTables, joblib, tqdm, tqdm-joblib, UMAP, seaborn and matplotlib</td>
+<th>0</th>
+<td>pca</td>
+<td>raw</td>
+<td>14.194105</td>
 </tr>
 <tr>
-<td>CpG resources</td>
-<td>Matching genome FASTA, chromosome sizes and bedtools</td>
+<th>1</th>
+<td>pca</td>
+<td>schicluster</td>
+<td>4.882393</td>
 </tr>
 <tr>
-<td>Ref-PCA</td>
-<td>Original Higashi environment, PyTorch and the complete bundled modules</td>
+<th>2</th>
+<td>pca</td>
+<td>higashi</td>
+<td>6.046843</td>
 </tr>
 <tr>
-<td>Structural evaluation</td>
-<td>NumPy, pandas, SciPy, h5py, Cooler, Xarray and Jupyter</td>
+<th>3</th>
+<td>cpg</td>
+<td>raw</td>
+<td>9.920650</td>
 </tr>
 <tr>
-<td>scGHOST</td>
-<td>Its official environment</td>
+<th>4</th>
+<td>cpg</td>
+<td>schicluster</td>
+<td>3.717176</td>
+</tr>
+<tr>
+<th>5</th>
+<td>cpg</td>
+<td>higashi</td>
+<td>4.591673</td>
+</tr>
+<tr>
+<th>6</th>
+<td>higashi</td>
+<td>raw</td>
+<td>16.592420</td>
+</tr>
+<tr>
+<th>7</th>
+<td>higashi</td>
+<td>schicluster</td>
+<td>5.252330</td>
+</tr>
+<tr>
+<th>8</th>
+<td>higashi</td>
+<td>higashi</td>
+<td>6.248656</td>
 </tr>
 </tbody>
-</table></div>
-<p>The original source files are under <code>compartment/tool/</code> in the analysis-code
-checkout. The source <code>Evaluation/</code> directory is named <code>tool/evaluation/</code> there;
-its Python files and original notebook retain their upstream contents.
-See <a href="https://github.com/rawandy2001-design/benchmark/blob/main/compartment/ENVIRONMENT.md">environment and source notes</a> and the
-<a href="https://github.com/daydayupzzl/compartment/blob/e068313a9b68ce07357123acfb6c1cbb1d6b3f42/readme.md">pinned source readme</a>.</p>
-</div></div><footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+</table>
+</div></div>
+</div>
+</div>
+</div>
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=compartment-source-27">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre></pre></div>
+</div>
+</div>
+</div>
+</div><footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
 (() => {
   function revealSection() {
     let id;
