@@ -1,0 +1,131 @@
+/* Shared tutorial palette. The browser updates it when the system theme changes. */
+:root {
+  color-scheme: light dark;
+  --page-bg: #ffffff;
+  --text: #243347;
+  --heading: #173653;
+  --link: #2463a0;
+  --muted: #5b6c80;
+  --border: #dae2ec;
+  --surface: #eff4fa;
+  --code-bg: #f5f7fb;
+  --code-text: #243347;
+  --inline-code-bg: #f1f4f8;
+  --note-text: #40566d;
+  --marker: #62788f;
+  --selection: #cfe4ff;
+  --syntax-comment: #526b78;
+  --syntax-keyword: #006639;
+  --syntax-string: #315f90;
+  --syntax-number: #286653;
+  --syntax-type: #8b3b00;
+  --syntax-name: #11617d;
+  --syntax-function: #133e7a;
+  --syntax-variable: #7c4293;
+  --syntax-prompt: #8a4300;
+  --syntax-error: #b42318;
+  --syntax-error-bg: #fef3f2;
+  --syntax-insert-bg: #eaf6ed;
+  --syntax-delete-bg: #fcebec;
+  --syntax-highlight-bg: #fff2bd;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --page-bg: #111827;
+    --text: #e2e8f0;
+    --heading: #f1f5f9;
+    --link: #8bbdff;
+    --muted: #a7b4c6;
+    --border: #334155;
+    --surface: #1e293b;
+    --code-bg: #18212f;
+    --code-text: #e2e8f0;
+    --inline-code-bg: #263247;
+    --note-text: #bdcbe0;
+    --marker: #9aacc2;
+    --selection: #304b72;
+    --syntax-comment: #9caec4;
+    --syntax-keyword: #c4b5fd;
+    --syntax-string: #9fdfb6;
+    --syntax-number: #f4bf88;
+    --syntax-type: #f4bf88;
+    --syntax-name: #8bd5f0;
+    --syntax-function: #8bbdff;
+    --syntax-variable: #d9b6f2;
+    --syntax-prompt: #f4bf88;
+    --syntax-error: #ffb4ab;
+    --syntax-error-bg: #44292d;
+    --syntax-insert-bg: #193b2d;
+    --syntax-delete-bg: #44292d;
+    --syntax-highlight-bg: #493f21;
+  }
+}
+
+html { background: var(--page-bg); }
+body { background: var(--page-bg); color: var(--text); }
+h1, h2, h3, .method-title { color: var(--heading); }
+a { color: var(--link); }
+.topbar { border-color: var(--border); color: var(--heading); }
+.modules .active { border-color: var(--link); }
+nav, h2 { border-color: var(--border); }
+nav .toc-group summary { color: var(--heading); }
+nav .toc-group summary::marker { color: var(--marker); }
+nav .toc-subsections { border-color: var(--border); }
+.anchor-link { color: var(--marker); }
+footer { color: var(--muted); }
+.edition-note {
+  color: var(--note-text);
+  background: var(--surface);
+  border-color: var(--link);
+}
+th, td { border-color: var(--border); }
+th { background: var(--surface); }
+pre, .highlight { background: var(--code-bg); color: var(--code-text); }
+pre { border-color: var(--border); }
+p code, li code, td code, th code {
+  background: var(--inline-code-bg);
+  color: var(--code-text);
+}
+.highlight pre, pre code { background: transparent; color: inherit; }
+td.linenos .normal, span.linenos .normal {
+  color: var(--muted);
+  background: transparent;
+}
+td.linenos .special, span.linenos .special, .highlight .hll {
+  color: var(--code-text);
+  background: var(--syntax-highlight-bg);
+}
+.highlight .c, .highlight .ch, .highlight .cm, .highlight .cp,
+.highlight .cpf, .highlight .c1, .highlight .cs, .highlight .go {
+  color: var(--syntax-comment);
+}
+.highlight .cs { background: transparent; }
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn,
+.highlight .kp, .highlight .kr, .highlight .ow, .highlight .nb,
+.highlight .bp, .highlight .ne { color: var(--syntax-keyword); }
+.highlight .kt { color: var(--syntax-type); }
+.highlight .s, .highlight .sa, .highlight .sb, .highlight .sc,
+.highlight .dl, .highlight .sd, .highlight .s2, .highlight .se,
+.highlight .sh, .highlight .si, .highlight .sx, .highlight .sr,
+.highlight .s1, .highlight .ss { color: var(--syntax-string); }
+.highlight .m, .highlight .mb, .highlight .mf, .highlight .mh,
+.highlight .mi, .highlight .mo, .highlight .il { color: var(--syntax-number); }
+.highlight .nc, .highlight .nn, .highlight .no, .highlight .nt {
+  color: var(--syntax-name);
+}
+.highlight .nf, .highlight .fm, .highlight .nl { color: var(--syntax-function); }
+.highlight .nv, .highlight .vc, .highlight .vg, .highlight .vi,
+.highlight .vm, .highlight .na { color: var(--syntax-variable); }
+.highlight .o, .highlight .w, .highlight .nd { color: var(--code-text); }
+.highlight .gh, .highlight .gu { color: var(--heading); }
+.highlight .gp { color: var(--syntax-prompt); }
+.highlight .err, .highlight .gr { color: var(--syntax-error); border-color: var(--syntax-error); }
+.highlight .err { background: var(--syntax-error-bg); }
+.highlight .gd { color: var(--syntax-error); background: var(--syntax-delete-bg); }
+.highlight .gi { color: var(--syntax-string); background: var(--syntax-insert-bg); }
+::selection { background: var(--selection); color: var(--text); }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+/* Scientific figures retain their original colors and a white plotting surface. */
+main img { background: #ffffff; color-scheme: only light; }
+@media print { :root { color-scheme: light; } }
