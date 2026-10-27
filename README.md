@@ -47,3 +47,7 @@ README.md        entry points and publication notes
 Tutorial snapshot: 2026-10-27, companion revision `02e6c9eb2bb9c4b549b197b4b47fd5d9ae34ada8`.
 Compartment preserves the original Tan/Neuron settings, code cells and saved outputs from daydayupzzl/compartment commit e068313; its headings are organized into two levels, with brief descriptions of the main sections. Other notebooks retain their command examples and embedded figures.
 Experimental input files and model checkpoints are configured separately.
+
+## Previous Compartment version
+
+[Read the standalone previous tutorial](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/compartment-previous.html) or [open its notebook](tutorials/compartment-previous.ipynb). This preserves the explanation-based Compartment tutorial from `2cd016d`, before restoration of the original-source evaluation notebook. Implementation links use the matching private code revision `02e6c9e`.
