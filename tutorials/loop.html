@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Loop · Single-cell Hi-C tutorials</title><style>
+*{box-sizing:border-box}body{margin:0;color:#243347;background:#fff;font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+.topbar{border-bottom:1px solid #dae2ec;padding:16px 30px;color:#173653}.brand{font-weight:650}.modules{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:14px;margin-top:10px}.modules a{text-decoration:none;padding-bottom:3px}.modules .active{font-weight:700;border-bottom:2px solid #2463a0}
+.layout{max-width:1440px;margin:auto;padding:30px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:42px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;border-right:1px solid #e0e6ee;padding-right:18px;max-height:calc(100vh - 48px);overflow:auto}
+nav strong{display:block;margin-bottom:10px}nav a{display:block;margin:0 0 10px;text-decoration:none;line-height:1.4}
+main{min-width:0;max-width:1040px}h1{font-size:32px;line-height:1.25;margin-top:0}h2{font-size:25px;line-height:1.3;margin-top:42px;padding-top:12px;border-top:1px solid #e6ebf1;scroll-margin-top:18px}
+h3{font-size:20px;margin-top:28px}a{color:#2463a0}p{margin:14px 0}pre{padding:17px 20px;border:1px solid #dce4ee;border-radius:6px;background:#f5f7fb;overflow-x:auto;font:13px/1.55 Consolas,monospace}
+code{font-family:Consolas,monospace;font-size:.9em}p code,li code,td code{background:#f1f4f8;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}
+.table-wrap{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dce4ee;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eff4fa}
+img{max-width:100%;height:auto}.anchor-link{font-size:13px;margin-left:8px;text-decoration:none;color:#8fa6bb}.cell{padding:0}.text_cell_render{padding:0}footer{margin:35px 0;color:#68798b;font-size:13px}
+@media(max-width:900px){.layout{grid-template-columns:1fr;padding:20px;gap:20px}nav{position:static;border-right:none;border-bottom:1px solid #dae2ec;padding-bottom:18px;max-height:none}h1{font-size:28px}.topbar{padding:16px 20px}}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f0f0f0; }
+.highlight .c { color: #60A0B0; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #007020; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #007020 } /* Comment.Preproc */
+.highlight .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #F00 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888 } /* Generic.Output */
+.highlight .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #007020 } /* Keyword.Pseudo */
+.highlight .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #902000 } /* Keyword.Type */
+.highlight .m { color: #40A070 } /* Literal.Number */
+.highlight .s { color: #4070A0 } /* Literal.String */
+.highlight .na { color: #4070A0 } /* Name.Attribute */
+.highlight .nb { color: #007020 } /* Name.Builtin */
+.highlight .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.highlight .no { color: #60ADD5 } /* Name.Constant */
+.highlight .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #007020 } /* Name.Exception */
+.highlight .nf { color: #06287E } /* Name.Function */
+.highlight .nl { color: #002070; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #BB60D5 } /* Name.Variable */
+.highlight .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #40A070 } /* Literal.Number.Bin */
+.highlight .mf { color: #40A070 } /* Literal.Number.Float */
+.highlight .mh { color: #40A070 } /* Literal.Number.Hex */
+.highlight .mi { color: #40A070 } /* Literal.Number.Integer */
+.highlight .mo { color: #40A070 } /* Literal.Number.Oct */
+.highlight .sa { color: #4070A0 } /* Literal.String.Affix */
+.highlight .sb { color: #4070A0 } /* Literal.String.Backtick */
+.highlight .sc { color: #4070A0 } /* Literal.String.Char */
+.highlight .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #4070A0 } /* Literal.String.Double */
+.highlight .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.highlight .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.highlight .sx { color: #C65D09 } /* Literal.String.Other */
+.highlight .sr { color: #235388 } /* Literal.String.Regex */
+.highlight .s1 { color: #4070A0 } /* Literal.String.Single */
+.highlight .ss { color: #517918 } /* Literal.String.Symbol */
+.highlight .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #06287E } /* Name.Function.Magic */
+.highlight .vc { color: #BB60D5 } /* Name.Variable.Class */
+.highlight .vg { color: #BB60D5 } /* Name.Variable.Global */
+.highlight .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
+.edition-note{font-size:14px;padding:10px 14px;background:#eff4fa;border-left:3px solid #2463a0;margin:0 0 25px;color:#40566d}
+</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="active" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Prepare-the-inputs">1. Prepare the inputs</a><a href="#2.-Set-the-paths">2. Set the paths</a><a href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">3. Call the matched Raw and imputed maps with Mustache</a><a href="#4.-Run-the-other-bulk-callers">4. Run the other bulk callers</a><a href="#5.-Prepare-the-native-scHiCluster-loop-workflow">5. Prepare the native scHiCluster loop workflow</a><a href="#6.-Record-loop-num-and-caller-runtime">6. Record loop num and caller runtime</a><a href="#7.-Compare-loops-with-the-mapped-reference">7. Compare loops with the mapped reference</a><a href="#8.-Repeat-the-comparison-across-cell-numbers">8. Repeat the comparison across cell numbers</a><a href="#9.-Calculate-APA-on-the-common-Raw-contact-map">9. Calculate APA on the common Raw contact map</a><a href="#10.-Evaluate-RNA-correlation">10. Evaluate RNA correlation</a><a href="#11.-Evaluate-mCG-correlation">11. Evaluate mCG correlation</a><a href="#12.-Summarize-the-metrics-and-compare-workflows">12. Summarize the metrics and compare workflows</a><a href="#13.-Read-the-outputs">13. Read the outputs</a><a href="#14.-Implementation-and-tutorial-references">14. Implementation and tutorial references</a><a href="#Software-and-implementation">Software and implementation</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="loop.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-00"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h1 id="Loop-calling-and-evaluation-tutorial">Loop calling and evaluation tutorial<a class="anchor-link" href="#Loop-calling-and-evaluation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Command paths refer to the <code>final_code3</code> analysis-code checkout. Scientific inputs and native software environments are configured separately.</p>
+<p>This tutorial follows the analysis from input contact maps to loop calls,
+task-specific metrics and workflow summaries. The commands and Python examples
+document the implementation in the code repository. They are displayed as code
+blocks: the notebook can be read without a running kernel or access to the data.</p>
+<p>The Lee2019 ODC example compares <strong>Mustache + Raw</strong> and <strong>Mustache + iEnhance</strong>.
+The other caller commands and the full-benchmark summary steps are shown in
+their own sections.</p>
+<div class="highlight"><pre><span></span>Matched Raw / imputed inputs
+          |
+     Loop calling --------------------&gt; Loop num and caller runtime
+          |
+          +--&gt; Mapped-reference Dice --&gt; Cell-number trajectories
+          +--&gt; APA on the Raw map
+          +--&gt; RNA correlation
+          +--&gt; mCG correlation
+                         |
+              Per-metric tables
+                         |
+           Rank-product changes / weighted workflow ranking
+</pre></div>
+<p>Use the <a href="../index.html#Shared-path-prefix">shared path setup</a> for the commands below:</p>
+<div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
+<span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-01"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="1.-Prepare-the-inputs">1. Prepare the inputs<a class="anchor-link" href="#1.-Prepare-the-inputs">¶</a></h2><p>Bulk callers use cell-type pseudo-bulk contact maps at <strong>10 kb</strong> resolution.
+The Raw and imputed query maps represent the same cells at each cell-number
+condition. scHiCluster uses its native single-cell loop-calling branch, described
+in section 5.</p>
+<p>The Lee2019 ODC inputs are:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Contents</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ODC.raw.100.cool</code></td>
+<td>Raw contacts from 100 ODC cells</td>
+<td>Raw query calling</td>
+</tr>
+<tr>
+<td><code>ODC.impute.100.iEnhance_10k.cool</code></td>
+<td>The matched iEnhance contact map</td>
+<td>Imputed query calling</td>
+</tr>
+<tr>
+<td><code>ODC.raw.all.cool</code></td>
+<td>Raw contacts from all ODC cells</td>
+<td>Common APA map</td>
+</tr>
+<tr>
+<td><code>Tian2023_ODC_raw_all_Mustache.tsv</code></td>
+<td>Prespecified mapped-reference loops</td>
+<td>Dice comparison</td>
+</tr>
+<tr>
+<td>MouseBrain loop files, Raw maps, RNA and DEG tables</td>
+<td>The same 17 matched cell types</td>
+<td>RNA correlation</td>
+</tr>
+<tr>
+<td>Lee2019 loop files, Raw maps, cell lists and MCDS</td>
+<td>The same 14 matched cell types</td>
+<td>mCG correlation</td>
+</tr>
+</tbody>
+</table></div>
+<p>For a cell-number series, prepare the matched Raw and imputed maps for each
+condition before loop calling. Contact preparation and imputation are documented
+in <a href="data_preparation.html">data_preparation</a>. Detailed file formats and
+the existing local input locations are in DATA_REQUIREMENTS.md (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/DATA_REQUIREMENTS.md">call_loop/DATA_REQUIREMENTS.md</a> in the code repository).</p>
+<p>Metadata read from <code>D:/data_new/lee2019/lee2019/ODC_raw_10k_line/ODC.raw.100.cool</code>:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"bin-size"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"nbins"</span><span class="p">:</span><span class="w"> </span><span class="mi">287509</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"nchroms"</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"nnz"</span><span class="p">:</span><span class="w"> </span><span class="mi">18648440</span>
+<span class="p">}</span>
+</pre></div>
+<p>The Raw Mustache loop file begins with:</p>
+<p>Source: <code>F:/project/test1/final_code2/call_loop/result/raw_mustache_example/ODC.raw.100.10k_mustache_loop.tsv</code> (first 3 lines).</p>
+<div class="highlight"><pre><span></span>BIN1_CHR	BIN1_START	BIN1_END	BIN2_CHROMOSOME	BIN2_START	BIN2_END	FDR	DETECTION_SCALE
+chr1	30790000	30800000	chr1	30900000	30910000	0.04316786880353285	2.111212657236631
+chr1	43230000	43240000	chr1	43370000	43380000	0.038127131296458706	2.111212657236631
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-02"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="2.-Set-the-paths">2. Set the paths<a class="anchor-link" href="#2.-Set-the-paths">¶</a></h2><p>The following Python examples share these path variables. Replace <code>/path/to/</code>
+with the locations of the repository, inputs and desired outputs when using the
+code outside this tutorial.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">REPO</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"code"</span><span class="p">)</span>
+<span class="n">TOOL</span> <span class="o">=</span> <span class="n">REPO</span> <span class="o">/</span> <span class="s2">"call_loop/tool"</span>
+<span class="n">OUTPUT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"LOOP_OUTPUT_DIR"</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="p">(</span><span class="n">TOOL</span><span class="p">,</span> <span class="n">TOOL</span> <span class="o">/</span> <span class="s2">"scripts"</span><span class="p">,</span> <span class="n">TOOL</span> <span class="o">/</span> <span class="s2">"callers"</span><span class="p">,</span> <span class="n">TOOL</span> <span class="o">/</span> <span class="s2">"plots"</span><span class="p">):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">folder</span><span class="p">))</span>
+
+<span class="n">RAW_100</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span><span class="p">)</span>
+<span class="n">IMPUTED_100</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool"</span><span class="p">)</span>
+<span class="n">RAW_ALL</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/ODC_raw_10k_line/ODC.raw.all.cool"</span><span class="p">)</span>
+<span class="n">REFERENCE</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/raw_dice_example/Tian2023_ODC_raw_all_Mustache.tsv"</span><span class="p">)</span>
+</pre></div>
+<p>Calling and evaluation use their respective software environments; the caller
+commands below are not intended to share one environment. Installation and
+version information are in <a href="#Software-and-implementation">software notes</a>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-03"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">3. Call the matched Raw and imputed maps with Mustache<a class="anchor-link" href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">¶</a></h2><p>The example runs Mustache with a 10-kb resolution, a 5-Mb maximum distance and
+<code>-pt 0.05</code>. The native wrapper records the actual command, input and output
+hashes, loop count, software environment and caller wall-clock time.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_raw_mustache_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">call_mustache</span>
+
+<span class="n">NATIVE_PYTHON</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"software/Mustache/Scripts/python.exe"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">cool_file</span><span class="p">,</span> <span class="n">folder</span> <span class="ow">in</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">"Raw"</span><span class="p">,</span> <span class="n">RAW_100</span><span class="p">,</span> <span class="s2">"raw"</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"iEnhance"</span><span class="p">,</span> <span class="n">IMPUTED_100</span><span class="p">,</span> <span class="s2">"ienhance"</span><span class="p">),</span>
+<span class="p">]:</span>
+    <span class="n">call_mustache</span><span class="p">(</span>
+        <span class="n">cool_file</span><span class="o">=</span><span class="n">cool_file</span><span class="p">,</span>
+        <span class="n">native_python</span><span class="o">=</span><span class="n">NATIVE_PYTHON</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling"</span> <span class="o">/</span> <span class="n">folder</span><span class="p">,</span>
+        <span class="n">input_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+        <span class="n">processes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+<p>Each run produces a native loop TSV, <code>loop_num_runtime.csv</code>, <code>mustache.log</code>
+and <code>run_manifest.json</code>. In this ODC/100-cell example, the query filenames are:</p>
+<div class="highlight"><pre><span></span><span class="n">QUERIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Raw"</span><span class="p">:</span> <span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling/raw/ODC.raw.100.10k_mustache_loop.tsv"</span><span class="p">,</span>
+    <span class="s2">"iEnhance"</span><span class="p">:</span> <span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling/ienhance/ODC.impute.100.iEnhance.10k_mustache_loop.tsv"</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+<p>Implementation: run_raw_mustache_example.py (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/run_raw_mustache_example.py">call_loop/tool/callers/run_raw_mustache_example.py</a> in the code repository).</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-04"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="4.-Run-the-other-bulk-callers">4. Run the other bulk callers<a class="anchor-link" href="#4.-Run-the-other-bulk-callers">¶</a></h2><p>The following command examples preserve the settings in
+callers.py (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/callers.py">call_loop/tool/callers/callers.py</a> in the code repository). Each caller receives the selected
+Raw or imputed 10-kb pseudo-bulk map. File paths below are placeholders for that
+caller's inputs, checkpoint and output directory.</p>
+<h3 id="FitHiC2">FitHiC2<a class="anchor-link" href="#FitHiC2">¶</a></h3><p>Convert the Cooler pixels to interaction and fragment tables, run FitHiC2 and
+retain records with a Q value below 0.01.</p>
+<div class="highlight"><pre><span></span>cooler<span class="w"> </span>balance<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
+
+python<span class="w"> </span>call_loop/tool/callers/fithic2/convert_rawbulk2fithic.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--cool<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--iter<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.interaction"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--frag<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.fragment"</span>
+
+gzip<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.interaction"</span>
+gzip<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.fragment"</span>
+
+fithic<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-i<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.interaction.gz"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-f<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.fragment.gz"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-o<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/fithic_spline"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-r<span class="w"> </span><span class="m">10000</span>
+
+gunzip<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/fithic_spline/FitHiC.spline_pass1.res10000.significances.txt.gz"</span>
+
+python<span class="w"> </span>call_loop/tool/callers/fithic2/2tsv.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--fn<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/fithic_spline/FitHiC.spline_pass1.res10000.significances.txt"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--of<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query_10k_fithic2_loop.tsv"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--qv<span class="w"> </span><span class="m">0</span>.01
+</pre></div>
+<p>The conversion scripts retain the caller-specific significance fields and
+write the 10-kb anchor coordinates used by the downstream readers.</p>
+<h3 id="HICCUPS-/-HiCPeaks">HICCUPS / HiCPeaks<a class="anchor-link" href="#HICCUPS-/-HiCPeaks">¶</a></h3><p>The human-genome example below uses chromosomes 1–22. For mouse inputs,
+use the corresponding autosomal chromosome list.</p>
+<div class="highlight"><pre><span></span>pyHICCUPS<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-O<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.10k_hiccups_loop.bedpe"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-C<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="m">9</span><span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="m">11</span><span class="w"> </span><span class="m">12</span><span class="w"> </span><span class="m">13</span><span class="w"> </span><span class="m">14</span><span class="w"> </span><span class="m">15</span><span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="m">17</span><span class="w"> </span><span class="m">18</span><span class="w"> </span><span class="m">19</span><span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="m">21</span><span class="w"> </span><span class="m">22</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--pw<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--ww<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--maxapart<span class="w"> </span><span class="m">5000000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--only-anchors
+</pre></div>
+<h3 id="Peakachu">Peakachu<a class="anchor-link" href="#Peakachu">¶</a></h3><p>First inspect <code>peakachu depth</code> to select the suggested official model. Replace
+<code>{depth}</code> in the model filename with that depth category, then score and pool
+the candidate loops.</p>
+<div class="highlight"><pre><span></span>peakachu<span class="w"> </span>depth<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
+
+peakachu<span class="w"> </span>score_genome<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-r<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-u<span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-O<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.10k_peakachu_loop.bedpe"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-m<span class="w"> </span><span class="si">${</span><span class="nv">PEAKACHU_MODEL</span><span class="si">}</span>
+
+peakachu<span class="w"> </span>pool<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-r<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-i<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.10k_peakachu_loop.bedpe"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-o<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.10k_peakachu_pooled_loop.bedpe"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-t<span class="w"> </span><span class="m">0</span>.95
+</pre></div>
+<h3 id="HiCFoundation">HiCFoundation<a class="anchor-link" href="#HiCFoundation">¶</a></h3><p>Download the checkpoints from the official
+<a href="https://huggingface.co/wang3702/hicfoundation_models/tree/main">Hugging Face model repository</a>,
+as listed in the <a href="https://github.com/Noble-Lab/HiCFoundation#4-download-the-trained-hicfoundation-model">HiCFoundation installation instructions</a>.
+Store them in the <code>hicfoundation_model/</code> directory under the HiCFoundation installation.</p>
+<p>On this computer, the installation is <code>D:/hicfoundation/HiCFoundation/</code>;
+the model directory is <code>D:/hicfoundation/HiCFoundation/hicfoundation_model/</code>.
+The corresponding WSL download commands are:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/software/HiCFoundation"</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>hicfoundation_model
+<span class="nb">cd</span><span class="w"> </span>hicfoundation_model
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_pretrain.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_reproducibility.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_loop.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_loop_lc.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_resolution.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_epigenomic.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_schic.pth.tar
+<span class="nb">cd</span><span class="w"> </span>..
+</pre></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Task</th>
+<th>Checkpoint relative to the installation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pseudo-bulk imputation</td>
+<td>3</td>
+<td><code>hicfoundation_model/hicfoundation_resolution.pth.tar</code></td>
+</tr>
+<tr>
+<td>Loop calling in this workflow</td>
+<td>2</td>
+<td><code>hicfoundation_model/hicfoundation_loop.pth.tar</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>For task-2 loop calling, select the loop checkpoint:</p>
+<div class="highlight"><pre><span></span><span class="nv">HICFOUNDATION_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/software/HiCFoundation"</span>
+<span class="nv">HICFOUNDATION_SCRIPT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HICFOUNDATION_ROOT</span><span class="si">}</span><span class="s2">/inference.py"</span>
+<span class="nv">HICFOUNDATION_MODEL</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HICFOUNDATION_ROOT</span><span class="si">}</span><span class="s2">/hicfoundation_model/hicfoundation_loop.pth.tar"</span>
+<span class="nv">RAW_100</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
+
+cooler<span class="w"> </span>balance<span class="w"> </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span>
+python<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUNDATION_SCRIPT</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--input<span class="w"> </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--batch_size<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--resolution<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--task<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--input_row_size<span class="w"> </span><span class="m">224</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--input_col_size<span class="w"> </span><span class="m">224</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--stride<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--bound<span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--model_path<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUNDATION_MODEL</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUNDATION_LOOP_OUTPUT_DIR</span><span class="s2">"</span>
+</pre></div>
+<p>The workflow uses the generated <code>HiCFoundation_loop_0.5.bedpe</code> file.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-05"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="5.-Prepare-the-native-scHiCluster-loop-workflow">5. Prepare the native scHiCluster loop workflow<a class="anchor-link" href="#5.-Prepare-the-native-scHiCluster-loop-workflow">¶</a></h2><p>scHiCluster uses per-cell imputed Coolers and cell-type metadata. Its
+preparation script groups cells, writes the per-group cell table and
+<code>Snakefile_master</code>, then creates <code>snakemake_cmds.txt</code>.</p>
+<p>For Lee2019, use hg38 resources and a cell table pointing to the 10-kb
+single-cell Coolers. In
+<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/schicluster/prepare_loop.py">prepare_loop.py</a>,
+replace the dataset-settings block with the Lee2019 paths and metadata columns:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"SCHICLUSTER_LOOP_METADATA"</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s2">"cell_id"</span><span class="p">)</span>
+<span class="n">cell_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"SCHICLUSTER_LOOP_CELL_TABLE"</span><span class="p">],</span>
+    <span class="n">sep</span><span class="o">=</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">"cell_id"</span><span class="p">,</span> <span class="s2">"cool_path"</span><span class="p">],</span> <span class="n">index_col</span><span class="o">=</span><span class="s2">"cell_id"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cell_table</span><span class="p">[</span><span class="s2">"cluster"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">metadata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cell_table</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s2">"cell_type"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^A-Za-z0-9_-]+"</span><span class="p">,</span> <span class="s2">"_"</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">outdir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"SCHICLUSTER_LOOP_OUTPUT"</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">"/"</span>
+<span class="n">loop_dir</span> <span class="o">=</span> <span class="n">outdir</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"cpu"</span><span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+    <span class="s2">"resolution"</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+    <span class="s2">"chrom_size_path"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"code/resources/genome/hg38.autosomal.chrom.sizes"</span><span class="p">)),</span>
+    <span class="s2">"black_list_path"</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"HG38_BLACKLIST"</span><span class="p">]),</span>
+<span class="p">}</span>
+</pre></div>
+<p>The cell table defines the input membership. Metadata keeps the original
+cell-type labels, while directory names use the cleaned <code>cluster</code> values.
+Run the preparation script from its directory:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>call_loop/tool/callers/schicluster
+python<span class="w"> </span>prepare_loop.py
+</pre></div>
+<p>Then launch the generated workflows:</p>
+<div class="highlight"><pre><span></span>bash<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">SCHICLUSTER_LOOP_OUTPUT</span><span class="si">}</span><span class="s2">/snakemake_cmds.txt"</span>
+</pre></div>
+<p>The native scHiCluster analysis produces complete-loop and loop-summit outputs.
+Use the complete-loop output for the standard metric workflow; the supplied
+APA code also supports the output-definition comparisons shown later.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-06"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.-Record-loop-num-and-caller-runtime">6. Record loop num and caller runtime<a class="anchor-link" href="#6.-Record-loop-num-and-caller-runtime">¶</a></h2><p>Loop num is counted from the native caller output. Caller-specific readers
+then convert those outputs to the common chromosome and anchor-coordinate
+representation used for metric calculation.</p>
+<p>For the Mustache example, <code>loop_num_runtime.csv</code> stores the native count and
+recorded wall-clock time. Timing starts when the caller subprocess is launched
+and ends when it completes, including native imports, map reading, normalization
+and output writing. Environment setup, preflight and file hashing occur outside
+that interval.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">raw_calling</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling/raw/loop_num_runtime.csv"</span><span class="p">)</span>
+<span class="n">raw_calling</span><span class="p">[[</span><span class="s2">"loop_num"</span><span class="p">,</span> <span class="s2">"runtime_seconds"</span><span class="p">]]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-07"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="7.-Compare-loops-with-the-mapped-reference">7. Compare loops with the mapped reference<a class="anchor-link" href="#7.-Compare-loops-with-the-mapped-reference">¶</a></h2><p>Both query loop sets use the same prespecified Tian2023 ODC all-cell Raw
+Mustache comparator. The readers retain cis interactions on the 10-kb grid,
+order the anchors and remove duplicate coordinate pairs before matching.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_raw_dice_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">evaluate_dice</span>
+
+<span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">QUERIES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">dice_summary</span><span class="p">,</span> <span class="n">matched_pairs</span><span class="p">,</span> <span class="n">dice_record</span> <span class="o">=</span> <span class="n">evaluate_dice</span><span class="p">(</span>
+        <span class="n">query_file</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+        <span class="n">reference_file</span><span class="o">=</span><span class="n">REFERENCE</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"dice"</span> <span class="o">/</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">input_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+<p>For query set Q and mapped-reference set R, the concordance is:</p>
+<div class="highlight"><pre><span></span>Dice = 2 × number of shared coordinate pairs / (number of query pairs + number of reference pairs)
+</pre></div>
+<p>The output contains the query count, reference count, intersection count and
+Dice value; <code>matched_loop_pairs.tsv</code> records the shared pairs. The common
+comparison functions are in tools.py (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/tools.py">call_loop/tool/tools.py</a> in the code repository).</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-08"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="8.-Repeat-the-comparison-across-cell-numbers">8. Repeat the comparison across cell numbers<a class="anchor-link" href="#8.-Repeat-the-comparison-across-cell-numbers">¶</a></h2><p>Build matched Raw and imputed conditions in 100-cell increments and include the
+all-cell endpoint. For example, the following derives the conditions from a
+headerless cell table containing one selected cell per row:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">cell_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">((</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/ODC_raw_10k_line/cell_table_all.txt"</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">all_cell_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_table</span><span class="p">)</span>
+<span class="n">cell_nums</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">all_cell_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">all_cell_num</span> <span class="o">&gt;=</span> <span class="mi">100</span> <span class="ow">and</span> <span class="n">cell_nums</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">all_cell_num</span><span class="p">:</span>
+    <span class="n">cell_nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">all_cell_num</span><span class="p">)</span>
+</pre></div>
+<p>Run the selected caller on each prepared contact map, then evaluate each loop
+set against the same mapped reference. The repository's series interface is:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_dice_series</span>
+
+<span class="n">dice_trajectory</span> <span class="o">=</span> <span class="n">run_dice_series</span><span class="p">(</span>
+    <span class="n">query_dataset</span><span class="o">=</span><span class="s2">"lee2019"</span><span class="p">,</span>
+    <span class="n">query_cell_type</span><span class="o">=</span><span class="s2">"ODC"</span><span class="p">,</span>
+    <span class="n">input_method</span><span class="o">=</span><span class="s2">"raw"</span><span class="p">,</span>
+    <span class="n">loop_tool</span><span class="o">=</span><span class="s2">"mustache"</span><span class="p">,</span>
+    <span class="n">cell_nums</span><span class="o">=</span><span class="n">cell_nums</span><span class="p">,</span>
+    <span class="n">raw_root</span><span class="o">=</span><span class="n">INPUT</span> <span class="o">/</span> <span class="s2">"raw_loop"</span><span class="p">,</span>
+    <span class="n">imputed_root</span><span class="o">=</span><span class="n">INPUT</span> <span class="o">/</span> <span class="s2">"imputed_loop"</span><span class="p">,</span>
+    <span class="n">schicluster_root</span><span class="o">=</span><span class="n">INPUT</span> <span class="o">/</span> <span class="s2">"schicluster_loop"</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+<p>The roots follow the dataset/cell-type layout used by <code>build_loop_paths</code> in
+tools.py (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/tools.py">call_loop/tool/tools.py</a> in the code repository). Repeat for the matched imputed input. The native
+scHiCluster series uses <code>input_method="schicluster"</code>. Plot loop num alongside
+Dice to show how output quantity and loop-set agreement change with cell number.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-09"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="9.-Calculate-APA-on-the-common-Raw-contact-map">9. Calculate APA on the common Raw contact map<a class="anchor-link" href="#9.-Calculate-APA-on-the-common-Raw-contact-map">¶</a></h2><p>Evaluate both native query loop sets on the Lee2019 ODC all-cell Raw map.
+The example uses 10-kb bins, a 10-bin window on each side, cis separations from
+100 kb to 5 Mb and unbalanced contact counts.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_raw_apa_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">evaluate_apa</span>
+
+<span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">QUERIES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">apa_summary</span><span class="p">,</span> <span class="n">apa_matrix</span><span class="p">,</span> <span class="n">apa_record</span> <span class="o">=</span> <span class="n">evaluate_apa</span><span class="p">(</span>
+        <span class="n">cool_file</span><span class="o">=</span><span class="n">RAW_ALL</span><span class="p">,</span>
+        <span class="n">loop_file</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"apa"</span> <span class="o">/</span> <span class="n">method</span><span class="p">,</span>
+        <span class="n">collection_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"tables/apa"</span><span class="p">,</span>
+        <span class="n">input_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+<p>The aggregate matrix is 21 × 21. The implemented P2LL calculation is:</p>
+<div class="highlight"><pre><span></span><span class="n">center</span> <span class="o">=</span> <span class="n">apa_matrix</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">background</span> <span class="o">=</span> <span class="n">apa_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">p2ll</span> <span class="o">=</span> <span class="n">center</span> <span class="o">/</span> <span class="n">background</span> <span class="k">if</span> <span class="n">background</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+</pre></div>
+<p>Outputs include the eligible and valid loop counts, P2LL, the saved matrix and
+PDF/PNG heatmaps.</p>
+<p>For other callers, run_apa (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/tools.py">call_loop/tool/tools.py</a> in the code repository) accepts <code>loop_tool</code>, <code>loop_variant</code>
+and <code>analysis_scope</code>. The explicit <code>fithic2_filtered_clustered</code> and
+<code>schicluster_summit</code> variants support the Fig. 6e / Supplementary Fig. 10
+output-definition comparisons in the existing code.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-10"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="10.-Evaluate-RNA-correlation">10. Evaluate RNA correlation<a class="anchor-link" href="#10.-Evaluate-RNA-correlation">¶</a></h2><p>The MouseBrain example uses 17 matched cell types. It starts from per-type loop
+sets, observed Raw maps, processed expression and 136 pairwise DEG files.
+The two workflows use the same observed contact signal and RNA inputs.</p>
+<p>The implementation selects genes from the supplied DEG comparisons, scales the
+observed contact signal by <code>1600 / cell_num</code>, selects the top 1,000 eligible
+loop–gene pairs by interaction variability and calculates their Pearson
+correlations across cell types. The mean is exported separately for each workflow.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_matched_raw_imputed_rna_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">compare_rna</span>
+
+<span class="n">rna_comparison</span> <span class="o">=</span> <span class="n">compare_rna</span><span class="p">(</span>
+    <span class="n">raw_loop_root</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/mousebrain/loop/others/raw"</span><span class="p">,</span>
+    <span class="n">imputed_loop_root</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/mousebrain/loop/others/impute_renamed"</span><span class="p">,</span>
+    <span class="n">cool_root</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/mousebrain/merged_data"</span><span class="p">,</span>
+    <span class="n">rna_dir</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/rna/rna"</span><span class="p">,</span>
+    <span class="n">deg_dir</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/rna/DEG/mousebrain/DEG"</span><span class="p">,</span>
+    <span class="n">gene_bed</span><span class="o">=</span><span class="n">REPO</span> <span class="o">/</span> <span class="s2">"resources/annotation/gencode.vM22.gene.slop2k.ID.bed"</span><span class="p">,</span>
+    <span class="n">raw_output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"rna/raw"</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"rna/matched"</span><span class="p">,</span>
+    <span class="n">loop_interval_end</span><span class="o">=</span><span class="s2">"end2"</span><span class="p">,</span>
+    <span class="n">recompute_raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+<p>The worked example uses the supplied gene-interval annotation and the recorded
+<code>end2</code> interval convention. The output includes selected loop–gene pairs,
+per-pair correlations, interaction/RNA heatmaps and <code>rna_comparison.csv</code>.
+The existing get_result.py (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/get_result.py">call_loop/tool/get_result.py</a> in the code repository) also documents upstream
+RNA preprocessing and configurable metric blocks for other callers.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-11"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="11.-Evaluate-mCG-correlation">11. Evaluate mCG correlation<a class="anchor-link" href="#11.-Evaluate-mCG-correlation">¶</a></h2><p>The Lee2019 example uses 14 matched cell types. Methylated counts and coverage
+are read from the MCDS at 5 kb and summed onto the 10-kb loop grid. The
+implementation calculates the posterior mCG fraction, averages the values at
+the two anchors and compares them with the observed Raw interaction signal
+across cell types. It reports the mean Pearson correlation for the top 2,000
+selected variable loops in each workflow.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_matched_raw_imputed_mcg_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">compare_mcg</span>
+
+<span class="n">mcg_comparison</span> <span class="o">=</span> <span class="n">compare_mcg</span><span class="p">(</span>
+    <span class="n">mcds_dir</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/mcg"</span><span class="p">,</span>
+    <span class="n">cool_root</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/all_raw_merged"</span><span class="p">,</span>
+    <span class="n">raw_loop_root</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019_raw_loops/type_loop"</span><span class="p">,</span>
+    <span class="n">imputed_loop_root</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019_imputed_loops/type_changed_loop"</span><span class="p">,</span>
+    <span class="n">raw_output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"mcg/raw"</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"mcg/matched"</span><span class="p">,</span>
+    <span class="n">recompute_raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+<p>On Windows, this wrapper dispatches calculation to the configured Linux/WSL
+ALLCools environment. Linux-side paths and the interpreter are described in
+<a href="#Software-and-implementation">software notes</a>. The example retains the original signs of the
+mCG correlations in its tables and paired heatmaps.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-12"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="12.-Summarize-the-metrics-and-compare-workflows">12. Summarize the metrics and compare workflows<a class="anchor-link" href="#12.-Summarize-the-metrics-and-compare-workflows">¶</a></h2><p>First retain loop num, Dice, APA, RNA and mCG as separate result tables.
+The full-benchmark summaries use the complete prespecified caller–input set
+and selected dataset conditions, beyond the two-workflow worked example.</p>
+<h3 id="Fig.-6c:-Raw–imputed-rank-product-changes">Fig. 6c: Raw–imputed rank-product changes<a class="anchor-link" href="#Fig.-6c:-Raw%E2%80%93imputed-rank-product-changes">¶</a></h3><p>The four components are loop num, mapped-reference Dice, mCG correlation and
+RNA correlation. Loop num, Dice and RNA are ranked in descending order; the
+mCG coefficient is sign-inverted before ranking. Ties receive the minimum rank.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_rank_product_shift</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">result_tables</span><span class="w"> </span><span class="kn">import</span> <span class="n">WORKFLOWS</span>
+
+<span class="n">rank_product</span> <span class="o">=</span> <span class="n">run_rank_product_shift</span><span class="p">(</span>
+    <span class="n">count_dice_path</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/loop_minmax/merged_count_f1_ranked.csv"</span><span class="p">,</span>
+    <span class="n">mcg_path</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/loop_minmax/lee2019_cg_impute_diffloop.csv"</span><span class="p">,</span>
+    <span class="n">rna_path</span><span class="o">=</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/loop_minmax/mousebrain_rna_impute_diffloop.csv"</span><span class="p">,</span>
+    <span class="n">expected_workflows</span><span class="o">=</span><span class="n">WORKFLOWS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">raw_imputed_changes</span> <span class="o">=</span> <span class="n">rank_product</span><span class="p">[</span><span class="s2">"rank_product_shift"</span><span class="p">]</span>
+</pre></div>
+<p>For each workflow, multiply its four component ranks. For each caller, compare
+the imputed rank product with its matched Raw rank product using the signed
+logarithmic difference implemented in <code>run_rank_product_shift</code>.</p>
+<h3 id="Fig.-5g,-Fig.-6d-and-Supplementary-Fig.-7:-weighted-ranking">Fig. 5g, Fig. 6d and Supplementary Fig. 7: weighted ranking<a class="anchor-link" href="#Fig.-5g,-Fig.-6d-and-Supplementary-Fig.-7:-weighted-ranking">¶</a></h3><p>Transform loop num as <code>log10(N + 1)</code>. Min–max normalize each component across
+workflows within a dataset, average dataset-level normalized values within each
+component and combine them with the following fixed weights:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align:right">Weight</th>
+<th>Direction before normalization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Loop num</td>
+<td style="text-align:right">0.25</td>
+<td>Larger <code>log10(N + 1)</code></td>
+</tr>
+<tr>
+<td>Mapped-reference Dice</td>
+<td style="text-align:right">0.15</td>
+<td>Larger</td>
+</tr>
+<tr>
+<td>APA P2LL</td>
+<td style="text-align:right">0.25</td>
+<td>Larger</td>
+</tr>
+<tr>
+<td>mCG correlation</td>
+<td style="text-align:right">0.20</td>
+<td>Sign-inverted coefficient</td>
+</tr>
+<tr>
+<td>RNA correlation</td>
+<td style="text-align:right">0.15</td>
+<td>Larger</td>
+</tr>
+</tbody>
+</table></div>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">plot_loop_minmax</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_figures</span>
+
+<span class="n">metric_paths</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"count_dice"</span><span class="p">:</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/loop_minmax/merged_count_f1_ranked.csv"</span><span class="p">,</span>
+    <span class="s2">"apa"</span><span class="p">:</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/loop_minmax/APA_impute_all_cell_lines.csv"</span><span class="p">,</span>
+    <span class="s2">"mcg"</span><span class="p">:</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/loop_minmax/lee2019_cg_impute_diffloop.csv"</span><span class="p">,</span>
+    <span class="s2">"rna"</span><span class="p">:</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/loop_minmax/mousebrain_rna_impute_diffloop.csv"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">scores</span><span class="p">,</span> <span class="n">figure_files</span> <span class="o">=</span> <span class="n">run_figures</span><span class="p">(</span>
+    <span class="n">paths</span><span class="o">=</span><span class="n">metric_paths</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"minmax"</span><span class="p">,</span>
+    <span class="n">panel</span><span class="o">=</span><span class="s2">"both"</span><span class="p">,</span>
+    <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+<p>Fig. 6d displays the leading ten of 25 workflows and Supplementary Fig. 7
+displays the full set with the same ordering. Fig. 5g uses the separate
+native-workflow entry (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/plots/plot_loop_native_minmax.py">call_loop/tool/plots/plot_loop_native_minmax.py</a> in the code repository), selecting the
+six native workflows before normalization. See the
+figure guide (<a href="loop_figures.html">Loop figure tutorial</a>) for the exact input tables and exports.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-13"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="13.-Read-the-outputs">13. Read the outputs<a class="anchor-link" href="#13.-Read-the-outputs">¶</a></h2><p>Each stage writes its own outputs. The following layout summarizes the examples
+above; it is an output guide rather than a directory that is loaded while
+reading this notebook.</p>
+<div class="highlight"><pre><span></span>outputs/
+  calling/
+    raw/                 native loops, loop_num_runtime.csv, run_manifest.json
+    ienhance/            native loops, loop_num_runtime.csv, run_manifest.json
+  dice/
+    Raw/                 raw_dice_summary.csv, matched_loop_pairs.tsv
+    iEnhance/            ienhance_dice_summary.csv, matched_loop_pairs.tsv
+  apa/
+    Raw/                 APA matrix, summary, heatmaps, run_manifest.json
+    iEnhance/            APA matrix, summary, heatmaps, run_manifest.json
+  rna/
+    raw/                 selected loop-gene pairs and correlation outputs
+    matched/             rna_comparison.csv and paired heatmaps
+  mcg/
+    raw/                 selected loops and correlation outputs
+    matched/             mcg_comparison.csv and paired heatmaps
+  minmax/                Fig6d_minmax, SupFig7_minmax and component score tables
+</pre></div>
+<p>Existing inputs and completed results are supplied through the configuration.
+This edition does not bundle the experimental data or result directories. To collect
+the saved two-workflow example from a terminal, the separate existing entry is:</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span>call_loop/tool/scripts/run_loop_workflow_examples.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span><span class="s2">"</span><span class="nv">$LOOP_WORKFLOW_CONFIG</span><span class="s2">"</span>
+</pre></div>
+<p>The collected metric table contains:</p>
+<p>Source: <code>F:/project/test1/final_code2/call_loop/result/loop_workflow_examples/workflow_summary.csv</code> (first 3 lines).</p>
+<div class="highlight"><pre><span></span>loop_method,impute_method,loop_num,runtime_seconds,mapped_reference_Dice,APA_P2LL,RNA_Pearson_r,mCG_Pearson_r
+Mustache,Raw,40,410.11916300002486,0.0045103857566765,7.147050014974543,0.2508746438490196,-0.2135770499902065
+Mustache,iEnhance,24595,1082.4974068,0.0461491813220133,4.880963830726539,0.259202430683774,-0.2610454627419818
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-14"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="14.-Implementation-and-tutorial-references">14. Implementation and tutorial references<a class="anchor-link" href="#14.-Implementation-and-tutorial-references">¶</a></h2><ul>
+<li>Caller command templates (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/callers.py">call_loop/tool/callers/callers.py</a> in the code repository)</li>
+<li>Metric implementations and Fig. 6c workflow (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/get_result.py">call_loop/tool/get_result.py</a> in the code repository)</li>
+<li>Loop metric guide (<a href="loop.html">Loop tutorial</a>)</li>
+<li>Input formats and existing local data (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/DATA_REQUIREMENTS.md">call_loop/DATA_REQUIREMENTS.md</a> in the code repository)</li>
+<li><a href="#Software-and-implementation">software notes</a></li>
+</ul>
+<p>The presentation follows the stepwise organization of the scHiCluster
+<a href="https://zhoujt1994.github.io/scHiCluster/Tan2021/imputation.html">imputation tutorial</a>
+and <a href="https://zhoujt1994.github.io/scHiCluster/hba/loop_majortype/01.diff.html">loop-matrix analysis tutorial</a>.
+The analysis commands, metric definitions and outputs described here come from
+this repository's Loop workflow.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-software-notes"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Software-and-implementation">Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h2><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Software context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dice, APA and prepared-input RNA</td>
+<td>Python evaluation runtime and the source helpers</td>
+</tr>
+<tr>
+<td>Mustache native example</td>
+<td>Isolated Mustache runtime</td>
+</tr>
+<tr>
+<td>Other native callers</td>
+<td>Each caller's documented environment and checkpoint</td>
+</tr>
+<tr>
+<td>mCG extraction</td>
+<td>Ubuntu/WSL ALLCools environment</td>
+</tr>
+</tbody>
+</table></div>
+<p>The complete runtime inventory remains at <a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/ENVIRONMENT.md">call_loop/ENVIRONMENT.md</a> in
+the code repository. The examples above show the actual interfaces of
+the caller and metric helpers; this reading edition does not import them.</p>
+<p>Return to the <a href="../index.html">tutorial index</a>.</p>
+<p><a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/ENVIRONMENT.md">Environment instructions</a> · <a href="https://github.com/rawandy2001-design/benchmark/blob/main/README.md">Repository guide</a></p>
+</div>
+</div>
+</div>
+<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div></body></html>

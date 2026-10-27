@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Compartment · Single-cell Hi-C tutorials</title><style>
+*{box-sizing:border-box}body{margin:0;color:#243347;background:#fff;font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+.topbar{border-bottom:1px solid #dae2ec;padding:16px 30px;color:#173653}.brand{font-weight:650}.modules{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:14px;margin-top:10px}.modules a{text-decoration:none;padding-bottom:3px}.modules .active{font-weight:700;border-bottom:2px solid #2463a0}
+.layout{max-width:1440px;margin:auto;padding:30px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:42px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;border-right:1px solid #e0e6ee;padding-right:18px;max-height:calc(100vh - 48px);overflow:auto}
+nav strong{display:block;margin-bottom:10px}nav a{display:block;margin:0 0 10px;text-decoration:none;line-height:1.4}
+main{min-width:0;max-width:1040px}h1{font-size:32px;line-height:1.25;margin-top:0}h2{font-size:25px;line-height:1.3;margin-top:42px;padding-top:12px;border-top:1px solid #e6ebf1;scroll-margin-top:18px}
+h3{font-size:20px;margin-top:28px}a{color:#2463a0}p{margin:14px 0}pre{padding:17px 20px;border:1px solid #dce4ee;border-radius:6px;background:#f5f7fb;overflow-x:auto;font:13px/1.55 Consolas,monospace}
+code{font-family:Consolas,monospace;font-size:.9em}p code,li code,td code{background:#f1f4f8;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}
+.table-wrap{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dce4ee;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eff4fa}
+img{max-width:100%;height:auto}.anchor-link{font-size:13px;margin-left:8px;text-decoration:none;color:#8fa6bb}.cell{padding:0}.text_cell_render{padding:0}footer{margin:35px 0;color:#68798b;font-size:13px}
+@media(max-width:900px){.layout{grid-template-columns:1fr;padding:20px;gap:20px}nav{position:static;border-right:none;border-bottom:1px solid #dae2ec;padding-bottom:18px;max-height:none}h1{font-size:28px}.topbar{padding:16px 20px}}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f0f0f0; }
+.highlight .c { color: #60A0B0; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #007020; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #007020 } /* Comment.Preproc */
+.highlight .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #F00 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888 } /* Generic.Output */
+.highlight .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #007020 } /* Keyword.Pseudo */
+.highlight .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #902000 } /* Keyword.Type */
+.highlight .m { color: #40A070 } /* Literal.Number */
+.highlight .s { color: #4070A0 } /* Literal.String */
+.highlight .na { color: #4070A0 } /* Name.Attribute */
+.highlight .nb { color: #007020 } /* Name.Builtin */
+.highlight .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.highlight .no { color: #60ADD5 } /* Name.Constant */
+.highlight .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #007020 } /* Name.Exception */
+.highlight .nf { color: #06287E } /* Name.Function */
+.highlight .nl { color: #002070; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #BB60D5 } /* Name.Variable */
+.highlight .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #40A070 } /* Literal.Number.Bin */
+.highlight .mf { color: #40A070 } /* Literal.Number.Float */
+.highlight .mh { color: #40A070 } /* Literal.Number.Hex */
+.highlight .mi { color: #40A070 } /* Literal.Number.Integer */
+.highlight .mo { color: #40A070 } /* Literal.Number.Oct */
+.highlight .sa { color: #4070A0 } /* Literal.String.Affix */
+.highlight .sb { color: #4070A0 } /* Literal.String.Backtick */
+.highlight .sc { color: #4070A0 } /* Literal.String.Char */
+.highlight .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #4070A0 } /* Literal.String.Double */
+.highlight .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.highlight .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.highlight .sx { color: #C65D09 } /* Literal.String.Other */
+.highlight .sr { color: #235388 } /* Literal.String.Regex */
+.highlight .s1 { color: #4070A0 } /* Literal.String.Single */
+.highlight .ss { color: #517918 } /* Literal.String.Symbol */
+.highlight .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #06287E } /* Name.Function.Magic */
+.highlight .vc { color: #BB60D5 } /* Name.Variable.Class */
+.highlight .vg { color: #BB60D5 } /* Name.Variable.Global */
+.highlight .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
+.edition-note{font-size:14px;padding:10px 14px;background:#eff4fa;border-left:3px solid #2463a0;margin:0 0 25px;color:#40566d}
+</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="active" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Define-the-evaluated-conditions">1. Define the evaluated conditions</a><a href="#2.-Prepare-identities-and-exact-sample-membership">2. Prepare identities and exact sample membership</a><a href="#3.-Arrange-the-cell-number-gradient-and-raw-reference">3. Arrange the cell-number gradient and raw reference</a><a href="#4.-Call-CpG-based-compartments">4. Call CpG-based compartments</a><a href="#5.-Call-Self-PCA-compartments">5. Call Self-PCA compartments</a><a href="#6.-Call-Ref-PCA-compartments">6. Call Ref-PCA compartments</a><a href="#7.-Supply-native-scGHOST-outputs-at-500-kb">7. Supply native scGHOST outputs at 500 kb</a><a href="#8.-Declare-native-tracks-and-contact-sources">8. Declare native tracks and contact sources</a><a href="#9.-Compare-boundary-locations-and-compartment-tracks">9. Compare boundary locations and compartment tracks</a><a href="#10.-Calculate-saddle-strength-on-the-matched-contact-map">10. Calculate saddle strength on the matched contact map</a><a href="#11.-Evaluate-existing-cell-cluster-assignments">11. Evaluate existing cell-cluster assignments</a><a href="#12.-Validate-and-evaluate-the-configured-workflow">12. Validate and evaluate the configured workflow</a><a href="#13.-Read-the-output-files">13. Read the output files</a><a href="#14.-Continue-to-the-other-tutorials">14. Continue to the other tutorials</a><a href="#Software-and-implementation">Software and implementation</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="compartment.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-00"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h1 id="Compartment-calling-and-evaluation-tutorial">Compartment calling and evaluation tutorial<a class="anchor-link" href="#Compartment-calling-and-evaluation-tutorial">¶</a></h1><p>This tutorial follows the Compartment workflow from raw and imputed contact
+maps to compartment tracks, cell-number trajectories and task-specific
+evaluation. It covers <strong>100 kb and 500 kb</strong>, single cells and pseudo-bulk
+samples, and the Self-PCA, CpG, Ref-PCA and scGHOST branches.</p>
+<p>This is a reading tutorial. Commands and configuration examples refer to the
+companion analysis implementation in <code>final_code3</code>; they are displayed as text. No
+completed local Compartment result table is embedded here. The final section
+shows the output files and their meanings.</p>
+<div class="highlight"><pre><span></span>Original metadata + raw / scHiCluster / Higashi contact inputs
+                 |
+    Single cells and exact pseudo-bulk member lists
+                 |
+    CpG / Self-PCA / Ref-PCA / scGHOST (500 kb)
+                 |
+    Native compartment tracks + row identities
+                 |
+    Boundary F1 | track correlation | saddle strength | cell clustering
+</pre></div>
+<p>Use the <a href="../index.html#Shared-path-prefix">shared path setup</a> for the commands below:</p>
+<div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
+<span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-01"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="1.-Define-the-evaluated-conditions">1. Define the evaluated conditions<a class="anchor-link" href="#1.-Define-the-evaluated-conditions">¶</a></h2><p>The input modality and the compartment caller are separate choices:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Resolution</th>
+<th>Compartment callers</th>
+<th>Input modalities</th>
+<th>Analysis levels</th>
+<th style="text-align:right">Conditions per dataset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100 kb</td>
+<td>Self-PCA, CpG, Ref-PCA</td>
+<td>Raw, scHiCluster, Higashi</td>
+<td>Single cell, pseudo-bulk</td>
+<td style="text-align:right">18</td>
+</tr>
+<tr>
+<td>500 kb</td>
+<td>Self-PCA, CpG, Ref-PCA, scGHOST</td>
+<td>Raw, scHiCluster, Higashi</td>
+<td>Single cell, pseudo-bulk</td>
+<td style="text-align:right">24</td>
+</tr>
+</tbody>
+</table></div>
+<p>For example, <strong>Ref-PCA + Higashi</strong> means applying the Ref-PCA caller to the
+Higashi input modality. The evaluator uses <code>ref_pca</code> for the caller and
+<code>higashi</code> for the input, preserving that distinction.</p>
+<p>The full matrix contains 42 evaluated conditions across the two resolutions.
+There are 39 native source conditions; the three scGHOST pseudo-bulk
+conditions are derived from their single-cell outputs.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-02"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="2.-Prepare-identities-and-exact-sample-membership">2. Prepare identities and exact sample membership<a class="anchor-link" href="#2.-Prepare-identities-and-exact-sample-membership">¶</a></h2><p>Use the original metadata labels and the original cell-number subsets when
+describing an existing experiment. The main input contracts are:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Required fields or contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>metainfo.tsv</code></td>
+<td>Headered <code>cell_id</code>, <code>cell_type</code></td>
+</tr>
+<tr>
+<td><code>samples.tsv</code></td>
+<td><code>sample_id</code>, <code>cell_type</code>, <code>cell_num</code>, <code>members_path</code></td>
+</tr>
+<tr>
+<td>Member list</td>
+<td>Headered <code>cell_id</code>, one selected biological ID per row</td>
+</tr>
+<tr>
+<td>Genome sizes</td>
+<td>Chromosome names and lengths for the corresponding genome</td>
+</tr>
+<tr>
+<td>Contact table</td>
+<td>Headered <code>cell_id</code>, <code>path</code> for the evaluator's Cooler adapter</td>
+</tr>
+<tr>
+<td>Native row-order sidecar</td>
+<td>Headered <code>cell_id</code>, in the actual output row order</td>
+</tr>
+<tr>
+<td>Existing cell-cluster assignments</td>
+<td>Headered <code>cell_id</code>, <code>cluster</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Native CpG/Self-PCA calling uses its own <strong>headerless</strong> two-column cell table.
+That calling table and the evaluator's headered contact table have different
+contracts. Pseudo-bulk caller rows use the IDs from <code>samples.tsv</code>.</p>
+<p>An example sample-manifest record is:</p>
+<div class="highlight"><pre><span></span>sample_id   cell_type   cell_num   members_path
+ODC.100     ODC         100        members/ODC.100.tsv
+</pre></div>
+<p>The actual TSV uses tab separators. Native HDF5 numeric rows and scGHOST
+rows require their original ID-order sidecars. Metadata order is used only
+when it is the verified native row order.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-03"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="3.-Arrange-the-cell-number-gradient-and-raw-reference">3. Arrange the cell-number gradient and raw reference<a class="anchor-link" href="#3.-Arrange-the-cell-number-gradient-and-raw-reference">¶</a></h2><p>For structural evaluation, the default configuration selects up to the two
+largest cell types supporting a series beginning at 100 cells. Each selected
+type supplies <strong>100, 200, 300, …, all cells</strong>, including the exact all-cell
+endpoint once. The same member lists define each condition across callers,
+input modalities and resolutions.</p>
+<p>The evaluation reference for each selected cell type is:</p>
+<div class="highlight"><pre><span></span>All raw cells of that type → raw pseudo-bulk → Self-PCA compartment track
+</pre></div>
+<p>Generate that reference separately at 100 kb and 500 kb. It is the track
+selected by the evaluator's <code>pca / raw / pseudo_bulk</code> condition at the
+all-cell endpoint. Smaller pseudo-bulk conditions are compared with this
+same cell-type reference at the corresponding resolution.</p>
+<p>For new input subsets, the existing helper has this interface:</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span>compartment/tool/evaluation/prepare_compartment_inputs.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--metadata<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_METADATA</span><span class="si">}</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span>--output-dir<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_PREPARED_DIR</span><span class="si">}</span>
+</pre></div>
+<p>That seed describes a new selection. For an existing manuscript condition,
+retain its recorded members instead of regenerating them.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-04"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="4.-Call-CpG-based-compartments">4. Call CpG-based compartments<a class="anchor-link" href="#4.-Call-CpG-based-compartments">¶</a></h2><p>CpG calling combines contact weights with a genome- and resolution-matched
+CpG-density vector. After diagonal removal and its native normalization, the
+core calculation in <a href="https://github.com/rawandy2001-design/benchmark/blob/main/compartment/tool/CpG/calling.py">compartment/tool/CpG/calling.py</a> is:</p>
+<div class="highlight"><pre><span></span><span class="c1"># matrix is the normalized sparse chromosome matrix from the caller.</span>
+<span class="c1"># cpg_ratio is the matched per-bin CpG-density Series.</span>
+<span class="n">comp</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">cpg_ratio</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])[:,</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+<p>The result is a contact-weighted CpG-density profile. At the same genome and
+resolution, samples share the same CpG profile. The 100-kb and 500-kb conditions
+read separate profiles.</p>
+<p>The native 100-kb calling interface is:</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span>compartment/tool/CpG/calling.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset<span class="w"> </span>Lee<span class="w"> </span>--cell_table_path<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_CELL_TABLE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_prefix<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_CPG_PREFIX</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resolution<span class="w"> </span><span class="m">100000</span><span class="w"> </span>--mode<span class="w"> </span>cool<span class="w"> </span>--cpu<span class="w"> </span><span class="m">10</span>
+</pre></div>
+<p>The legacy caller selects the hg38 profile for dataset tokens <code>Lee</code> and
+<code>Tian</code>; other tokens select mm10. Its CpG and chromosome-size resource paths
+are configured in the source. Align those resources before running it in
+the this folder. Output is <code>&lt;output_prefix&gt;.compartment.nc</code>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-05"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="5.-Call-Self-PCA-compartments">5. Call Self-PCA compartments<a class="anchor-link" href="#5.-Call-Self-PCA-compartments">¶</a></h2><p>Self-PCA fits each target matrix independently. Its default workflow applies
+<code>sqrtvc</code> normalization, distance-dependent expectation correction, a bin-to-bin
+correlation matrix and two-component PCA. Saddle contrast selects between the
+candidate components, and CpG information calibrates the sign.</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span>compartment/tool/Self-PCA/calling.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset<span class="w"> </span>Lee<span class="w"> </span>--cell_table_path<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_CELL_TABLE</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_prefix<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_PCA_PREFIX</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resolution<span class="w"> </span><span class="m">100000</span><span class="w"> </span>--mode<span class="w"> </span>cool<span class="w"> </span>--cpu<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--norm_type<span class="w"> </span>sqrtvc<span class="w"> </span>--exp_type<span class="w"> </span>dicrete
+</pre></div>
+<p><code>dicrete</code> is the exact option spelling in this implementation. The same
+caller is applied separately to the configured raw or imputed sample maps.
+The usual output variable is <code>compartment</code>; optional double-save output
+retains both candidate components and their selection records.</p>
+<p>The CpG and Self-PCA 500-kb branches currently coarsen their 100-kb matrix
+inputs internally. Keep that input convention explicit when preparing their
+native 500-kb calls. Evaluation then reads the resulting 500-kb tracks.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-06"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="6.-Call-Ref-PCA-compartments">6. Call Ref-PCA compartments<a class="anchor-link" href="#6.-Call-Ref-PCA-compartments">¶</a></h2><p>Ref-PCA uses the bundled Higashi analysis routines. It constructs a merged
+raw background, masks bins, splits chromosome arms using cytoband information
+and fits PCA models on that background. Target raw or imputed matrices are
+projected onto those fitted axes. CpG calibration and quantile/z-score
+versions are retained by the native output.</p>
+<p>The two original script interfaces are:</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span>compartment/tool/Ref-PCA/calling_single_cell.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_CONFIG</span><span class="si">}</span><span class="w"> </span>--data_type<span class="w"> </span>higashi<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--calib<span class="w"> </span>--output<span class="w"> </span>scCompartment.Higashi.100K.hdf5
+
+python<span class="w"> </span>compartment/tool/Ref-PCA/calling_bulk.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_CONFIG</span><span class="si">}</span><span class="w"> </span>--temp<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_TEMP_DIR</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--bulk<span class="w"> </span>bulk100<span class="w"> </span>--data_type<span class="w"> </span>higashi<span class="w"> </span>--calib<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>scCompartment.Higashi.bulk100.100K.hdf5
+</pre></div>
+<p>The single-cell script reads the configured raw cell bank. The bulk script
+reads the bank for the selected <code>bulk</code> condition. Their legacy data paths and
+resolution-matched native resources must correspond to that condition. An
+optional <code>bulk_path</code> selects an external merged matrix for PCA fitting.</p>
+<p>This fitted projection background is distinct from the raw all-cell Self-PCA
+track used for <strong>evaluation</strong> in section 3. The two roles remain separate in
+the tutorial and input manifest.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-07"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="7.-Supply-native-scGHOST-outputs-at-500-kb">7. Supply native scGHOST outputs at 500 kb<a class="anchor-link" href="#7.-Supply-native-scGHOST-outputs-at-500-kb">¶</a></h2><p>Generate scGHOST outputs in its original environment using the
+<a href="https://github.com/ma-compbio/scGHOST/blob/3271dfa1b441fcfe2ed9aad83888b78922aba91e/tutorial.ipynb">official tutorial</a>.
+The existing adapter follows the pinned native
+<a href="https://github.com/ma-compbio/scGHOST/blob/3271dfa1b441fcfe2ed9aad83888b78922aba91e/modules/clustering.py">clustering output</a>
+and accepts either:</p>
+<ul>
+<li><code>labels.pkl</code>, <code>cropped_indices.pkl</code> and a native row-order cell-ID sidecar;</li>
+<li>official four-column BED exports, listed by biological cell ID.</li>
+</ul>
+<p>The evaluator's numerical mapping is:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Native label</th>
+<th>Subcompartment</th>
+<th style="text-align:right">Evaluation value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>A1</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>A2</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>B1</td>
+<td style="text-align:right">−1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>B2</td>
+<td style="text-align:right">−1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>B3</td>
+<td style="text-align:right">−0.5</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>cropped_indices.pkl</code> places these values on their original 500-kb genomic
+bins. Missing bins remain missing. Pseudo-bulk tracks are the per-bin means
+of exactly the member cells listed for each sample. These genomic labels
+are separate from the cell-cluster assignments evaluated later.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-08"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="8.-Declare-native-tracks-and-contact-sources">8. Declare native tracks and contact sources<a class="anchor-link" href="#8.-Declare-native-tracks-and-contact-sources">¶</a></h2><p>The source manifest identifies dataset, resolution, caller, input modality,
+analysis level, file format and path. Supported profile formats include:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Native or standardized content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>netcdf</code></td>
+<td>CpG/Self-PCA scores and genomic coordinates</td>
+</tr>
+<tr>
+<td><code>higashi_hdf5</code></td>
+<td>Ref-PCA <code>compartment/cell_N</code> and <code>compartment/bin/</code></td>
+</tr>
+<tr>
+<td><code>scghost_native</code></td>
+<td>Native labels, cropped indices and row IDs</td>
+</tr>
+<tr>
+<td><code>scghost_bed</code></td>
+<td>Cell-ID/BED manifest</td>
+</tr>
+<tr>
+<td><code>npz</code></td>
+<td>IDs, coordinates, scores and declared resolution</td>
+</tr>
+<tr>
+<td><code>long_tsv</code></td>
+<td><code>cell_id,chrom,start,end,score</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>For example, these are individual source specifications using the evaluator's
+existing field names. An actual full manifest supplies all native conditions:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"dataset"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lee2019"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolution"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ref_pca"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"input"</span><span class="p">:</span><span class="w"> </span><span class="s2">"higashi"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"single_cell"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"higashi_hdf5"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/data/calls/scCompartment.Higashi.100K.hdf5"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"cell_ids_path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/data/calls/Higashi.100K.cell_ids.tsv"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"clustering"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"algorithm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"native_labels"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/data/clusters/ref_pca.higashi.100K.tsv"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"label_column"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cluster"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>Contact sources are declared separately. For Cooler input:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"dataset"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lee2019"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"resolution"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"input"</span><span class="p">:</span><span class="w"> </span><span class="s2">"raw"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"single_cell"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cool_table"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/data/raw/contact_table.tsv"</span>
+<span class="p">}</span>
+</pre></div>
+<p>The evaluator also accepts chromosome-specific sparse NPY or matrix NPZ
+sources with explicit IDs. If a pseudo-bulk contact source is omitted, it
+sums the exact member matrices from the corresponding single-cell source.
+CpG and Ref-PCA profiles are centered per cell/sample and chromosome by
+default; the manifest can set this explicitly.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-09"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="9.-Compare-boundary-locations-and-compartment-tracks">9. Compare boundary locations and compartment tracks<a class="anchor-link" href="#9.-Compare-boundary-locations-and-compartment-tracks">¶</a></h2><p>The evaluator compares each target track with its selected cell-type raw
+all-cell reference on finite matched bins. The configured denoising step
+operates before sign-change boundaries are identified.</p>
+<p>Boundary matching is one-to-one with <strong>one-bin tolerance</strong>. The exports
+include precision, recall, F1 and boundary counts. Missing bins split genomic
+runs, so they do not create a boundary across an unobserved interval.</p>
+<p>Track correlation is the Pearson correlation of the aligned continuous
+compartment values. Both metrics are recorded separately for each chromosome,
+sample and condition.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-10"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="10.-Calculate-saddle-strength-on-the-matched-contact-map">10. Calculate saddle strength on the matched contact map<a class="anchor-link" href="#10.-Calculate-saddle-strength-on-the-matched-contact-map">¶</a></h2><p>Each compartment profile is paired with its own input modality's contact
+matrix, matched by cell or sample ID. The evaluator removes the diagonal,
+calculates the legacy distance-dependent raw observed/expected matrix and
+sets its diagonal to one.</p>
+<p>Bins are ordered into up to 50 score quantiles. The top and bottom 20% of
+occupied groups define the A and B tails. With fewer groups from repeated
+scores, the calculation uses the occupied groups explicitly.</p>
+<div class="highlight"><pre><span></span>saddle strength = (sum(AA) + sum(BB)) / (sum(AB) + sum(BA) + 1e-8)
+</pre></div>
+<p>The contact adapter can sum 100-kb contact blocks to 500 kb. Compartment
+profiles themselves come from their corresponding 500-kb calling outputs;
+they are aligned rather than averaged from 100-kb score tracks.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-11"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="11.-Evaluate-existing-cell-cluster-assignments">11. Evaluate existing cell-cluster assignments<a class="anchor-link" href="#11.-Evaluate-existing-cell-cluster-assignments">¶</a></h2><p>The default mode is <code>native_labels</code>. It reads the selected workflow's final
+cell groups and compares them with the original metainfo using ARI, AMI
+and V-measure. Calinski–Harabasz is calculated from the genome-wide
+compartment features and those groups.</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"algorithm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"native_labels"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/data/clusters/pca.raw.100K.tsv"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"label_column"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cluster"</span>
+<span class="p">}</span>
+</pre></div>
+<p>These groups are per-cell assignments, distinct from the A/B labels at
+genomic bins. Structural cell-type selection and the clustering population
+are separate configuration choices; by default clustering uses the configured
+metadata cells.</p>
+<p>The implementation also permits an explicitly selected new K-means analysis.
+The original-assignment route above is the one described here.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-12"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="12.-Validate-and-evaluate-the-configured-workflow">12. Validate and evaluate the configured workflow<a class="anchor-link" href="#12.-Validate-and-evaluate-the-configured-workflow">¶</a></h2><p>The original templates are
+<a href="https://github.com/rawandy2001-design/benchmark/blob/main/compartment/tool/evaluation/configs/benchmark.example.json">compartment/tool/evaluation/configs/benchmark.example.json</a> and
+<code>profiles.example.tsv</code> in the code repository. Fill them with the
+native track sources, members, contact tables and cluster files described
+above. Paths in JSON resolve relative to that JSON; paths in the source
+manifest resolve relative to the manifest.</p>
+<p>The main configuration selects:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"resolutions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100000</span><span class="p">,</span><span class="w"> </span><span class="mi">500000</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"clustering"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"algorithm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"native_labels"</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"step"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"denoise"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"boundary_tolerance"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"require_complete_matrix"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"require_contacts"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"saddle_quantiles"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"saddle_tail_fraction"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>This excerpt shows shared options; the full configuration also declares
+<code>datasets</code>, <code>profile_manifest</code>, <code>contacts</code> and <code>output_dir</code>.
+The direct command-line entry is:</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span>compartment/tool/evaluation/run_compartment_benchmark.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_BENCHMARK_CONFIG</span><span class="si">}</span><span class="w"> </span>--validate-only
+
+python<span class="w"> </span>compartment/tool/evaluation/run_compartment_benchmark.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span><span class="si">${</span><span class="nv">COMPARTMENT_BENCHMARK_CONFIG</span><span class="si">}</span>
+</pre></div>
+<p>Validation reads the configured identities, profiles, complete gradients,
+references and contact definitions. Evaluation then writes the separate
+structural and clustering tables.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-13"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="13.-Read-the-output-files">13. Read the output files<a class="anchor-link" href="#13.-Read-the-output-files">¶</a></h2><p>The expected result layout is:</p>
+<div class="highlight"><pre><span></span>results/Lee2019/
+  structural_metrics_by_chromosome.csv
+  structural_metrics_by_sample.csv
+  structural_metrics_summary.csv
+  clustering_metrics.csv
+  cell_cluster_assignments.tsv
+  evaluated_conditions.tsv
+  profiles/
+  run_manifest.json
+</pre></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chromosome table</td>
+<td>Boundary metrics, track correlation, saddle values and observed-bin counts</td>
+</tr>
+<tr>
+<td>Sample table</td>
+<td>Equal-chromosome mean for each cell or pseudo-bulk sample</td>
+</tr>
+<tr>
+<td>Structural summary</td>
+<td>Equal-cell mean for single-cell conditions; separate pseudo-bulk cell-number conditions</td>
+</tr>
+<tr>
+<td>Clustering table</td>
+<td>ARI, AMI, V-measure, CHI and assignment parameters</td>
+</tr>
+<tr>
+<td>Condition table</td>
+<td>Dataset, resolution, caller, modality and analysis level actually evaluated</td>
+</tr>
+<tr>
+<td>Run manifest</td>
+<td>Resolved sources, exact members, versions and calculation conventions</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are output contracts, not newly generated result files in this reading
+package. Each metric retains its own table columns.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-tutorial-14"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="14.-Continue-to-the-other-tutorials">14. Continue to the other tutorials<a class="anchor-link" href="#14.-Continue-to-the-other-tutorials">¶</a></h2><p><a href="data_preparation.html">Data preparation</a> describes input selection and
+imputation. <a href="embedding.html">Embedding</a>, <a href="tad.html">Domain/TAD</a>,
+<a href="loop.html">Loop</a> and <a href="loop_figures.html">Loop figures</a> cover the other tasks.
+Return to the <a href="../index.html">tutorial index</a> to choose a workflow.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-software-notes"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Software-and-implementation">Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h2><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Software context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CpG/Self-PCA calling</td>
+<td>NumPy, pandas, SciPy, scikit-learn, Cooler, Xarray and HDF support</td>
+</tr>
+<tr>
+<td>CpG resource generation</td>
+<td>Matching genome FASTA and bedtools</td>
+</tr>
+<tr>
+<td>Ref-PCA calling</td>
+<td>Bundled Higashi analysis routines, Cooler, h5py, joblib and native configuration</td>
+</tr>
+<tr>
+<td>scGHOST generation</td>
+<td>The official scGHOST runtime</td>
+</tr>
+<tr>
+<td>Shared evaluation</td>
+<td>NumPy, pandas, SciPy, scikit-learn, h5py; Cooler for contact tables</td>
+</tr>
+</tbody>
+</table></div>
+<p>The implementation is under <code>compartment/tool/</code> in the code repository.
+Its calling and evaluation guides specify the native paths and file contracts.
+This tutorial records those interfaces without starting native jobs.</p>
+<p>Return to the <a href="../index.html">tutorial index</a>.</p>
+<p><a href="https://github.com/rawandy2001-design/benchmark/blob/main/compartment/ENVIRONMENT.md">Environment instructions</a> · <a href="https://github.com/rawandy2001-design/benchmark/blob/main/README.md">Repository guide</a></p>
+</div>
+</div>
+</div>
+<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div></body></html>

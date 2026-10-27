@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Lee2019 data preparation · Single-cell Hi-C tutorials</title><style>
+*{box-sizing:border-box}body{margin:0;color:#243347;background:#fff;font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+.topbar{border-bottom:1px solid #dae2ec;padding:16px 30px;color:#173653}.brand{font-weight:650}.modules{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:14px;margin-top:10px}.modules a{text-decoration:none;padding-bottom:3px}.modules .active{font-weight:700;border-bottom:2px solid #2463a0}
+.layout{max-width:1440px;margin:auto;padding:30px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:42px}
+nav{position:sticky;top:24px;align-self:start;font-size:14px;border-right:1px solid #e0e6ee;padding-right:18px;max-height:calc(100vh - 48px);overflow:auto}
+nav strong{display:block;margin-bottom:10px}nav a{display:block;margin:0 0 10px;text-decoration:none;line-height:1.4}
+main{min-width:0;max-width:1040px}h1{font-size:32px;line-height:1.25;margin-top:0}h2{font-size:25px;line-height:1.3;margin-top:42px;padding-top:12px;border-top:1px solid #e6ebf1;scroll-margin-top:18px}
+h3{font-size:20px;margin-top:28px}a{color:#2463a0}p{margin:14px 0}pre{padding:17px 20px;border:1px solid #dce4ee;border-radius:6px;background:#f5f7fb;overflow-x:auto;font:13px/1.55 Consolas,monospace}
+code{font-family:Consolas,monospace;font-size:.9em}p code,li code,td code{background:#f1f4f8;padding:2px 4px;border-radius:3px;overflow-wrap:anywhere}
+.table-wrap{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #dce4ee;padding:10px 12px;text-align:left;vertical-align:top}th{background:#eff4fa}
+img{max-width:100%;height:auto}.anchor-link{font-size:13px;margin-left:8px;text-decoration:none;color:#8fa6bb}.cell{padding:0}.text_cell_render{padding:0}footer{margin:35px 0;color:#68798b;font-size:13px}
+@media(max-width:900px){.layout{grid-template-columns:1fr;padding:20px;gap:20px}nav{position:static;border-right:none;border-bottom:1px solid #dae2ec;padding-bottom:18px;max-height:none}h1{font-size:28px}.topbar{padding:16px 20px}}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f0f0f0; }
+.highlight .c { color: #60A0B0; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #007020; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #007020 } /* Comment.Preproc */
+.highlight .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #F00 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888 } /* Generic.Output */
+.highlight .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #007020 } /* Keyword.Pseudo */
+.highlight .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #902000 } /* Keyword.Type */
+.highlight .m { color: #40A070 } /* Literal.Number */
+.highlight .s { color: #4070A0 } /* Literal.String */
+.highlight .na { color: #4070A0 } /* Name.Attribute */
+.highlight .nb { color: #007020 } /* Name.Builtin */
+.highlight .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.highlight .no { color: #60ADD5 } /* Name.Constant */
+.highlight .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #007020 } /* Name.Exception */
+.highlight .nf { color: #06287E } /* Name.Function */
+.highlight .nl { color: #002070; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #BB60D5 } /* Name.Variable */
+.highlight .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #40A070 } /* Literal.Number.Bin */
+.highlight .mf { color: #40A070 } /* Literal.Number.Float */
+.highlight .mh { color: #40A070 } /* Literal.Number.Hex */
+.highlight .mi { color: #40A070 } /* Literal.Number.Integer */
+.highlight .mo { color: #40A070 } /* Literal.Number.Oct */
+.highlight .sa { color: #4070A0 } /* Literal.String.Affix */
+.highlight .sb { color: #4070A0 } /* Literal.String.Backtick */
+.highlight .sc { color: #4070A0 } /* Literal.String.Char */
+.highlight .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #4070A0 } /* Literal.String.Double */
+.highlight .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.highlight .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.highlight .sx { color: #C65D09 } /* Literal.String.Other */
+.highlight .sr { color: #235388 } /* Literal.String.Regex */
+.highlight .s1 { color: #4070A0 } /* Literal.String.Single */
+.highlight .ss { color: #517918 } /* Literal.String.Symbol */
+.highlight .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #06287E } /* Name.Function.Magic */
+.highlight .vc { color: #BB60D5 } /* Name.Variable.Class */
+.highlight .vg { color: #BB60D5 } /* Name.Variable.Global */
+.highlight .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
+.edition-note{font-size:14px;padding:10px 14px;background:#eff4fa;border-left:3px solid #2463a0;margin:0 0 25px;color:#40566d}
+</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="active" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Read-metadata-and-contact-tables">1. Read metadata and contact tables</a><a href="#2.-Filter-blacklisted-contacts">2. Filter blacklisted contacts</a><a href="#3.-Select-cell-types-and-construct-nested-subsets">3. Select cell types and construct nested subsets</a><a href="#4.-Merge-each-selected-raw-cell-set">4. Merge each selected raw cell set</a><a href="#5.-Organize-the-Lee2019-pseudo-bulk-inputs">5. Organize the Lee2019 pseudo-bulk inputs</a><a href="#6.-Choose-the-imputation-branch">6. Choose the imputation branch</a><a href="#7.-Prepare-and-run-scHiCluster-imputation">7. Prepare and run scHiCluster imputation</a><a href="#8.-Run-Higashi-preprocessing-and-imputation">8. Run Higashi preprocessing and imputation</a><a href="#9.-Enhance-a-Lee2019-pseudo-bulk-matrix">9. Enhance a Lee2019 pseudo-bulk matrix</a><a href="#10.-Keep-inputs-and-run-records-together">10. Keep inputs and run records together</a><a href="#11.-Continue-to-the-analysis-tutorials">11. Continue to the analysis tutorials</a><a href="#Software-and-implementation">Software and implementation</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="data_preparation.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-00"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h1 id="Lee2019-data-preparation-and-imputation-tutorial">Lee2019 data preparation and imputation tutorial<a class="anchor-link" href="#Lee2019-data-preparation-and-imputation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Command paths refer to the <code>final_code3</code> analysis-code checkout. Scientific inputs and native software environments are configured separately.</p>
+<p>These examples use Lee2019 contacts and hg38 genome resources.</p>
+<p>This tutorial follows the construction of raw and imputed inputs used by the
+analysis workflows. It shows the selection rule, cell-number subsets, raw
+pseudo-bulk aggregation and the two imputation branches. Commands are displayed
+as text: reading this notebook does not start a job or load contact files.</p>
+<p>The implementation scripts are identified beside each step. File excerpts below are read from the named local source files.
+Command settings use the corresponding Windows or WSL paths and configurable resources.
+The task-specific commands use their own software environments, described in
+<a href="#Software-and-implementation">software notes</a>.</p>
+<p>Use the <a href="../index.html#Shared-path-prefix">shared path setup</a> for the commands below:</p>
+<div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
+<span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-01"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="1.-Read-metadata-and-contact-tables">1. Read metadata and contact tables<a class="anchor-link" href="#1.-Read-metadata-and-contact-tables">¶</a></h2><p>Metadata retains the original cell IDs and cell-type labels. The prepared
+42-cell Embedding metadata contains the following records:</p>
+<p>Source: <code>D:/benchmark_higashi/embedding_all_autosomes_example_42cells/input/metadata.tsv</code> (first 3 lines).</p>
+<div class="highlight"><pre><span></span>cell_id	cell_type	subtype
+181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001	L2/3	L2/3-1
+181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD004	L2/3	L2/3-2
+</pre></div>
+<p>The ODC raw-contact table records one cell ID and one contact-file path per
+line. The full table contains 1,245 cells. Its recorded server paths are
+retained below:</p>
+<p>Source: <code>D:/data_new/lee2019/lee2019/all_raw_merged/ODC/cell_table.tsv</code> (first 2 lines).</p>
+<div class="highlight"><pre><span></span>181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD007	/home/ygc/scHiCluster_Lee2019_hg38/raw/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD007.3C.contact.rmbkl.tsv.gz
+181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A12_AD001	/home/ygc/scHiCluster_Lee2019_hg38/raw/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A12_AD001.3C.contact.rmbkl.tsv.gz
+</pre></div>
+<p>The 100-cell input has its own saved list:</p>
+<p>Source: <code>D:/data_new/lee2019/lee2019/ODC_raw_10k_line/cell_table_100.txt</code> (first 2 lines).</p>
+<div class="highlight"><pre><span></span>190315_snm3Cseq_hs_21yr_BA10_UMB5577_3_UMB5577_4_A6_AD012	/home/inspur/hcx418000230017/reference/data/lee_2019/rmbkl/190315_snm3Cseq_hs_21yr_BA10_UMB5577_3_UMB5577_4_A6_AD012.contact.rmbkl.tsv.gz
+190315_snm3Cseq_hs_21yr_BA10_UMB5577_5_UMB5577_6_G6_AD004	/home/inspur/hcx418000230017/reference/data/lee_2019/rmbkl/190315_snm3Cseq_hs_21yr_BA10_UMB5577_5_UMB5577_6_G6_AD004.contact.rmbkl.tsv.gz
+</pre></div>
+<p>The Embedding input uses five-column contacts at <strong>100 kb</strong>: chromosome 1,
+bin-start position 1, chromosome 2, bin-start position 2 and contact count.
+The first three lines of one input file are:</p>
+<p>Source: <code>D:/benchmark_higashi/embedding_all_autosomes_example_42cells/input/contacts/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001.txt</code> (first 3 lines).</p>
+<div class="highlight"><pre><span></span>chr1	800000	chr1	800000	3
+chr1	800000	chr1	900000	1
+chr1	800000	chr1	1900000	1
+</pre></div>
+<p>The genome-size file contains chromosome names and lengths:</p>
+<p>Source: <code>F:/project/test1/final_code3/resources/genome/hg38.autosomal.chrom.sizes</code> (first 3 lines).</p>
+<div class="highlight"><pre><span></span>chr1	248956422
+chr2	242193529
+chr3	198295559
+</pre></div>
+<p>Contact-column arguments must follow the input format. The five-column
+100-kb table above retains aggregated counts; the raw-contact workflow uses
+the column settings configured in its implementation.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-02"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="2.-Filter-blacklisted-contacts">2. Filter blacklisted contacts<a class="anchor-link" href="#2.-Filter-blacklisted-contacts">¶</a></h2><p>The single-cell imputation implementation (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/data_preparation/single_cell_imputation/impute.py">data_preparation/single_cell_imputation/impute.py</a> in the code repository)
+uses the same contact layout for filtering and <code>prepare-impute</code>:</p>
+<div class="highlight"><pre><span></span>hicluster<span class="w"> </span>filter-contact<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--contact_table<span class="w"> </span><span class="s2">"</span><span class="nv">$UNFILTERED_CONTACT_TABLE</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--chrom_size_path<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/resources/genome/hg38.autosomal.chrom.sizes"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--blacklist_1d_path<span class="w"> </span><span class="s2">"</span><span class="nv">$HG38_BLACKLIST</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_dir<span class="w"> </span><span class="s2">"</span><span class="nv">$FILTERED_CONTACT_DIR</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--chr1<span class="w"> </span><span class="m">1</span><span class="w"> </span>--pos1<span class="w"> </span><span class="m">2</span><span class="w"> </span>--chr2<span class="w"> </span><span class="m">5</span><span class="w"> </span>--pos2<span class="w"> </span><span class="m">6</span>
+</pre></div>
+<p>Its <code>build_filtered_contact_table</code> block writes a new, headerless two-column
+<code>contact_table_rmbkl.tsv</code>. Each ID points to the generated
+<code>&lt;cell_id&gt;.contact.rmbkl.tsv.gz</code>, rather than its unfiltered source.
+Keep that filtered table with the metadata and the original table.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-03"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="3.-Select-cell-types-and-construct-nested-subsets">3. Select cell types and construct nested subsets<a class="anchor-link" href="#3.-Select-cell-types-and-construct-nested-subsets">¶</a></h2><p>The downsampling implementation (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/data_preparation/downsampling/downsampling.py">data_preparation/downsampling/downsampling.py</a> in the code repository) first joins
+metadata to contact paths by cell ID. It selects up to the two largest cell
+types with at least 100 cells. Ties are ordered by cell-type name.</p>
+<p>For each selected type, the code sorts IDs, generates one permutation and
+uses successive prefixes. The settings and core selection are:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">MIN_CELLS</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">CELL_STEP</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">MAX_CELL_TYPES</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># group is the selected type's cell table, sorted by cell_id.</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+<span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">levels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">MIN_CELLS</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">CELL_STEP</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+    <span class="n">levels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+
+<span class="n">subsets</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">levels</span><span class="p">}</span>
+</pre></div>
+<p>The ODC table above contains 1,245 cells. With 100-cell increments,
+the condition sizes are 100, 200, …, 1,200 and all 1,245 cells.</p>
+<p>The notebook writes <code>&lt;condition&gt;.cell_table.tsv</code> for every subset and
+<code>downsampling_manifest.csv</code> with the original type, selected count,
+cell-table path and intended raw Cooler path.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-04"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="4.-Merge-each-selected-raw-cell-set">4. Merge each selected raw cell set<a class="anchor-link" href="#4.-Merge-each-selected-raw-cell-set">¶</a></h2><p>For a 10-kb downstream task, a subset is aggregated with:</p>
+<div class="highlight"><pre><span></span>hicluster<span class="w"> </span>merge-cell-raw<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cell_table<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/cell_table_100.txt"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--chrom_size_path<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/resources/genome/hg38.autosomal.chrom.sizes"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_file<span class="w"> </span><span class="s2">"</span><span class="nv">$MERGED_RAW_OUTPUT</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--chr1<span class="w"> </span><span class="m">1</span><span class="w"> </span>--pos1<span class="w"> </span><span class="m">2</span><span class="w"> </span>--chr2<span class="w"> </span><span class="m">5</span><span class="w"> </span>--pos2<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resolution<span class="w"> </span><span class="m">10000</span><span class="w"> </span>--min_pos_dist<span class="w"> </span><span class="m">5000</span>
+</pre></div>
+<p>Repeat for the saved conditions, including <code>all</code>. Select the resolution
+required by the downstream analysis. Keep each raw pseudo-bulk as the matched
+baseline for that cell set. Here, raw means non-imputed contact data after
+the specified filtering and aggregation.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-05"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="5.-Organize-the-Lee2019-pseudo-bulk-inputs">5. Organize the Lee2019 pseudo-bulk inputs<a class="anchor-link" href="#5.-Organize-the-Lee2019-pseudo-bulk-inputs">¶</a></h2><p>The Lee2019 ODC example uses a 10-kb hg38 grid. Keep the cell-number label
+with each Raw and imputed matrix:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Dataset and condition</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ODC.raw.100.cool</code></td>
+<td>Lee2019 ODC, 100 cells</td>
+<td>Raw query matrix</td>
+</tr>
+<tr>
+<td><code>ODC.impute.100.iEnhance_10k.cool</code></td>
+<td>Lee2019 ODC, the matched 100 cells</td>
+<td>iEnhance query matrix</td>
+</tr>
+<tr>
+<td><code>ODC.raw.all.cool</code></td>
+<td>Lee2019 ODC, all cells</td>
+<td>Common Raw map for APA</td>
+</tr>
+<tr>
+<td><code>hg38.autosomal.chrom.sizes</code></td>
+<td>hg38, chromosomes 1–22</td>
+<td>Genome coordinates</td>
+</tr>
+</tbody>
+</table></div>
+<p>The local input paths are:</p>
+<div class="highlight"><pre><span></span>D:/data_new/lee2019/lee2019/ODC_raw_10k_line/ODC.raw.100.cool
+D:/data_new/lee2019/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool
+D:/data_new/lee2019/lee2019/ODC_raw_10k_line/ODC.raw.all.cool
+</pre></div>
+<p>When working in Linux or WSL, use the corresponding mounted paths. Match the
+Raw and imputed matrices by cell type, cell number and genomic grid.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-06"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.-Choose-the-imputation-branch">6. Choose the imputation branch<a class="anchor-link" href="#6.-Choose-the-imputation-branch">¶</a></h2><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Branch</th>
+<th>Starting input</th>
+<th>Output passed downstream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scHiCluster</td>
+<td>Filtered single-cell contacts</td>
+<td>Per-cell imputed Coolers and their cell table</td>
+</tr>
+<tr>
+<td>Higashi</td>
+<td>Ordered native single-cell inputs and JSON configuration</td>
+<td>Native embeddings and chromosome-specific imputed HDF5 files</td>
+</tr>
+<tr>
+<td>Pseudo-bulk methods</td>
+<td>A raw merged Cooler for a selected cell set</td>
+<td>An enhanced Cooler for that same set</td>
+</tr>
+</tbody>
+</table></div>
+<p>Use saved subset IDs when matching raw and imputed conditions. A contact-file
+table, a Cooler table and a Higashi native input directory have different
+formats, even when they represent the same biological cells.</p>
+<p>The examples below show how inputs are constructed. The downstream tutorials
+explain how each task consumes the relevant output.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-07"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="7.-Prepare-and-run-scHiCluster-imputation">7. Prepare and run scHiCluster imputation<a class="anchor-link" href="#7.-Prepare-and-run-scHiCluster-imputation">¶</a></h2><p>The single-cell implementation (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/data_preparation/single_cell_imputation/impute.py">data_preparation/single_cell_imputation/impute.py</a> in the code repository) prepares
+jobs from the filtered contact table. Its 100-kb command is:</p>
+<div class="highlight"><pre><span></span>hicluster<span class="w"> </span>prepare-impute<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cell_table<span class="w"> </span><span class="s2">"</span><span class="nv">$FILTERED_CONTACT_TABLE</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--chrom_size_path<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/resources/genome/hg38.autosomal.chrom.sizes"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_dir<span class="w"> </span><span class="s2">"</span><span class="nv">$IMPUTE_OUTPUT_DIR</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--batch_size<span class="w"> </span><span class="m">1272</span><span class="w"> </span>--pad<span class="w"> </span><span class="m">1</span><span class="w"> </span>--cpu_per_job<span class="w"> </span><span class="m">48</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--chr1<span class="w"> </span><span class="m">1</span><span class="w"> </span>--pos1<span class="w"> </span><span class="m">2</span><span class="w"> </span>--chr2<span class="w"> </span><span class="m">5</span><span class="w"> </span>--pos2<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output_dist<span class="w"> </span><span class="m">500000000</span><span class="w"> </span>--window_size<span class="w"> </span><span class="m">500000000</span><span class="w"> </span>--step_size<span class="w"> </span><span class="m">500000000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resolution<span class="w"> </span><span class="m">100000</span>
+</pre></div>
+<p>Then run the generated command script:</p>
+<div class="highlight"><pre><span></span>bash<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">IMPUTE_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/snakemake_cmd.txt"</span>
+</pre></div>
+<p>The imputation script is named <code>snakemake_cmd.txt</code> in this workflow. The
+native Loop preparation uses its separate <code>snakemake_cmds.txt</code> entry.
+The imputed Coolers and generated cell table supply downstream scHiCluster
+embedding or structural callers. Preserve their association with cell IDs.</p>
+<p>The recorded 100-kb imputed-cell table begins with:</p>
+<p>Source: <code>D:/benchmark_higashi/impute/cell_table_100K.tsv</code> (first 2 lines).</p>
+<div class="highlight"><pre><span></span>181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001	/home/ygc/scHiCluster_Lee2019_hg38/impute/100K/chunk0/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001.cool
+181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD004	/home/ygc/scHiCluster_Lee2019_hg38/impute/100K/chunk0/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD004.cool
+</pre></div>
+<p>The corresponding generated command file contains:</p>
+<p>Source: <code>D:/benchmark_higashi/impute/snakemake_cmd.txt</code> (first 2 lines).</p>
+<div class="highlight"><pre><span></span>snakemake -d /home/ygc/scHiCluster_Lee2019_hg38/impute/100K/chunk0 --snakefile /home/ygc/scHiCluster_Lee2019_hg38/impute/100K/chunk0/Snakefile -j 48
+snakemake -d /home/ygc/scHiCluster_Lee2019_hg38/impute/100K/chunk1 --snakefile /home/ygc/scHiCluster_Lee2019_hg38/impute/100K/chunk1/Snakefile -j 48
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-08"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="8.-Run-Higashi-preprocessing-and-imputation">8. Run Higashi preprocessing and imputation<a class="anchor-link" href="#8.-Run-Higashi-preprocessing-and-imputation">¶</a></h2><p>Choose the matching JSON under
+<code>single_cell_imputation/configs/</code>, then configure <code>data_dir</code>, <code>temp_dir</code>,
+<code>genome_reference_path</code>, <code>cytoband_path</code> and the native input files.
+The repository provides <code>Lee2019_higashi_100K.json</code>, <code>500K.json</code> and <code>1M.json</code>.
+They retain <code>resolution_cell=500000</code> and <code>dimensions=128</code>.</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span>data_preparation/single_cell_imputation/scripts/higashi_impute.py<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/embedding_all_autosomes_example_42cells/native/Higashi/attempt01/config.json"</span>
+</pre></div>
+<p>The runner calls the native stages in this order:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">higashi.Higashi_wrapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">Higashi</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Higashi</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/higashi/embedding_all_autosomes_example_42cells/native/Higashi/attempt01/config.json"</span><span class="p">))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">generate_chrom_start_end</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">extract_table</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">create_matrix</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">prep_model</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train_for_embeddings</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train_for_imputation_nbr_0</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">impute_no_nbr</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train_for_imputation_with_nbr</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">impute_with_nbr</span><span class="p">()</span>
+</pre></div>
+<p>Raw sparse matrices generated during preprocessing are used by native
+downstream routines such as Higashi masking. Imputed chromosome HDF5 arrays
+are separate outputs. The Domain/TAD tutorial identifies both kinds of input.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-09"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="9.-Enhance-a-Lee2019-pseudo-bulk-matrix">9. Enhance a Lee2019 pseudo-bulk matrix<a class="anchor-link" href="#9.-Enhance-a-Lee2019-pseudo-bulk-matrix">¶</a></h2><p>Use these local inputs through their WSL mount paths. Tool, model and
+output parameters are supplied through the named environment variables.</p>
+<div class="highlight"><pre><span></span><span class="nv">RAW_100</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
+<span class="nv">IMPUTED_100</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool"</span>
+<span class="nv">CHROM_SIZES</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/resources/genome/hg38.autosomal.chrom.sizes"</span>
+</pre></div>
+<h3 id="iEnhance">iEnhance<a class="anchor-link" href="#iEnhance">¶</a></h3><div class="highlight"><pre><span></span>cooler<span class="w"> </span>balance<span class="w"> </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span>
+python<span class="w"> </span><span class="s2">"</span><span class="nv">$IENHANCE_SCRIPT</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--fn<span class="w"> </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--of<span class="w"> </span><span class="s2">"</span><span class="nv">$IMPUTED_100</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--cf<span class="w"> </span><span class="s2">"</span><span class="nv">$CHROM_SIZES</span><span class="s2">"</span><span class="w"> </span>--res<span class="w"> </span><span class="m">10000</span>
+</pre></div>
+<h3 id="HiCFoundation">HiCFoundation<a class="anchor-link" href="#HiCFoundation">¶</a></h3><p>Download the checkpoints from the official
+<a href="https://huggingface.co/wang3702/hicfoundation_models/tree/main">Hugging Face model repository</a>,
+as listed in the <a href="https://github.com/Noble-Lab/HiCFoundation#4-download-the-trained-hicfoundation-model">HiCFoundation installation instructions</a>.
+Store them in the <code>hicfoundation_model/</code> directory under the HiCFoundation installation.</p>
+<p>On this computer, the installation is <code>D:/hicfoundation/HiCFoundation/</code>;
+the model directory is <code>D:/hicfoundation/HiCFoundation/hicfoundation_model/</code>.
+The corresponding WSL download commands are:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/software/HiCFoundation"</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>hicfoundation_model
+<span class="nb">cd</span><span class="w"> </span>hicfoundation_model
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_pretrain.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_reproducibility.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_loop.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_loop_lc.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_resolution.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_epigenomic.pth.tar
+wget<span class="w"> </span>https://huggingface.co/wang3702/hicfoundation_models/resolve/main/hicfoundation_schic.pth.tar
+<span class="nb">cd</span><span class="w"> </span>..
+</pre></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Task</th>
+<th>Checkpoint relative to the installation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pseudo-bulk imputation</td>
+<td>3</td>
+<td><code>hicfoundation_model/hicfoundation_resolution.pth.tar</code></td>
+</tr>
+<tr>
+<td>Loop calling in this workflow</td>
+<td>2</td>
+<td><code>hicfoundation_model/hicfoundation_loop.pth.tar</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>For task-3 imputation, set the script and model paths explicitly:</p>
+<div class="highlight"><pre><span></span><span class="nv">HICFOUNDATION_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/software/HiCFoundation"</span>
+<span class="nv">HICFOUNDATION_SCRIPT</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HICFOUNDATION_ROOT</span><span class="si">}</span><span class="s2">/inference.py"</span>
+<span class="nv">HICFOUNDATION_MODEL</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HICFOUNDATION_ROOT</span><span class="si">}</span><span class="s2">/hicfoundation_model/hicfoundation_resolution.pth.tar"</span>
+</pre></div>
+<div class="highlight"><pre><span></span>python<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUNDATION_SCRIPT</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input<span class="w"> </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span><span class="w"> </span>--batch_size<span class="w"> </span><span class="m">4</span><span class="w"> </span>--resolution<span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--task<span class="w"> </span><span class="m">3</span><span class="w"> </span>--input_row_size<span class="w"> </span><span class="m">224</span><span class="w"> </span>--input_col_size<span class="w"> </span><span class="m">224</span><span class="w"> </span>--stride<span class="w"> </span><span class="m">100</span><span class="w"> </span>--bound<span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model_path<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUNDATION_MODEL</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUNDATION_OUTPUT_DIR</span><span class="s2">"</span><span class="w"> </span>--genome_id<span class="w"> </span>hg38
+</pre></div>
+<p>Rename <code>HiCFoundation_enhanced.cool</code> to the method-specific benchmark
+filename and balance the final Cooler. Task 3 uses the resolution checkpoint;
+task 2 in the Loop tutorial uses the loop checkpoint.</p>
+<h3 id="HiCNN2">HiCNN2<a class="anchor-link" href="#HiCNN2">¶</a></h3><p>Process human autosomes 1–22. For each chromosome, extract submatrices,
+run model 3 with ratio 16 and combine predictions. The chromosome-1 commands are:</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">HICNN2_ROOT</span><span class="si">}</span><span class="s2">/get_HiCNN2_input_fromCool.py"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/chr1.submats<span class="w"> </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/chr1.index<span class="w"> </span><span class="m">22</span>
+python<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">HICNN2_ROOT</span><span class="si">}</span><span class="s2">/HiCNN2_predict.py"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-f1<span class="w"> </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/chr1.submats.npy<span class="w"> </span>-f2<span class="w"> </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/chr1.subMats_HiCNN23_16<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-mid<span class="w"> </span><span class="m">3</span><span class="w"> </span>-m<span class="w"> </span><span class="s2">"</span><span class="nv">$HICNN2_MODEL</span><span class="s2">"</span><span class="w"> </span>-r<span class="w"> </span><span class="m">16</span>
+python<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">HICNN2_ROOT</span><span class="si">}</span><span class="s2">/combine_subMats.py"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/chr1.subMats_HiCNN23_16.npy<span class="w"> </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/chr1.index.npy<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="m">1</span><span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/predicted/chr1.predictedMat<span class="w"> </span><span class="m">22</span>
+</pre></div>
+<p>After processing the 22 autosomes, merge the chromosome predictions:</p>
+<div class="highlight"><pre><span></span>python<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">HICNN2_ROOT</span><span class="si">}</span><span class="s2">/merge_chroms.py"</span><span class="w"> </span><span class="si">${</span><span class="nv">HICNN2_WORK_DIR</span><span class="si">}</span>/predicted/<span class="w"> </span>ODC<span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"</span><span class="nv">$HICNN2_OUTPUT_COOL</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="s2">"</span><span class="nv">$CHROM_SIZES</span><span class="s2">"</span><span class="w"> </span><span class="m">10000</span>
+</pre></div>
+<h3 id="HiCPlus">HiCPlus<a class="anchor-link" href="#HiCPlus">¶</a></h3><div class="highlight"><pre><span></span>python<span class="w"> </span><span class="s2">"</span><span class="nv">$HICPLUS_SCRIPT</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input<span class="w"> </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span><span class="s2">"</span><span class="nv">$HICPLUS_OUTPUT_COOL</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--chromsizes<span class="w"> </span><span class="s2">"</span><span class="nv">$CHROM_SIZES</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model<span class="w"> </span><span class="s2">"</span><span class="nv">$HICPLUS_MODEL</span><span class="s2">"</span><span class="w"> </span>--res<span class="w"> </span><span class="m">10000</span>
+</pre></div>
+<p>Keep the input condition, checkpoint identity, command and runtime with each
+method's output matrix.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-10"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html"><h2 id="10.-Keep-inputs-and-run-records-together">10. Keep inputs and run records together<a class="anchor-link" href="#10.-Keep-inputs-and-run-records-together">¶</a></h2><p>The example files are stored in these local directories:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Contents</th>
+<th>Directory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Embedding inputs</td>
+<td><code>D:/benchmark_higashi/embedding_all_autosomes_example_42cells/input/</code></td>
+</tr>
+<tr>
+<td>100-kb scHiCluster-imputed inputs</td>
+<td><code>D:/benchmark_higashi/impute/</code></td>
+</tr>
+<tr>
+<td>TAD inputs and results</td>
+<td><code>D:/benchmark_higashi/tad_chr21_all12_example/</code></td>
+</tr>
+<tr>
+<td>ODC raw 10-kb inputs and cell lists</td>
+<td><code>D:/data_new/lee2019/lee2019/ODC_raw_10k_line/</code></td>
+</tr>
+<tr>
+<td>ODC iEnhance 10-kb inputs</td>
+<td><code>D:/data_new/lee2019/lee2019/bulk_impute_10k/ODC/</code></td>
+</tr>
+<tr>
+<td>Loop calling and evaluation outputs</td>
+<td><code>F:/project/test1/final_code2/call_loop/result/</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Keep the selected cell IDs, genome, resolution, exact commands, software
+versions and checkpoint identities with their outputs. A task can then reuse
+the same raw baseline and the matching imputed input.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-11"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="11.-Continue-to-the-analysis-tutorials">11. Continue to the analysis tutorials<a class="anchor-link" href="#11.-Continue-to-the-analysis-tutorials">¶</a></h2><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Next step</th>
+<th>Tutorial</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cell embeddings and ARI/AMI/V-measure</td>
+<td><a href="embedding.html">Embedding</a></td>
+</tr>
+<tr>
+<td>Per-cell boundaries and raw pseudo-bulk references</td>
+<td><a href="tad.html">Domain/TAD</a></td>
+</tr>
+<tr>
+<td>Loop calling, Dice, APA and multimodal correlation</td>
+<td><a href="loop.html">Loop</a></td>
+</tr>
+<tr>
+<td>Five-component min-max summaries</td>
+<td><a href="loop_figures.html">Loop figures</a></td>
+</tr>
+</tbody>
+</table></div>
+<p>The <a href="../index.html">tutorial index</a> brings these entries together.
+The Compartment workflow is described in <a href="compartment.html">its tutorial</a>.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-software-notes"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Software-and-implementation">Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h2><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Software context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Selection and contact aggregation</td>
+<td>Python, NumPy, pandas, Cooler and the selected scHiCluster merge command</td>
+</tr>
+<tr>
+<td>scHiCluster imputation</td>
+<td>Native scHiCluster, Bash and Snakemake</td>
+</tr>
+<tr>
+<td>Higashi imputation</td>
+<td>Native Higashi and its compatible PyTorch stack</td>
+</tr>
+<tr>
+<td>Pseudo-bulk methods</td>
+<td>Each upstream method's runtime and checkpoint</td>
+</tr>
+</tbody>
+</table></div>
+<p>Full installation notes remain at <a href="https://github.com/rawandy2001-design/benchmark/blob/main/data_preparation/ENVIRONMENT.md">data_preparation/ENVIRONMENT.md</a> in the
+code repository. Each method's command block above identifies its native
+program and resource inputs.</p>
+<p>Return to the <a href="../index.html">tutorial index</a>.</p>
+<p><a href="https://github.com/rawandy2001-design/benchmark/blob/main/data_preparation/ENVIRONMENT.md">Environment instructions</a> · <a href="https://github.com/rawandy2001-design/benchmark/blob/main/README.md">Repository guide</a></p>
+</div>
+</div>
+</div>
+<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div></body></html>
