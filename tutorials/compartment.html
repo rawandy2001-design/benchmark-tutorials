@@ -130,13 +130,13 @@ h3{scroll-margin-top:18px}
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Compartment-evaluation">Compartment evaluation<a class="anchor-link" href="#Compartment-evaluation">¶</a></h1>
-</div>
+<p class="section-description">This notebook evaluates compartment profiles from raw, scHiCluster-imputed and Higashi-imputed Hi-C data. The retained example uses the original Tan/Neuron settings and saved outputs.</p></div>
 </div>
 </div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-01"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="1.-Data-preparation">1. Data preparation<a class="anchor-link" href="#1.-Data-preparation">¶</a></h2>
-</div>
+<p class="section-description">This section defines the dataset, target cell type, resolution and file paths, then reads the cached compartment calls. The three dictionaries hold single-cell profiles, pseudo-bulk profiles and raw pseudo-bulk PCA reference tracks.</p></div>
 </div>
 </div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-02"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -291,7 +291,7 @@ merge_nums [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 'all'
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="2.-Boundary-and-track-evaluation">2. Boundary and track evaluation<a class="anchor-link" href="#2.-Boundary-and-track-evaluation">¶</a></h2>
-</div>
+<p class="section-description">Single-cell and pseudo-bulk profiles are compared with the same cell type's all-cell raw PCA reference. The notebook summarizes boundary F1, boundary counts and Pearson track correlations for each caller and input modality.</p></div>
 </div>
 </div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-09"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -969,7 +969,7 @@ merge_nums [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 'all'
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="3.-Saddle-strength">3. Saddle strength<a class="anchor-link" href="#3.-Saddle-strength">¶</a></h2>
-</div>
+<p class="section-description">The corresponding raw or imputed contact matrix provides the observed/expected map. Compartment scores define the saddle groups; within- and between-compartment enrichment are then compared for single-cell and pseudo-bulk samples.</p></div>
 </div>
 </div><div class="cell border-box-sizing text_cell rendered" id="cell-id=compartment-source-19"><div class="prompt input_prompt">
 </div><div class="inner_cell">

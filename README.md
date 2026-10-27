@@ -18,7 +18,7 @@ with the companion project.
 | Loop figures | [HTML](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/loop_figures.html) | [Notebook](tutorials/loop_figures.ipynb) |
 
 The notebooks show command examples, source-file excerpts and retained figures.
-Compartment preserves the upstream code cells and saved outputs, with only the section headings reorganized. The other notebooks display commands as Markdown. Reading the HTML pages or notebook previews does not execute analyses.
+Compartment preserves the upstream code cells and saved outputs, with hierarchical headings and brief section descriptions. The other notebooks display commands as Markdown. Reading the HTML pages or notebook previews does not execute analyses.
 
 The [companion analysis repository](https://github.com/rawandy2001-design/benchmark) contains implementation scripts,
 shared path setup and task-specific environment instructions. It remains private;
@@ -45,5 +45,5 @@ README.md        entry points and publication notes
 ```
 
 Tutorial snapshot: 2026-10-27, companion revision `02e6c9eb2bb9c4b549b197b4b47fd5d9ae34ada8`.
-Compartment preserves the original Tan/Neuron settings, code cells and saved outputs from daydayupzzl/compartment commit e068313; only its headings are organized into two levels. Other notebooks retain their command examples and embedded figures.
+Compartment preserves the original Tan/Neuron settings, code cells and saved outputs from daydayupzzl/compartment commit e068313; its headings are organized into two levels, with brief descriptions of the main sections. Other notebooks retain their command examples and embedded figures.
 Experimental input files and model checkpoints are configured separately.
