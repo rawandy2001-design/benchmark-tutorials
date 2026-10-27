@@ -1,6 +1,6 @@
-/* Shared tutorial palette. The browser updates it when the system theme changes. */
+/* Shared light and black palettes, with a saved override or system preference. */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --page-bg: #ffffff;
   --text: #243347;
   --heading: #173653;
@@ -31,21 +31,22 @@
 }
 
 @media screen and (prefers-color-scheme: dark) {
-  :root {
-    --page-bg: #111827;
-    --text: #e2e8f0;
-    --heading: #f1f5f9;
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --page-bg: #000000;
+    --text: #e5e5e5;
+    --heading: #f5f5f5;
     --link: #8bbdff;
-    --muted: #a7b4c6;
-    --border: #334155;
-    --surface: #1e293b;
-    --code-bg: #18212f;
-    --code-text: #e2e8f0;
-    --inline-code-bg: #263247;
-    --note-text: #bdcbe0;
-    --marker: #9aacc2;
-    --selection: #304b72;
-    --syntax-comment: #9caec4;
+    --muted: #aaaaaa;
+    --border: #303030;
+    --surface: #151515;
+    --code-bg: #101010;
+    --code-text: #e5e5e5;
+    --inline-code-bg: #222222;
+    --note-text: #cccccc;
+    --marker: #aaaaaa;
+    --selection: #3b3b3b;
+    --syntax-comment: #aaaaaa;
     --syntax-keyword: #c4b5fd;
     --syntax-string: #9fdfb6;
     --syntax-number: #f4bf88;
@@ -55,9 +56,42 @@
     --syntax-variable: #d9b6f2;
     --syntax-prompt: #f4bf88;
     --syntax-error: #ffb4ab;
-    --syntax-error-bg: #44292d;
+    --syntax-error-bg: #3c2222;
     --syntax-insert-bg: #193b2d;
-    --syntax-delete-bg: #44292d;
+    --syntax-delete-bg: #3c2222;
+    --syntax-highlight-bg: #493f21;
+  }
+}
+
+@media screen {
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page-bg: #000000;
+    --text: #e5e5e5;
+    --heading: #f5f5f5;
+    --link: #8bbdff;
+    --muted: #aaaaaa;
+    --border: #303030;
+    --surface: #151515;
+    --code-bg: #101010;
+    --code-text: #e5e5e5;
+    --inline-code-bg: #222222;
+    --note-text: #cccccc;
+    --marker: #aaaaaa;
+    --selection: #3b3b3b;
+    --syntax-comment: #aaaaaa;
+    --syntax-keyword: #c4b5fd;
+    --syntax-string: #9fdfb6;
+    --syntax-number: #f4bf88;
+    --syntax-type: #f4bf88;
+    --syntax-name: #8bd5f0;
+    --syntax-function: #8bbdff;
+    --syntax-variable: #d9b6f2;
+    --syntax-prompt: #f4bf88;
+    --syntax-error: #ffb4ab;
+    --syntax-error-bg: #3c2222;
+    --syntax-insert-bg: #193b2d;
+    --syntax-delete-bg: #3c2222;
     --syntax-highlight-bg: #493f21;
   }
 }
@@ -129,3 +163,33 @@ a:focus-visible, summary:focus-visible { outline: 2px solid var(--link); outline
 /* Scientific figures retain their original colors and a white plotting surface. */
 main img { background: #ffffff; color-scheme: only light; }
 @media print { :root { color-scheme: light; } }
+
+/* The mode picker sits on the right of the first header row. */
+.topbar-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.topbar-heading .brand { min-width: 0; }
+.theme-picker { position: relative; flex: 0 0 auto; }
+.theme-picker[hidden], .theme-menu[hidden] { display: none; }
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 36px; padding: 7px 11px; border: 1px solid var(--border);
+  border-radius: 7px; color: var(--text); background: var(--surface);
+  font: 500 13px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif; cursor: pointer;
+}
+.theme-toggle:hover, .theme-menu button:hover, .theme-menu button:focus-visible { background: var(--inline-code-bg); }
+.theme-icon { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.theme-chevron { color: var(--muted); font-size: 11px; }
+.theme-menu {
+  position: absolute; top: calc(100% + 7px); right: 0; z-index: 50; min-width: 155px;
+  padding: 5px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); box-shadow: 0 8px 24px rgb(0 0 0 / 22%);
+}
+.theme-menu button {
+  display: flex; align-items: center; justify-content: space-between; gap: 22px;
+  width: 100%; padding: 9px 10px; border: 0; border-radius: 4px;
+  background: transparent; color: var(--text); font: 14px/1.3 system-ui, sans-serif;
+  text-align: left; cursor: pointer;
+}
+.theme-menu button[aria-checked="true"]::after { content: "✓"; color: var(--link); }
+.theme-toggle:focus-visible, .theme-menu button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+@media (max-width: 600px) { .topbar-heading { gap: 10px; } .theme-toggle { gap: 6px; padding: 7px 9px; } }
+@media print { .theme-picker { display: none; } }
