@@ -88,7 +88,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
 .highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
 .edition-note{font-size:14px;padding:10px 14px;background:#eff4fa;border-left:3px solid #2463a0;margin:0 0 25px;color:#40566d}
-</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="active" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Identify-single-cell-inputs-and-raw-resources">1. Identify single-cell inputs and raw resources</a><a href="#2.-Select-cells-and-arrange-the-twelve-combinations">2. Select cells and arrange the twelve combinations</a><a href="#3.-Prepare-caller-specific-formats">3. Prepare caller-specific formats</a><a href="#4.-Call-domains-on-each-imputed-cell">4. Call domains on each imputed cell</a><a href="#5.-Call-three-references-from-raw-pseudo-bulk">5. Call three references from raw pseudo-bulk</a><a href="#6.-Orient-and-average-boundary-scores">6. Orient and average boundary scores</a><a href="#7.-Evaluate-reference-agreement">7. Evaluate reference agreement</a><a href="#8.-Report-per-cell-domain-counts">8. Report per-cell domain counts</a><a href="#9.-Run-the-complete-example">9. Run the complete example</a><a href="#10.-Read-the-saved-example-results">10. Read the saved example results</a><a href="#11.-Locate-outputs-and-implementation">11. Locate outputs and implementation</a><a href="#Software-and-implementation">Software and implementation</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tad.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-00"><div class="prompt input_prompt">
+
+/* Two-level page headings and grouped navigation. */
+nav .toc-group{margin:0 0 14px}
+nav .toc-group summary{cursor:pointer;color:#173653;font-weight:650;line-height:1.45}
+nav .toc-group summary::marker{color:#6e839b;font-size:12px}
+nav .toc-group summary a{display:inline;margin:0;color:inherit;font-weight:inherit}
+nav .toc-group[open] summary{margin-bottom:9px}
+nav .toc-subsections{padding-left:12px;margin-left:5px;border-left:1px solid #dce4ee}
+nav .toc-subsections a{font-size:13px;line-height:1.45;margin-bottom:9px}
+h3{scroll-margin-top:18px}
+.method-title{font-size:18px;font-weight:650;line-height:1.4;margin:26px 0 12px;scroll-margin-top:18px}
+</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="active" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-workflow-design">1. Inputs and workflow design</a></summary><div class="toc-subsections"><a href="#1.-Identify-single-cell-inputs-and-raw-resources">1.1. Identify single-cell inputs and raw resources</a><a href="#2.-Select-cells-and-arrange-the-twelve-combinations">1.2. Select cells and arrange the twelve combinations</a><a href="#3.-Prepare-caller-specific-formats">1.3. Prepare caller-specific formats</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Domain-calling-and-raw-references">2. Domain calling and raw references</a></summary><div class="toc-subsections"><a href="#4.-Call-domains-on-each-imputed-cell">2.1. Call domains on each imputed cell</a><a href="#5.-Call-three-references-from-raw-pseudo-bulk">2.2. Call three references from raw pseudo-bulk</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Boundary-scores-and-evaluation">3. Boundary scores and evaluation</a></summary><div class="toc-subsections"><a href="#6.-Orient-and-average-boundary-scores">3.1. Orient and average boundary scores</a><a href="#7.-Evaluate-reference-agreement">3.2. Evaluate reference agreement</a><a href="#8.-Report-per-cell-domain-counts">3.3. Report per-cell domain counts</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Run-the-example-and-inspect-outputs">4. Run the example and inspect outputs</a></summary><div class="toc-subsections"><a href="#9.-Run-the-complete-example">4.1. Run the complete example</a><a href="#10.-Read-the-saved-example-results">4.2. Read the saved example results</a><a href="#11.-Locate-outputs-and-implementation">4.3. Locate outputs and implementation</a><a href="#Software-and-implementation">4.4. Software and implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tad.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html"><h1 id="Domain/TAD-calling-and-reference-agreement-tutorial">Domain/TAD calling and reference-agreement tutorial<a class="anchor-link" href="#Domain/TAD-calling-and-reference-agreement-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Command paths refer to the <code>final_code3</code> analysis-code checkout. Scientific inputs and native software environments are configured separately.</p>
 <p>This tutorial follows the completed <strong>Lee2019 L2-3, chr21, 25-kb</strong> example.
@@ -110,9 +121,9 @@ the input matrices.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-01"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=tad-group-01"><h2 id="Inputs-and-workflow-design">1. Inputs and workflow design<a class="anchor-link" href="#Inputs-and-workflow-design">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-01"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="1.-Identify-single-cell-inputs-and-raw-resources">1. Identify single-cell inputs and raw resources<a class="anchor-link" href="#1.-Identify-single-cell-inputs-and-raw-resources">¶</a></h2><p>All paths below are relative to <code>D:/benchmark_higashi/</code>, except the genome file.</p>
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="1.-Identify-single-cell-inputs-and-raw-resources">1.1. Identify single-cell inputs and raw resources<a class="anchor-link" href="#1.-Identify-single-cell-inputs-and-raw-resources">¶</a></h3><p>All paths below are relative to <code>D:/benchmark_higashi/</code>, except the genome file.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -165,7 +176,7 @@ masking procedure. These resources are kept separate throughout the workflow.</p
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-02"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.-Select-cells-and-arrange-the-twelve-combinations">2. Select cells and arrange the twelve combinations<a class="anchor-link" href="#2.-Select-cells-and-arrange-the-twelve-combinations">¶</a></h2><div class="table-wrap"><table>
+<h3 id="2.-Select-cells-and-arrange-the-twelve-combinations">1.2. Select cells and arrange the twelve combinations<a class="anchor-link" href="#2.-Select-cells-and-arrange-the-twelve-combinations">¶</a></h3><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Input condition</th>
@@ -212,7 +223,7 @@ retain the supplied filenames.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-03"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="3.-Prepare-caller-specific-formats">3. Prepare caller-specific formats<a class="anchor-link" href="#3.-Prepare-caller-specific-formats">¶</a></h2><p>The main runner prepares the following adapters while retaining the original
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="3.-Prepare-caller-specific-formats">1.3. Prepare caller-specific formats<a class="anchor-link" href="#3.-Prepare-caller-specific-formats">¶</a></h3><p>The main runner prepares the following adapters while retaining the original
 ZIP, HDF5, NPY, TSV and TXT inputs:</p>
 <ol>
 <li>Extract chr21 from the ten selected scHiCluster Coolers.</li>
@@ -234,24 +245,24 @@ balance or rescale the stored imputed values.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-04"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=tad-group-02"><h2 id="Domain-calling-and-raw-references">2. Domain calling and raw references<a class="anchor-link" href="#Domain-calling-and-raw-references">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-04"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="4.-Call-domains-on-each-imputed-cell">4. Call domains on each imputed cell<a class="anchor-link" href="#4.-Call-domains-on-each-imputed-cell">¶</a></h2><p>The combined runner dispatches the four callers with the following settings.
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="4.-Call-domains-on-each-imputed-cell">2.1. Call domains on each imputed cell<a class="anchor-link" href="#4.-Call-domains-on-each-imputed-cell">¶</a></h3><p>The combined runner dispatches the four callers with the following settings.
 The command examples illustrate one prepared input condition.</p>
-<h3 id="scHiCluster">scHiCluster<a class="anchor-link" href="#scHiCluster">¶</a></h3><div class="highlight"><pre><span></span>hicluster<span class="w"> </span>domain<span class="w"> </span>--cell_table_path<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/tables/single_cell.tsv"</span><span class="w"> </span>--output_prefix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/scHiCluster/L2-3"</span><span class="w"> </span>--resolution<span class="w"> </span><span class="m">25000</span><span class="w"> </span>--window_size<span class="w"> </span><span class="m">10</span><span class="w"> </span>--cpu<span class="w"> </span><span class="m">4</span>
+<p class="method-title" id="scHiCluster">scHiCluster<a class="anchor-link" href="#scHiCluster">¶</a></p><div class="highlight"><pre><span></span>hicluster<span class="w"> </span>domain<span class="w"> </span>--cell_table_path<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/tables/single_cell.tsv"</span><span class="w"> </span>--output_prefix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/scHiCluster/L2-3"</span><span class="w"> </span>--resolution<span class="w"> </span><span class="m">25000</span><span class="w"> </span>--window_size<span class="w"> </span><span class="m">10</span><span class="w"> </span>--cpu<span class="w"> </span><span class="m">4</span>
 </pre></div>
 <p>It retains native TopDom insulation and boundary outputs for each cell.</p>
-<h3 id="Higashi">Higashi<a class="anchor-link" href="#Higashi">¶</a></h3><p>The Higashi workflow (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/tad/tool/higashi_callers.py">tad/tool/higashi_callers.py</a> in the code repository) uses the native <code>sqrt_norm</code>,
+<p class="method-title" id="Higashi">Higashi<a class="anchor-link" href="#Higashi">¶</a></p><p>The Higashi workflow (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/tad/tool/higashi_callers.py">tad/tool/higashi_callers.py</a> in the code repository) uses the native <code>sqrt_norm</code>,
 <code>insulation_score</code>, <code>call_tads</code> and <code>scTAD_calibrator</code> routines. Insulation
 and TAD windows are 500 kb; seed 0 is recorded. The coverage mask uses the
 supplied raw sparse matrices, with native centromere masking and 1-Mb padding.
 Insulation, uncalibrated boundaries and calibrated boundaries are saved in
 the chromosome-specific <code>scTAD.chr21.hdf5</code> output.</p>
-<h3 id="HiCExplorer">HiCExplorer<a class="anchor-link" href="#HiCExplorer">¶</a></h3><div class="highlight"><pre><span></span>hicFindTADs<span class="w"> </span>--matrix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/input/scHiCluster/cells/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001.chr21.25K.cool"</span><span class="w"> </span>--outPrefix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/HiCExplorer/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001/result"</span><span class="w"> </span>--minDepth<span class="w"> </span><span class="m">125000</span><span class="w"> </span>--maxDepth<span class="w"> </span><span class="m">250000</span><span class="w"> </span>--step<span class="w"> </span><span class="m">50000</span><span class="w"> </span>--delta<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--thresholdComparisons<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--correctForMultipleTesting<span class="w"> </span>fdr
+<p class="method-title" id="HiCExplorer">HiCExplorer<a class="anchor-link" href="#HiCExplorer">¶</a></p><div class="highlight"><pre><span></span>hicFindTADs<span class="w"> </span>--matrix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/input/scHiCluster/cells/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001.chr21.25K.cool"</span><span class="w"> </span>--outPrefix<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/HiCExplorer/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001/result"</span><span class="w"> </span>--minDepth<span class="w"> </span><span class="m">125000</span><span class="w"> </span>--maxDepth<span class="w"> </span><span class="m">250000</span><span class="w"> </span>--step<span class="w"> </span><span class="m">50000</span><span class="w"> </span>--delta<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--thresholdComparisons<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span>--correctForMultipleTesting<span class="w"> </span>fdr
 </pre></div>
 <p>The native BEDGraph separation scores are aligned to genomic bins using the
 companion <code>.bm</code> file.</p>
-<h3 id="TADtool">TADtool<a class="anchor-link" href="#TADtool">¶</a></h3><div class="highlight"><pre><span></span><span class="si">${</span><span class="nv">TAD_PYTHON</span><span class="si">}</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/tad/tool/tadtool_di.py"</span><span class="w"> </span>--cell-table<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/tables/single_cell.tsv"</span><span class="w"> </span>--output-dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/TADtool"</span><span class="w"> </span>--manifest-output<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/TADtool/domains.tsv"</span><span class="w"> </span>--score-manifest-output<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/TADtool/scores.tsv"</span><span class="w"> </span>--chromosome<span class="w"> </span>chr21<span class="w"> </span>--num-workers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--window-size<span class="w"> </span><span class="m">250000</span><span class="w"> </span>--cutoff<span class="w"> </span><span class="m">0</span>.008
+<p class="method-title" id="TADtool">TADtool<a class="anchor-link" href="#TADtool">¶</a></p><div class="highlight"><pre><span></span><span class="si">${</span><span class="nv">TAD_PYTHON</span><span class="si">}</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code/tad/tool/tadtool_di.py"</span><span class="w"> </span>--cell-table<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/tables/single_cell.tsv"</span><span class="w"> </span>--output-dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/TADtool"</span><span class="w"> </span>--manifest-output<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/TADtool/domains.tsv"</span><span class="w"> </span>--score-manifest-output<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/tad_chr21_all12_example/result/scHiCluster/single_cell/TADtool/scores.tsv"</span><span class="w"> </span>--chromosome<span class="w"> </span>chr21<span class="w"> </span>--num-workers<span class="w"> </span><span class="m">2</span><span class="w"> </span>--window-size<span class="w"> </span><span class="m">250000</span><span class="w"> </span>--cutoff<span class="w"> </span><span class="m">0</span>.008
 </pre></div>
 <p>The adapter runs native directionality mode and reads its score from BED5
 column 5. Caller commands and output hashes are retained by the implementation.</p>
@@ -261,7 +272,7 @@ column 5. Caller commands and output hashes are retained by the implementation.<
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-05"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-Call-three-references-from-raw-pseudo-bulk">5. Call three references from raw pseudo-bulk<a class="anchor-link" href="#5.-Call-three-references-from-raw-pseudo-bulk">¶</a></h2><p>The same raw merged chr21 matrix is converted to the reference Cooler and
+<h3 id="5.-Call-three-references-from-raw-pseudo-bulk">2.2. Call three references from raw pseudo-bulk<a class="anchor-link" href="#5.-Call-three-references-from-raw-pseudo-bulk">¶</a></h3><p>The same raw merged chr21 matrix is converted to the reference Cooler and
 called once with scHiCluster, HiCExplorer and TADtool. Their native settings
 are the same as those above. Positive boundary bins define three separate
 reference label tracks on the 25-kb grid.</p>
@@ -277,10 +288,10 @@ references.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-06"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=tad-group-03"><h2 id="Boundary-scores-and-evaluation">3. Boundary scores and evaluation<a class="anchor-link" href="#Boundary-scores-and-evaluation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-06"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="6.-Orient-and-average-boundary-scores">6. Orient and average boundary scores<a class="anchor-link" href="#6.-Orient-and-average-boundary-scores">¶</a></h2><p>Each caller's continuous score is converted so that larger values represent
+<h3 id="6.-Orient-and-average-boundary-scores">3.1. Orient and average boundary scores<a class="anchor-link" href="#6.-Orient-and-average-boundary-scores">¶</a></h3><p>Each caller's continuous score is converted so that larger values represent
 stronger boundary evidence:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -319,7 +330,7 @@ tracks and the mask are written to the evaluation directory.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-07"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="7.-Evaluate-reference-agreement">7. Evaluate reference agreement<a class="anchor-link" href="#7.-Evaluate-reference-agreement">¶</a></h2><p>Every mean score track is compared separately with the three raw reference
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="7.-Evaluate-reference-agreement">3.2. Evaluate reference agreement<a class="anchor-link" href="#7.-Evaluate-reference-agreement">¶</a></h3><p>Every mean score track is compared separately with the three raw reference
 label tracks. The calculations use:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">average_precision_score</span>
 
@@ -344,7 +355,7 @@ reference comparisons are retained alongside the twelve mean summaries.</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-08"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="8.-Report-per-cell-domain-counts">8. Report per-cell domain counts<a class="anchor-link" href="#8.-Report-per-cell-domain-counts">¶</a></h2><p>The example retains each caller's domain-count definition:</p>
+<h3 id="8.-Report-per-cell-domain-counts">3.3. Report per-cell domain counts<a class="anchor-link" href="#8.-Report-per-cell-domain-counts">¶</a></h3><p>The example retains each caller's domain-count definition:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -377,9 +388,9 @@ reference-agreement scores as a separate description of the outputs.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-09"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=tad-group-04"><h2 id="Run-the-example-and-inspect-outputs">4. Run the example and inspect outputs<a class="anchor-link" href="#Run-the-example-and-inspect-outputs">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-09"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="9.-Run-the-complete-example">9. Run the complete example<a class="anchor-link" href="#9.-Run-the-complete-example">¶</a></h2><p>Run inside WSL after selecting the <a href="#Software-and-implementation">software notes</a>:</p>
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="9.-Run-the-complete-example">4.1. Run the complete example<a class="anchor-link" href="#9.-Run-the-complete-example">¶</a></h3><p>Run inside WSL after selecting the <a href="#Software-and-implementation">software notes</a>:</p>
 <div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.venvs/schic-tad-example/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">OPENBLAS_NUM_THREADS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">MKL_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
 
@@ -401,7 +412,7 @@ datasets and chromosomes. The completed example above uses chr21 at 25 kb.</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-10"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="10.-Read-the-saved-example-results">10. Read the saved example results<a class="anchor-link" href="#10.-Read-the-saved-example-results">¶</a></h2><p>The following values come from the completed local summary CSV, rounded for
+<h3 id="10.-Read-the-saved-example-results">4.2. Read the saved example results<a class="anchor-link" href="#10.-Read-the-saved-example-results">¶</a></h3><p>The following values come from the completed local summary CSV, rounded for
 display. Each row averages its comparisons with the three raw references.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -497,7 +508,7 @@ under the example root.</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-11"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="11.-Locate-outputs-and-implementation">11. Locate outputs and implementation<a class="anchor-link" href="#11.-Locate-outputs-and-implementation">¶</a></h2><div class="highlight"><pre><span></span>tad_chr21_all12_example/
+<h3 id="11.-Locate-outputs-and-implementation">4.3. Locate outputs and implementation<a class="anchor-link" href="#11.-Locate-outputs-and-implementation">¶</a></h3><div class="highlight"><pre><span></span>tad_chr21_all12_example/
   input/&lt;condition&gt;/                  Coolers, cell tables and adapter records
   higashi_from_cool/                   Higashi calls on the scHiCluster input
   result/references/                  shared actual raw reference outputs
@@ -523,7 +534,7 @@ and <a href="../index.html">the tutorial index</a>.</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-software-notes"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Software-and-implementation">Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h2><div class="table-wrap"><table>
+<h3 id="Software-and-implementation">4.4. Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h3><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Stage</th>
@@ -550,4 +561,29 @@ analysis code. Installation notes and exact compatibility records remain at
 </div>
 </div>
 </div>
-<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div></body></html>
+<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+(() => {
+  function revealSection() {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    let heading = null;
+    for (const candidate of document.querySelectorAll('main h2, main h3')) {
+      if (candidate === target || (candidate.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+        heading = candidate;
+      }
+    }
+    if (!heading) return;
+    for (const link of document.querySelectorAll('nav .toc-group a')) {
+      if (link.getAttribute('href') === '#' + heading.id) {
+        const group = link.closest('details');
+        if (group) group.open = true;
+        break;
+      }
+    }
+  }
+  window.addEventListener('hashchange', revealSection);
+  revealSection();
+})();
+</script></body></html>

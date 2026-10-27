@@ -88,7 +88,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
 .highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
 .edition-note{font-size:14px;padding:10px 14px;background:#eff4fa;border-left:3px solid #2463a0;margin:0 0 25px;color:#40566d}
-</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="active" href="index.html">Tutorial index</a><a class="" href="tutorials/data_preparation.html">Data preparation</a><a class="" href="tutorials/embedding.html">Embedding</a><a class="" href="tutorials/compartment.html">Compartment</a><a class="" href="tutorials/tad.html">Domain/TAD</a><a class="" href="tutorials/loop.html">Loop</a><a class="" href="tutorials/loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Choose-a-workflow">1. Choose a workflow</a><a href="#2.-Read-the-retained-examples">2. Read the retained examples</a><a href="#3.-Read-the-tutorials-and-inspect-their-implementation">3. Read the tutorials and inspect their implementation</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tutorials/tutorials.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-00"><div class="prompt input_prompt">
+
+/* Two-level page headings and grouped navigation. */
+nav .toc-group{margin:0 0 14px}
+nav .toc-group summary{cursor:pointer;color:#173653;font-weight:650;line-height:1.45}
+nav .toc-group summary::marker{color:#6e839b;font-size:12px}
+nav .toc-group summary a{display:inline;margin:0;color:inherit;font-weight:inherit}
+nav .toc-group[open] summary{margin-bottom:9px}
+nav .toc-subsections{padding-left:12px;margin-left:5px;border-left:1px solid #dce4ee}
+nav .toc-subsections a{font-size:13px;line-height:1.45;margin-bottom:9px}
+h3{scroll-margin-top:18px}
+.method-title{font-size:18px;font-weight:650;line-height:1.4;margin:26px 0 12px;scroll-margin-top:18px}
+</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="active" href="index.html">Tutorial index</a><a class="" href="tutorials/data_preparation.html">Data preparation</a><a class="" href="tutorials/embedding.html">Embedding</a><a class="" href="tutorials/compartment.html">Compartment</a><a class="" href="tutorials/tad.html">Domain/TAD</a><a class="" href="tutorials/loop.html">Loop</a><a class="" href="tutorials/loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#1.-Choose-a-workflow">1. Choose a workflow</a></summary><div class="toc-subsections"></div></details><details class="toc-group" name="page-sections"><summary><a href="#2.-Read-the-retained-examples">2. Read the retained examples</a></summary><div class="toc-subsections"></div></details><details class="toc-group" name="page-sections"><summary><a href="#3.-Read-the-tutorials-and-inspect-their-implementation">3. Read the tutorials and inspect their implementation</a></summary><div class="toc-subsections"><a href="#Shared-path-prefix">Shared path prefix</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tutorials/tutorials.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Single-cell-Hi-C-workflow-tutorials">Single-cell Hi-C workflow tutorials<a class="anchor-link" href="#Single-cell-Hi-C-workflow-tutorials">¶</a></h1><p>Choose a workflow below to read its steps, commands and existing example figures. Reading the pages does not run an analysis or require Jupyter.</p>
@@ -191,4 +202,29 @@ their source files.</p>
 </div>
 </div>
 </div>
-<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div></body></html>
+<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+(() => {
+  function revealSection() {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    let heading = null;
+    for (const candidate of document.querySelectorAll('main h2, main h3')) {
+      if (candidate === target || (candidate.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+        heading = candidate;
+      }
+    }
+    if (!heading) return;
+    for (const link of document.querySelectorAll('nav .toc-group a')) {
+      if (link.getAttribute('href') === '#' + heading.id) {
+        const group = link.closest('details');
+        if (group) group.open = true;
+        break;
+      }
+    }
+  }
+  window.addEventListener('hashchange', revealSection);
+  revealSection();
+})();
+</script></body></html>

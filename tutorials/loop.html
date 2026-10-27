@@ -88,7 +88,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
 .highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
 .edition-note{font-size:14px;padding:10px 14px;background:#eff4fa;border-left:3px solid #2463a0;margin:0 0 25px;color:#40566d}
-</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="active" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Prepare-the-inputs">1. Prepare the inputs</a><a href="#2.-Set-the-paths">2. Set the paths</a><a href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">3. Call the matched Raw and imputed maps with Mustache</a><a href="#4.-Run-the-other-bulk-callers">4. Run the other bulk callers</a><a href="#5.-Prepare-the-native-scHiCluster-loop-workflow">5. Prepare the native scHiCluster loop workflow</a><a href="#6.-Record-loop-num-and-caller-runtime">6. Record loop num and caller runtime</a><a href="#7.-Compare-loops-with-the-mapped-reference">7. Compare loops with the mapped reference</a><a href="#8.-Repeat-the-comparison-across-cell-numbers">8. Repeat the comparison across cell numbers</a><a href="#9.-Calculate-APA-on-the-common-Raw-contact-map">9. Calculate APA on the common Raw contact map</a><a href="#10.-Evaluate-RNA-correlation">10. Evaluate RNA correlation</a><a href="#11.-Evaluate-mCG-correlation">11. Evaluate mCG correlation</a><a href="#12.-Summarize-the-metrics-and-compare-workflows">12. Summarize the metrics and compare workflows</a><a href="#13.-Read-the-outputs">13. Read the outputs</a><a href="#14.-Implementation-and-tutorial-references">14. Implementation and tutorial references</a><a href="#Software-and-implementation">Software and implementation</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="loop.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-00"><div class="prompt input_prompt">
+
+/* Two-level page headings and grouped navigation. */
+nav .toc-group{margin:0 0 14px}
+nav .toc-group summary{cursor:pointer;color:#173653;font-weight:650;line-height:1.45}
+nav .toc-group summary::marker{color:#6e839b;font-size:12px}
+nav .toc-group summary a{display:inline;margin:0;color:inherit;font-weight:inherit}
+nav .toc-group[open] summary{margin-bottom:9px}
+nav .toc-subsections{padding-left:12px;margin-left:5px;border-left:1px solid #dce4ee}
+nav .toc-subsections a{font-size:13px;line-height:1.45;margin-bottom:9px}
+h3{scroll-margin-top:18px}
+.method-title{font-size:18px;font-weight:650;line-height:1.4;margin:26px 0 12px;scroll-margin-top:18px}
+</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="active" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-caller-setup">1. Inputs and caller setup</a></summary><div class="toc-subsections"><a href="#1.-Prepare-the-inputs">1.1. Prepare the inputs</a><a href="#2.-Set-the-paths">1.2. Set the paths</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Loop-calling">2. Loop calling</a></summary><div class="toc-subsections"><a href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">2.1. Call the matched Raw and imputed maps with Mustache</a><a href="#4.-Run-the-other-bulk-callers">2.2. Run the other bulk callers</a><a href="#5.-Prepare-the-native-scHiCluster-loop-workflow">2.3. Prepare the native scHiCluster loop workflow</a><a href="#6.-Record-loop-num-and-caller-runtime">2.4. Record loop num and caller runtime</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Reference-and-biological-evaluation">3. Reference and biological evaluation</a></summary><div class="toc-subsections"><a href="#7.-Compare-loops-with-the-mapped-reference">3.1. Compare loops with the mapped reference</a><a href="#8.-Repeat-the-comparison-across-cell-numbers">3.2. Repeat the comparison across cell numbers</a><a href="#9.-Calculate-APA-on-the-common-Raw-contact-map">3.3. Calculate APA on the common Raw contact map</a><a href="#10.-Evaluate-RNA-correlation">3.4. Evaluate RNA correlation</a><a href="#11.-Evaluate-mCG-correlation">3.5. Evaluate mCG correlation</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Workflow-summaries-and-implementation">4. Workflow summaries and implementation</a></summary><div class="toc-subsections"><a href="#12.-Summarize-the-metrics-and-compare-workflows">4.1. Summarize the metrics and compare workflows</a><a href="#13.-Read-the-outputs">4.2. Read the outputs</a><a href="#14.-Implementation-and-tutorial-references">4.3. Implementation and tutorial references</a><a href="#Software-and-implementation">4.4. Software and implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="loop.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html"><h1 id="Loop-calling-and-evaluation-tutorial">Loop calling and evaluation tutorial<a class="anchor-link" href="#Loop-calling-and-evaluation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Command paths refer to the <code>final_code3</code> analysis-code checkout. Scientific inputs and native software environments are configured separately.</p>
 <p>This tutorial follows the analysis from input contact maps to loop calls,
@@ -123,12 +134,12 @@ their own sections.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-01"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=loop-group-01"><h2 id="Inputs-and-caller-setup">1. Inputs and caller setup<a class="anchor-link" href="#Inputs-and-caller-setup">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-01"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="1.-Prepare-the-inputs">1. Prepare the inputs<a class="anchor-link" href="#1.-Prepare-the-inputs">¶</a></h2><p>Bulk callers use cell-type pseudo-bulk contact maps at <strong>10 kb</strong> resolution.
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="1.-Prepare-the-inputs">1.1. Prepare the inputs<a class="anchor-link" href="#1.-Prepare-the-inputs">¶</a></h3><p>Bulk callers use cell-type pseudo-bulk contact maps at <strong>10 kb</strong> resolution.
 The Raw and imputed query maps represent the same cells at each cell-number
 condition. scHiCluster uses its native single-cell loop-calling branch, described
-in section 5.</p>
+in section 2.3.</p>
 <p>The Lee2019 ODC inputs are:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -194,7 +205,7 @@ chr1	43230000	43240000	chr1	43370000	43380000	0.038127131296458706	2.11121265723
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-02"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="2.-Set-the-paths">2. Set the paths<a class="anchor-link" href="#2.-Set-the-paths">¶</a></h2><p>The following Python examples share these path variables. Replace <code>/path/to/</code>
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="2.-Set-the-paths">1.2. Set the paths<a class="anchor-link" href="#2.-Set-the-paths">¶</a></h3><p>The following Python examples share these path variables. Replace <code>/path/to/</code>
 with the locations of the repository, inputs and desired outputs when using the
 code outside this tutorial.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -219,9 +230,9 @@ version information are in <a href="#Software-and-implementation">software notes
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-03"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=loop-group-02"><h2 id="Loop-calling">2. Loop calling<a class="anchor-link" href="#Loop-calling">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-03"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">3. Call the matched Raw and imputed maps with Mustache<a class="anchor-link" href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">¶</a></h2><p>The example runs Mustache with a 10-kb resolution, a 5-Mb maximum distance and
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">2.1. Call the matched Raw and imputed maps with Mustache<a class="anchor-link" href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">¶</a></h3><p>The example runs Mustache with a 10-kb resolution, a 5-Mb maximum distance and
 <code>-pt 0.05</code>. The native wrapper records the actual command, input and output
 hashes, loop count, software environment and caller wall-clock time.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_raw_mustache_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">call_mustache</span>
@@ -253,11 +264,11 @@ and <code>run_manifest.json</code>. In this ODC/100-cell example, the query file
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-04"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="4.-Run-the-other-bulk-callers">4. Run the other bulk callers<a class="anchor-link" href="#4.-Run-the-other-bulk-callers">¶</a></h2><p>The following command examples preserve the settings in
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="4.-Run-the-other-bulk-callers">2.2. Run the other bulk callers<a class="anchor-link" href="#4.-Run-the-other-bulk-callers">¶</a></h3><p>The following command examples preserve the settings in
 callers.py (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/callers.py">call_loop/tool/callers/callers.py</a> in the code repository). Each caller receives the selected
 Raw or imputed 10-kb pseudo-bulk map. File paths below are placeholders for that
 caller's inputs, checkpoint and output directory.</p>
-<h3 id="FitHiC2">FitHiC2<a class="anchor-link" href="#FitHiC2">¶</a></h3><p>Convert the Cooler pixels to interaction and fragment tables, run FitHiC2 and
+<p class="method-title" id="FitHiC2">FitHiC2<a class="anchor-link" href="#FitHiC2">¶</a></p><p>Convert the Cooler pixels to interaction and fragment tables, run FitHiC2 and
 retain records with a Q value below 0.01.</p>
 <div class="highlight"><pre><span></span>cooler<span class="w"> </span>balance<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
 
@@ -284,7 +295,7 @@ python<span class="w"> </span>call_loop/tool/callers/fithic2/2tsv.py<span class=
 </pre></div>
 <p>The conversion scripts retain the caller-specific significance fields and
 write the 10-kb anchor coordinates used by the downstream readers.</p>
-<h3 id="HICCUPS-/-HiCPeaks">HICCUPS / HiCPeaks<a class="anchor-link" href="#HICCUPS-/-HiCPeaks">¶</a></h3><p>The human-genome example below uses chromosomes 1–22. For mouse inputs,
+<p class="method-title" id="HICCUPS-/-HiCPeaks">HICCUPS / HiCPeaks<a class="anchor-link" href="#HICCUPS-/-HiCPeaks">¶</a></p><p>The human-genome example below uses chromosomes 1–22. For mouse inputs,
 use the corresponding autosomal chromosome list.</p>
 <div class="highlight"><pre><span></span>pyHICCUPS<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span><span class="w"> </span><span class="se">\</span>
@@ -295,7 +306,7 @@ use the corresponding autosomal chromosome list.</p>
 <span class="w">    </span>--maxapart<span class="w"> </span><span class="m">5000000</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--only-anchors
 </pre></div>
-<h3 id="Peakachu">Peakachu<a class="anchor-link" href="#Peakachu">¶</a></h3><p>First inspect <code>peakachu depth</code> to select the suggested official model. Replace
+<p class="method-title" id="Peakachu">Peakachu<a class="anchor-link" href="#Peakachu">¶</a></p><p>First inspect <code>peakachu depth</code> to select the suggested official model. Replace
 <code>{depth}</code> in the model filename with that depth category, then score and pool
 the candidate loops.</p>
 <div class="highlight"><pre><span></span>peakachu<span class="w"> </span>depth<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
@@ -313,7 +324,7 @@ peakachu<span class="w"> </span>pool<span class="w"> </span><span class="se">\</
 <span class="w">    </span>-o<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/query.10k_peakachu_pooled_loop.bedpe"</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-t<span class="w"> </span><span class="m">0</span>.95
 </pre></div>
-<h3 id="HiCFoundation">HiCFoundation<a class="anchor-link" href="#HiCFoundation">¶</a></h3><p>Download the checkpoints from the official
+<p class="method-title" id="HiCFoundation">HiCFoundation<a class="anchor-link" href="#HiCFoundation">¶</a></p><p>Download the checkpoints from the official
 <a href="https://huggingface.co/wang3702/hicfoundation_models/tree/main">Hugging Face model repository</a>,
 as listed in the <a href="https://github.com/Noble-Lab/HiCFoundation#4-download-the-trained-hicfoundation-model">HiCFoundation installation instructions</a>.
 Store them in the <code>hicfoundation_model/</code> directory under the HiCFoundation installation.</p>
@@ -378,7 +389,7 @@ python<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUN
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-05"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="5.-Prepare-the-native-scHiCluster-loop-workflow">5. Prepare the native scHiCluster loop workflow<a class="anchor-link" href="#5.-Prepare-the-native-scHiCluster-loop-workflow">¶</a></h2><p>scHiCluster uses per-cell imputed Coolers and cell-type metadata. Its
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="5.-Prepare-the-native-scHiCluster-loop-workflow">2.3. Prepare the native scHiCluster loop workflow<a class="anchor-link" href="#5.-Prepare-the-native-scHiCluster-loop-workflow">¶</a></h3><p>scHiCluster uses per-cell imputed Coolers and cell-type metadata. Its
 preparation script groups cells, writes the per-group cell table and
 <code>Snakefile_master</code>, then creates <code>snakemake_cmds.txt</code>.</p>
 <p>For Lee2019, use hg38 resources and a cell table pointing to the 10-kb
@@ -426,7 +437,7 @@ APA code also supports the output-definition comparisons shown later.</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-06"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="6.-Record-loop-num-and-caller-runtime">6. Record loop num and caller runtime<a class="anchor-link" href="#6.-Record-loop-num-and-caller-runtime">¶</a></h2><p>Loop num is counted from the native caller output. Caller-specific readers
+<h3 id="6.-Record-loop-num-and-caller-runtime">2.4. Record loop num and caller runtime<a class="anchor-link" href="#6.-Record-loop-num-and-caller-runtime">¶</a></h3><p>Loop num is counted from the native caller output. Caller-specific readers
 then convert those outputs to the common chromosome and anchor-coordinate
 representation used for metric calculation.</p>
 <p>For the Mustache example, <code>loop_num_runtime.csv</code> stores the native count and
@@ -442,10 +453,10 @@ that interval.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-07"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=loop-group-03"><h2 id="Reference-and-biological-evaluation">3. Reference and biological evaluation<a class="anchor-link" href="#Reference-and-biological-evaluation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-07"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="7.-Compare-loops-with-the-mapped-reference">7. Compare loops with the mapped reference<a class="anchor-link" href="#7.-Compare-loops-with-the-mapped-reference">¶</a></h2><p>Both query loop sets use the same prespecified Tian2023 ODC all-cell Raw
+<h3 id="7.-Compare-loops-with-the-mapped-reference">3.1. Compare loops with the mapped reference<a class="anchor-link" href="#7.-Compare-loops-with-the-mapped-reference">¶</a></h3><p>Both query loop sets use the same prespecified Tian2023 ODC all-cell Raw
 Mustache comparator. The readers retain cis interactions on the 10-kb grid,
 order the anchors and remove duplicate coordinate pairs before matching.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_raw_dice_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">evaluate_dice</span>
@@ -469,7 +480,7 @@ comparison functions are in tools.py (<a href="https://github.com/rawandy2001-de
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-08"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="8.-Repeat-the-comparison-across-cell-numbers">8. Repeat the comparison across cell numbers<a class="anchor-link" href="#8.-Repeat-the-comparison-across-cell-numbers">¶</a></h2><p>Build matched Raw and imputed conditions in 100-cell increments and include the
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="8.-Repeat-the-comparison-across-cell-numbers">3.2. Repeat the comparison across cell numbers<a class="anchor-link" href="#8.-Repeat-the-comparison-across-cell-numbers">¶</a></h3><p>Build matched Raw and imputed conditions in 100-cell increments and include the
 all-cell endpoint. For example, the following derives the conditions from a
 headerless cell table containing one selected cell per row:</p>
 <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -505,7 +516,7 @@ Dice to show how output quantity and loop-set agreement change with cell number.
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-09"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="9.-Calculate-APA-on-the-common-Raw-contact-map">9. Calculate APA on the common Raw contact map<a class="anchor-link" href="#9.-Calculate-APA-on-the-common-Raw-contact-map">¶</a></h2><p>Evaluate both native query loop sets on the Lee2019 ODC all-cell Raw map.
+<h3 id="9.-Calculate-APA-on-the-common-Raw-contact-map">3.3. Calculate APA on the common Raw contact map<a class="anchor-link" href="#9.-Calculate-APA-on-the-common-Raw-contact-map">¶</a></h3><p>Evaluate both native query loop sets on the Lee2019 ODC all-cell Raw map.
 The example uses 10-kb bins, a 10-bin window on each side, cis separations from
 100 kb to 5 Mb and unbalanced contact counts.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_raw_apa_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">evaluate_apa</span>
@@ -535,7 +546,7 @@ output-definition comparisons in the existing code.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-10"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="10.-Evaluate-RNA-correlation">10. Evaluate RNA correlation<a class="anchor-link" href="#10.-Evaluate-RNA-correlation">¶</a></h2><p>The MouseBrain example uses 17 matched cell types. It starts from per-type loop
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="10.-Evaluate-RNA-correlation">3.4. Evaluate RNA correlation<a class="anchor-link" href="#10.-Evaluate-RNA-correlation">¶</a></h3><p>The MouseBrain example uses 17 matched cell types. It starts from per-type loop
 sets, observed Raw maps, processed expression and 136 pairwise DEG files.
 The two workflows use the same observed contact signal and RNA inputs.</p>
 <p>The implementation selects genes from the supplied DEG comparisons, scales the
@@ -567,7 +578,7 @@ RNA preprocessing and configurable metric blocks for other callers.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-11"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="11.-Evaluate-mCG-correlation">11. Evaluate mCG correlation<a class="anchor-link" href="#11.-Evaluate-mCG-correlation">¶</a></h2><p>The Lee2019 example uses 14 matched cell types. Methylated counts and coverage
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="11.-Evaluate-mCG-correlation">3.5. Evaluate mCG correlation<a class="anchor-link" href="#11.-Evaluate-mCG-correlation">¶</a></h3><p>The Lee2019 example uses 14 matched cell types. Methylated counts and coverage
 are read from the MCDS at 5 kb and summed onto the 10-kb loop grid. The
 implementation calculates the posterior mCG fraction, averages the values at
 the two anchors and compares them with the observed Raw interaction signal
@@ -592,12 +603,12 @@ mCG correlations in its tables and paired heatmaps.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-12"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=loop-group-04"><h2 id="Workflow-summaries-and-implementation">4. Workflow summaries and implementation<a class="anchor-link" href="#Workflow-summaries-and-implementation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-12"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="12.-Summarize-the-metrics-and-compare-workflows">12. Summarize the metrics and compare workflows<a class="anchor-link" href="#12.-Summarize-the-metrics-and-compare-workflows">¶</a></h2><p>First retain loop num, Dice, APA, RNA and mCG as separate result tables.
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="12.-Summarize-the-metrics-and-compare-workflows">4.1. Summarize the metrics and compare workflows<a class="anchor-link" href="#12.-Summarize-the-metrics-and-compare-workflows">¶</a></h3><p>First retain loop num, Dice, APA, RNA and mCG as separate result tables.
 The full-benchmark summaries use the complete prespecified caller–input set
 and selected dataset conditions, beyond the two-workflow worked example.</p>
-<h3 id="Fig.-6c:-Raw–imputed-rank-product-changes">Fig. 6c: Raw–imputed rank-product changes<a class="anchor-link" href="#Fig.-6c:-Raw%E2%80%93imputed-rank-product-changes">¶</a></h3><p>The four components are loop num, mapped-reference Dice, mCG correlation and
+<p class="method-title" id="Fig.-6c:-Raw–imputed-rank-product-changes">Fig. 6c: Raw–imputed rank-product changes<a class="anchor-link" href="#Fig.-6c:-Raw%E2%80%93imputed-rank-product-changes">¶</a></p><p>The four components are loop num, mapped-reference Dice, mCG correlation and
 RNA correlation. Loop num, Dice and RNA are ranked in descending order; the
 mCG coefficient is sign-inverted before ranking. Ties receive the minimum rank.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_rank_product_shift</span>
@@ -614,7 +625,7 @@ mCG coefficient is sign-inverted before ranking. Ties receive the minimum rank.<
 <p>For each workflow, multiply its four component ranks. For each caller, compare
 the imputed rank product with its matched Raw rank product using the signed
 logarithmic difference implemented in <code>run_rank_product_shift</code>.</p>
-<h3 id="Fig.-5g,-Fig.-6d-and-Supplementary-Fig.-7:-weighted-ranking">Fig. 5g, Fig. 6d and Supplementary Fig. 7: weighted ranking<a class="anchor-link" href="#Fig.-5g,-Fig.-6d-and-Supplementary-Fig.-7:-weighted-ranking">¶</a></h3><p>Transform loop num as <code>log10(N + 1)</code>. Min–max normalize each component across
+<p class="method-title" id="Fig.-5g,-Fig.-6d-and-Supplementary-Fig.-7:-weighted-ranking">Fig. 5g, Fig. 6d and Supplementary Fig. 7: weighted ranking<a class="anchor-link" href="#Fig.-5g,-Fig.-6d-and-Supplementary-Fig.-7:-weighted-ranking">¶</a></p><p>Transform loop num as <code>log10(N + 1)</code>. Min–max normalize each component across
 workflows within a dataset, average dataset-level normalized values within each
 component and combine them with the following fixed weights:</p>
 <div class="table-wrap"><table>
@@ -680,7 +691,7 @@ figure guide (<a href="loop_figures.html">Loop figure tutorial</a>) for the exac
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-13"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="13.-Read-the-outputs">13. Read the outputs<a class="anchor-link" href="#13.-Read-the-outputs">¶</a></h2><p>Each stage writes its own outputs. The following layout summarizes the examples
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="13.-Read-the-outputs">4.2. Read the outputs<a class="anchor-link" href="#13.-Read-the-outputs">¶</a></h3><p>Each stage writes its own outputs. The following layout summarizes the examples
 above; it is an output guide rather than a directory that is loaded while
 reading this notebook.</p>
 <div class="highlight"><pre><span></span>outputs/
@@ -719,7 +730,7 @@ Mustache,iEnhance,24595,1082.4974068,0.0461491813220133,4.880963830726539,0.2592
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-14"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="14.-Implementation-and-tutorial-references">14. Implementation and tutorial references<a class="anchor-link" href="#14.-Implementation-and-tutorial-references">¶</a></h2><ul>
+<h3 id="14.-Implementation-and-tutorial-references">4.3. Implementation and tutorial references<a class="anchor-link" href="#14.-Implementation-and-tutorial-references">¶</a></h3><ul>
 <li>Caller command templates (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/callers.py">call_loop/tool/callers/callers.py</a> in the code repository)</li>
 <li>Metric implementations and Fig. 6c workflow (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/get_result.py">call_loop/tool/get_result.py</a> in the code repository)</li>
 <li>Loop metric guide (<a href="loop.html">Loop tutorial</a>)</li>
@@ -737,7 +748,7 @@ this repository's Loop workflow.</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-software-notes"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Software-and-implementation">Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h2><div class="table-wrap"><table>
+<h3 id="Software-and-implementation">4.4. Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h3><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Stage</th>
@@ -771,4 +782,29 @@ the caller and metric helpers; this reading edition does not import them.</p>
 </div>
 </div>
 </div>
-<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div></body></html>
+<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+(() => {
+  function revealSection() {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    let heading = null;
+    for (const candidate of document.querySelectorAll('main h2, main h3')) {
+      if (candidate === target || (candidate.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+        heading = candidate;
+      }
+    }
+    if (!heading) return;
+    for (const link of document.querySelectorAll('nav .toc-group a')) {
+      if (link.getAttribute('href') === '#' + heading.id) {
+        const group = link.closest('details');
+        if (group) group.open = true;
+        break;
+      }
+    }
+  }
+  window.addEventListener('hashchange', revealSection);
+  revealSection();
+})();
+</script></body></html>

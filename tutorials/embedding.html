@@ -88,7 +88,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
 .highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
 .edition-note{font-size:14px;padding:10px 14px;background:#eff4fa;border-left:3px solid #2463a0;margin:0 0 25px;color:#40566d}
-</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="active" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Prepare-the-same-biological-cells">1. Prepare the same biological cells</a><a href="#2.-Prepare-ordered-native-inputs">2. Prepare ordered native inputs</a><a href="#3.-Generate-scHiCluster-embeddings">3. Generate scHiCluster embeddings</a><a href="#4.-Generate-Higashi-embeddings">4. Generate Higashi embeddings</a><a href="#5.-Generate-Fast-Higashi-embeddings">5. Generate Fast-Higashi embeddings</a><a href="#6.-Generate-scVI-3D-embeddings">6. Generate scVI-3D embeddings</a><a href="#7.-Export-vectors-with-their-cell-identities">7. Export vectors with their cell identities</a><a href="#8.-Evaluate-the-original-workflow-assignments">8. Evaluate the original workflow assignments</a><a href="#9.-Run-the-completed-fixed-group-example">9. Run the completed fixed-group example</a><a href="#10.-Read-ARI,-AMI-and-V-measure">10. Read ARI, AMI and V-measure</a><a href="#11.-Evaluate-other-resolutions">11. Evaluate other resolutions</a><a href="#12.-Locate-outputs-and-implementation">12. Locate outputs and implementation</a><a href="#Software-and-implementation">Software and implementation</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="embedding.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-00"><div class="prompt input_prompt">
+
+/* Two-level page headings and grouped navigation. */
+nav .toc-group{margin:0 0 14px}
+nav .toc-group summary{cursor:pointer;color:#173653;font-weight:650;line-height:1.45}
+nav .toc-group summary::marker{color:#6e839b;font-size:12px}
+nav .toc-group summary a{display:inline;margin:0;color:inherit;font-weight:inherit}
+nav .toc-group[open] summary{margin-bottom:9px}
+nav .toc-subsections{padding-left:12px;margin-left:5px;border-left:1px solid #dce4ee}
+nav .toc-subsections a{font-size:13px;line-height:1.45;margin-bottom:9px}
+h3{scroll-margin-top:18px}
+.method-title{font-size:18px;font-weight:650;line-height:1.4;margin:26px 0 12px;scroll-margin-top:18px}
+</style></head><body><header class="topbar"><div class="brand">Single-cell Hi-C benchmark · Workflow tutorials</div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="active" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a><a class="" href="loop_figures.html">Loop figures</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-cell-identities">1. Inputs and cell identities</a></summary><div class="toc-subsections"><a href="#1.-Prepare-the-same-biological-cells">1.1. Prepare the same biological cells</a><a href="#2.-Prepare-ordered-native-inputs">1.2. Prepare ordered native inputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Embedding-methods">2. Embedding methods</a></summary><div class="toc-subsections"><a href="#3.-Generate-scHiCluster-embeddings">2.1. Generate scHiCluster embeddings</a><a href="#4.-Generate-Higashi-embeddings">2.2. Generate Higashi embeddings</a><a href="#5.-Generate-Fast-Higashi-embeddings">2.3. Generate Fast-Higashi embeddings</a><a href="#6.-Generate-scVI-3D-embeddings">2.4. Generate scVI-3D embeddings</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Evaluation-and-resolutions">3. Evaluation and resolutions</a></summary><div class="toc-subsections"><a href="#7.-Export-vectors-with-their-cell-identities">3.1. Export vectors with their cell identities</a><a href="#8.-Evaluate-the-original-workflow-assignments">3.2. Evaluate the original workflow assignments</a><a href="#9.-Run-the-completed-fixed-group-example">3.3. Run the completed fixed-group example</a><a href="#10.-Read-ARI,-AMI-and-V-measure">3.4. Read ARI, AMI and V-measure</a><a href="#11.-Evaluate-other-resolutions">3.5. Evaluate other resolutions</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Outputs-and-implementation">4. Outputs and implementation</a></summary><div class="toc-subsections"><a href="#12.-Locate-outputs-and-implementation">4.1. Locate outputs and implementation</a><a href="#Software-and-implementation">4.2. Software and implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="embedding.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html"><h1 id="Embedding-and-cell-label-evaluation-tutorial">Embedding and cell-label evaluation tutorial<a class="anchor-link" href="#Embedding-and-cell-label-evaluation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Command paths refer to the <code>final_code3</code> analysis-code checkout. Scientific inputs and native software environments are configured separately.</p>
 <p>This tutorial follows four native embedding workflows from shared cell inputs
@@ -112,9 +123,9 @@ kept explicit.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-01"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=embedding-group-01"><h2 id="Inputs-and-cell-identities">1. Inputs and cell identities<a class="anchor-link" href="#Inputs-and-cell-identities">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-01"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="1.-Prepare-the-same-biological-cells">1. Prepare the same biological cells<a class="anchor-link" href="#1.-Prepare-the-same-biological-cells">¶</a></h2><p>The example selects the first three cells of each type in the original
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="1.-Prepare-the-same-biological-cells">1.1. Prepare the same biological cells<a class="anchor-link" href="#1.-Prepare-the-same-biological-cells">¶</a></h3><p>The example selects the first three cells of each type in the original
 metadata order. Every method receives the same 42 biological IDs.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -166,7 +177,7 @@ contacts retain the source values; labels are joined by biological cell ID.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-02"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="2.-Prepare-ordered-native-inputs">2. Prepare ordered native inputs<a class="anchor-link" href="#2.-Prepare-ordered-native-inputs">¶</a></h2><p>Run the existing preparation script with the native Embedding environment.
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="2.-Prepare-ordered-native-inputs">1.2. Prepare ordered native inputs<a class="anchor-link" href="#2.-Prepare-ordered-native-inputs">¶</a></h3><p>Run the existing preparation script with the native Embedding environment.
 The commands below use the shared path prefix; the local data directory is
 <code>D:/benchmark_higashi/embedding_all_autosomes_example_42cells/</code>.</p>
 <div class="highlight"><pre><span></span><span class="s2">"</span><span class="si">${</span><span class="nv">EMBEDDING_PYTHON</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>embedding/tool/prepare_raw_embedding_example.py<span class="w"> </span><span class="se">\</span>
@@ -199,9 +210,9 @@ Environment and pinned-source locations are documented in
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-03"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=embedding-group-02"><h2 id="Embedding-methods">2. Embedding methods<a class="anchor-link" href="#Embedding-methods">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-03"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="3.-Generate-scHiCluster-embeddings">3. Generate scHiCluster embeddings<a class="anchor-link" href="#3.-Generate-scHiCluster-embeddings">¶</a></h2><p>The completed example uses the existing matched imputed Coolers. Its shared
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="3.-Generate-scHiCluster-embeddings">2.1. Generate scHiCluster embeddings<a class="anchor-link" href="#3.-Generate-scHiCluster-embeddings">¶</a></h3><p>The completed example uses the existing matched imputed Coolers. Its shared
 runner verifies their resolution and ordered cell table before invoking
 the native embedding command. The main native parameters are:</p>
 <div class="highlight"><pre><span></span>hicluster<span class="w"> </span>embedding<span class="w"> </span><span class="se">\</span>
@@ -226,7 +237,7 @@ has those matrices and reuses them.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-04"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="4.-Generate-Higashi-embeddings">4. Generate Higashi embeddings<a class="anchor-link" href="#4.-Generate-Higashi-embeddings">¶</a></h2><p>Higashi starts from the prepared raw contacts and the ordered native files.
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="4.-Generate-Higashi-embeddings">2.2. Generate Higashi embeddings<a class="anchor-link" href="#4.-Generate-Higashi-embeddings">¶</a></h3><p>Higashi starts from the prepared raw contacts and the ordered native files.
 Its main configuration retains <code>resolution=100000</code>,
 <code>resolution_cell=500000</code>, <code>dimensions=128</code> and <code>neighbor_num=5</code>.
 The small local example sets <code>embedding_epoch=1</code> in its run-local configuration.</p>
@@ -244,7 +255,7 @@ cell vectors here.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-05"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="5.-Generate-Fast-Higashi-embeddings">5. Generate Fast-Higashi embeddings<a class="anchor-link" href="#5.-Generate-Fast-Higashi-embeddings">¶</a></h2><p>Fast-Higashi uses the same selected raw cells. Its preparation first constructs
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="5.-Generate-Fast-Higashi-embeddings">2.3. Generate Fast-Higashi embeddings<a class="anchor-link" href="#5.-Generate-Fast-Higashi-embeddings">¶</a></h3><p>Fast-Higashi uses the same selected raw cells. Its preparation first constructs
 resolution-matched sparse inputs from their native ordered file list.
 The template retains <code>resolution_fh=[100000]</code>, <code>resolution_cell=100000</code>,
 <code>dimensions=128</code>, <code>bottle_neck=128</code> and <code>restore_order=true</code>.
@@ -266,7 +277,7 @@ order. The model's cell-order mapping is retained in <code>cell_order.tsv</code>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-06"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="6.-Generate-scVI-3D-embeddings">6. Generate scVI-3D embeddings<a class="anchor-link" href="#6.-Generate-scVI-3D-embeddings">¶</a></h2><p>scVI-3D reads the prepared five-column raw contacts and cell summary. For all
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="6.-Generate-scVI-3D-embeddings">2.4. Generate scVI-3D embeddings<a class="anchor-link" href="#6.-Generate-scVI-3D-embeddings">¶</a></h3><p>scVI-3D reads the prepared five-column raw contacts and cell summary. For all
 autosomes, the native command used by the wrapper is:</p>
 <div class="highlight"><pre><span></span><span class="si">${</span><span class="nv">EMBEDDING_PYTHON</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">SCVI3D_SCRIPT</span><span class="si">}</span><span class="w"> </span>-b<span class="w"> </span><span class="m">10</span><span class="w"> </span>-c<span class="w"> </span>whole<span class="w"> </span>-r<span class="w"> </span><span class="m">100000</span><span class="w"> </span>-n<span class="w"> </span><span class="m">130</span><span class="w"> </span>-pool<span class="w"> </span><span class="m">2</span><span class="w"> </span>-i<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/embedding_all_autosomes_example_42cells/input/contacts"</span><span class="w"> </span>-o<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/embedding_all_autosomes_example_42cells/native/scVI-3D/attempt01/run1"</span><span class="w"> </span>-cs<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/embedding_all_autosomes_example_42cells/input/cell_summary.tsv"</span><span class="w"> </span>-g<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/embedding_all_autosomes_example_42cells/input/hg38.autosomal.chrom.sizes"</span><span class="w"> </span>-gpu<span class="w"> </span>-p<span class="w"> </span><span class="m">1</span><span class="w"> </span>-pca<span class="w"> </span><span class="m">5</span>
 </pre></div>
@@ -280,10 +291,10 @@ headered summary to recover the exact row-to-cell mapping.</p>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-07"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=embedding-group-03"><h2 id="Evaluation-and-resolutions">3. Evaluation and resolutions<a class="anchor-link" href="#Evaluation-and-resolutions">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-07"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="7.-Export-vectors-with-their-cell-identities">7. Export vectors with their cell identities<a class="anchor-link" href="#7.-Export-vectors-with-their-cell-identities">¶</a></h2><p>Every branch writes the following under <code>result/&lt;method&gt;/</code>:</p>
+<h3 id="7.-Export-vectors-with-their-cell-identities">3.1. Export vectors with their cell identities<a class="anchor-link" href="#7.-Export-vectors-with-their-cell-identities">¶</a></h3><p>Every branch writes the following under <code>result/&lt;method&gt;/</code>:</p>
 <div class="highlight"><pre><span></span>cell_vectors.npy          native vectors, one row per cell
 cell_ids.tsv              the corresponding ordered biological IDs
 cell_metadata.tsv         original labels aligned to those IDs
@@ -329,7 +340,7 @@ display coordinates; it does not determine these native vectors or groups.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-08"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="8.-Evaluate-the-original-workflow-assignments">8. Evaluate the original workflow assignments<a class="anchor-link" href="#8.-Evaluate-the-original-workflow-assignments">¶</a></h2><p>For the manuscript route, supply the groups produced by the selected original
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="8.-Evaluate-the-original-workflow-assignments">3.2. Evaluate the original workflow assignments<a class="anchor-link" href="#8.-Evaluate-the-original-workflow-assignments">¶</a></h3><p>For the manuscript route, supply the groups produced by the selected original
 workflow as a headered table. The table columns are <code>cell_id</code> and <code>cluster_assignment</code>.</p>
 <p>Use the shared evaluator after exporting same-run vectors, IDs and metadata:</p>
 <div class="highlight"><pre><span></span><span class="s2">"</span><span class="si">${</span><span class="nv">EMBEDDING_PYTHON</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>embedding/tool/evaluation/run_evaluation.py<span class="w"> </span>evaluate-embedding<span class="w"> </span><span class="se">\</span>
@@ -349,7 +360,7 @@ contains native export adapters and selectors for existing original outputs.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-09"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="9.-Run-the-completed-fixed-group-example">9. Run the completed fixed-group example<a class="anchor-link" href="#9.-Run-the-completed-fixed-group-example">¶</a></h2><p>The separate local example demonstrates the entire scoring chain using newly
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="9.-Run-the-completed-fixed-group-example">3.3. Run the completed fixed-group example<a class="anchor-link" href="#9.-Run-the-completed-fixed-group-example">¶</a></h3><p>The separate local example demonstrates the entire scoring chain using newly
 computed groups. Each method is clustered directly on its native vectors with
 the same prespecified settings:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
@@ -386,7 +397,7 @@ assignments remain a separate input route.</p>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-10"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="10.-Read-ARI,-AMI-and-V-measure">10. Read ARI, AMI and V-measure<a class="anchor-link" href="#10.-Read-ARI,-AMI-and-V-measure">¶</a></h2><p>The implementation uses scikit-learn's adjusted Rand index, adjusted mutual
+<h3 id="10.-Read-ARI,-AMI-and-V-measure">3.4. Read ARI, AMI and V-measure<a class="anchor-link" href="#10.-Read-ARI,-AMI-and-V-measure">¶</a></h3><p>The implementation uses scikit-learn's adjusted Rand index, adjusted mutual
 information and V-measure (<code>beta=1</code>). Cluster identifiers need no manual
 matching to cell-type names. The three scores are reported separately;
 negative adjusted scores are retained.</p>
@@ -438,7 +449,7 @@ does not recalculate them. The full-precision CSV and manifests remain under
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-11"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="11.-Evaluate-other-resolutions">11. Evaluate other resolutions<a class="anchor-link" href="#11.-Evaluate-other-resolutions">¶</a></h2><p>Existing original-workflow outputs can be evaluated at <strong>100 kb, 500 kb and
+<h3 id="11.-Evaluate-other-resolutions">3.5. Evaluate other resolutions<a class="anchor-link" href="#11.-Evaluate-other-resolutions">¶</a></h3><p>Existing original-workflow outputs can be evaluated at <strong>100 kb, 500 kb and
 1 Mb</strong> with the same export and scoring sequence. Select the resolution-matched
 contacts/configuration, original row-identity files and assignments, then use
 a separate output directory for every method, dataset, resolution and label task.</p>
@@ -458,10 +469,10 @@ example. Its <code>--chromosomes</code> switch changes chromosome scope, not res
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-12"><div class="prompt input_prompt">
+<div class="cell tutorial-section" id="cell-id=embedding-group-04"><h2 id="Outputs-and-implementation">4. Outputs and implementation<a class="anchor-link" href="#Outputs-and-implementation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-12"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="12.-Locate-outputs-and-implementation">12. Locate outputs and implementation<a class="anchor-link" href="#12.-Locate-outputs-and-implementation">¶</a></h2><div class="highlight"><pre><span></span>embedding_all_autosomes_example_42cells/
+<h3 id="12.-Locate-outputs-and-implementation">4.1. Locate outputs and implementation<a class="anchor-link" href="#12.-Locate-outputs-and-implementation">¶</a></h3><div class="highlight"><pre><span></span>embedding_all_autosomes_example_42cells/
   input/                              selected contacts, metadata and manifest
   native/&lt;method&gt;/                    native runs and command records
   result/&lt;method&gt;/                    standardized native exports
@@ -484,7 +495,7 @@ evaluation details (<a href="https://github.com/rawandy2001-design/benchmark/blo
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-software-notes"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Software-and-implementation">Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h2><div class="table-wrap"><table>
+<h3 id="Software-and-implementation">4.2. Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h3><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Stage</th>
@@ -513,4 +524,29 @@ native installer remain at <a href="https://github.com/rawandy2001-design/benchm
 </div>
 </div>
 </div>
-<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div></body></html>
+<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+(() => {
+  function revealSection() {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    let heading = null;
+    for (const candidate of document.querySelectorAll('main h2, main h3')) {
+      if (candidate === target || (candidate.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+        heading = candidate;
+      }
+    }
+    if (!heading) return;
+    for (const link of document.querySelectorAll('nav .toc-group a')) {
+      if (link.getAttribute('href') === '#' + heading.id) {
+        const group = link.closest('details');
+        if (group) group.open = true;
+        break;
+      }
+    }
+  }
+  window.addEventListener('hashchange', revealSection);
+  revealSection();
+})();
+</script></body></html>
