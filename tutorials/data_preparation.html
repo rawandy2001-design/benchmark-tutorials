@@ -479,44 +479,42 @@ method's output matrix.</p>
 </div>
 <div class="cell tutorial-section" id="cell-id=data_preparation-group-04"><h2 id="Records-and-implementation">4. Records and implementation<a class="anchor-link" href="#Records-and-implementation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-10"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h3 id="10.-Keep-inputs-and-run-records-together">4.1. Keep inputs and run records together<a class="anchor-link" href="#10.-Keep-inputs-and-run-records-together">¶</a></h3><p>The example files are stored in these local directories:</p>
+<div class="text_cell_render border-box-sizing rendered_html"><h3 id="10.-Keep-inputs-and-run-records-together">4.1. Keep inputs and run records together<a class="anchor-link" href="#10.-Keep-inputs-and-run-records-together">¶</a></h3><p>The prepared inputs feed the downstream tasks below. Keep their cell identities
+and run settings with the corresponding outputs.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
-<th>Contents</th>
-<th>Directory</th>
+<th>Analysis</th>
+<th>Prepared inputs</th>
+<th>Records to retain</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Embedding inputs</td>
-<td><code>D:/benchmark_higashi/embedding_all_autosomes_example_42cells/input/</code></td>
+<td>Embedding</td>
+<td>Per-cell contacts or imputed matrices, as required by the tool</td>
+<td>Ordered cell IDs, original metadata labels, resolution and embedding settings</td>
 </tr>
 <tr>
-<td>100-kb scHiCluster-imputed inputs</td>
-<td><code>D:/benchmark_higashi/impute/</code></td>
+<td>Compartment</td>
+<td>Raw or imputed contact maps and matching genomic resources</td>
+<td>Caller, input modality, resolution, cell-type or pseudo-bulk membership and compartment tracks</td>
 </tr>
 <tr>
-<td>TAD inputs and results</td>
-<td><code>D:/benchmark_higashi/tad_chr21_all12_example/</code></td>
+<td>Domain/TAD</td>
+<td>Imputed per-cell maps and raw cell-type pseudo-bulk references</td>
+<td>Selected cells, caller parameters, boundary scores and reference tracks</td>
 </tr>
 <tr>
-<td>ODC raw 10-kb inputs and cell lists</td>
-<td><code>D:/data_new/lee2019/lee2019/ODC_raw_10k_line/</code></td>
-</tr>
-<tr>
-<td>ODC iEnhance 10-kb inputs</td>
-<td><code>D:/data_new/lee2019/lee2019/bulk_impute_10k/ODC/</code></td>
-</tr>
-<tr>
-<td>Loop calling and evaluation outputs</td>
-<td><code>F:/project/test1/final_code2/call_loop/result/</code></td>
+<td>Loop</td>
+<td>Per-cell inputs for native scHiCluster; matched pseudo-bulk maps for bulk callers</td>
+<td>Cell-number condition, selected cells, caller parameters, loop sets and evaluation results</td>
 </tr>
 </tbody>
 </table></div>
-<p>Keep the selected cell IDs, genome, resolution, exact commands, software
-versions and checkpoint identities with their outputs. A task can then reuse
-the same raw baseline and the matching imputed input.</p>
+<p>Record the tool version and exact command. Include the checkpoint identifier
+when a model is used. Match raw and imputed inputs by the selected cells and genomic grid
+before comparing task outputs.</p>
 </div>
 </div>
 </div>
