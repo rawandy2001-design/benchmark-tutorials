@@ -3,7 +3,7 @@
 **[Read the tutorial website](https://rawandy2001-design.github.io/benchmark-tutorials/)** ·
 **[Open the notebook index](tutorials/tutorials.ipynb)**
 
-This standalone public test contains seven reading notebooks, six task webpages
+This standalone public test contains six main notebooks, five task webpages
 and a web index. It can be reviewed independently before a later integration
 with the companion project.
 
@@ -14,8 +14,7 @@ with the companion project.
 | Embedding | [HTML](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/embedding.html) | [Notebook](tutorials/embedding.ipynb) |
 | Compartment | [HTML](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/compartment.html) | [Notebook](tutorials/compartment.ipynb) |
 | Domain/TAD | [HTML](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/tad.html) | [Notebook](tutorials/tad.ipynb) |
-| Loop | [HTML](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/loop.html) | [Notebook](tutorials/loop.ipynb) |
-| Loop figures | [HTML](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/loop_figures.html) | [Notebook](tutorials/loop_figures.ipynb) |
+| Loop, including figures | [HTML](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/loop.html) | [Notebook](tutorials/loop.ipynb) |
 
 The notebooks show command examples, source-file excerpts and retained figures.
 Compartment preserves the upstream code cells and saved outputs, with hierarchical headings and brief section descriptions. The other notebooks display commands as Markdown. Reading the HTML pages or notebook previews does not execute analyses.
@@ -39,7 +38,7 @@ Then open `http://127.0.0.1:8765/`. The site has no build dependency.
 
 ```text
 index.html       web index
-tutorials/       seven notebooks and six HTML task pages
+tutorials/       main notebooks, task pages and compatibility links
 .nojekyll        serve the static HTML files directly with GitHub Pages
 README.md        entry points and publication notes
 ```
@@ -51,3 +50,5 @@ Experimental input files and model checkpoints are configured separately.
 ## Previous Compartment version
 
 [Read the standalone previous tutorial](https://rawandy2001-design.github.io/benchmark-tutorials/tutorials/compartment-previous.html) or [open its notebook](tutorials/compartment-previous.ipynb). This preserves the explanation-based Compartment tutorial from `2cd016d`, before restoration of the original-source evaluation notebook. Implementation links use the matching private code revision `02e6c9e`.
+
+Loop figure generation and the retained panels are included in the [Loop tutorial](tutorials/loop.ipynb#Workflow-ranking-and-figures). The former figure-only URLs are compatibility links.
