@@ -139,39 +139,39 @@ metadata order. Every method receives the same 42 biological IDs.</p>
 <thead>
 <tr>
 <th>Input</th>
-<th>Existing local source</th>
+<th>Required format or contents</th>
 <th>Use</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Raw five-column contacts</td>
-<td><code>D:/benchmark_higashi/data-100K/&lt;cell_id&gt;.txt</code></td>
+<td>Binned per-cell contact tables with five columns and no header</td>
 <td>Higashi, Fast-Higashi and scVI-3D</td>
 </tr>
 <tr>
 <td>Imputed 100-kb Coolers</td>
-<td><code>D:/benchmark_higashi/impute/chunk*/&lt;cell_id&gt;.cool</code></td>
+<td>One imputed Cooler (<code>.cool</code>) per cell at 100 kb</td>
 <td>scHiCluster</td>
 </tr>
 <tr>
 <td>Imputed cell table</td>
-<td><code>D:/benchmark_higashi/impute/cell_table_100K.tsv</code></td>
+<td>Two columns linking each cell ID to its imputed Cooler file</td>
 <td>scHiCluster ID/path lookup</td>
 </tr>
 <tr>
 <td>Reference labels</td>
-<td><code>/mnt/d/benchmark_higashi/embedding_all_autosomes_example_42cells/input/metadata.tsv</code> supplied with <code>--metadata</code></td>
-<td>Original <code>cell_id</code>, <code>cell_type</code>, <code>subtype</code></td>
+<td>Metadata with <code>cell_id</code>, <code>cell_type</code> and <code>subtype</code>, supplied with <code>--metadata</code></td>
+<td>Original cell-type and subtype labels</td>
 </tr>
 <tr>
 <td>Genome sizes</td>
-<td><code>../resources/genome/hg38.autosomal.chrom.sizes</code></td>
+<td>hg38 autosomal chromosome names and lengths</td>
 <td>All 22 autosomes</td>
 </tr>
 <tr>
 <td>Cytoband</td>
-<td><code>D:/benchmark_higashi/cytoband/cytoBand_hg38.txt</code></td>
+<td>hg38 cytoband annotations</td>
 <td>Higashi input configuration</td>
 </tr>
 </tbody>
