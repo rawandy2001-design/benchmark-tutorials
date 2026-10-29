@@ -107,7 +107,7 @@ h3{scroll-margin-top:18px}
 <button aria-checked="true" data-theme-value="system" role="menuitemradio" type="button">System</button>
 <button aria-checked="false" data-theme-value="light" role="menuitemradio" type="button">Light</button>
 <button aria-checked="false" data-theme-value="dark" role="menuitemradio" type="button">Dark</button>
-</div></div></div><div class="modules"><a class="active" href="index.html">Tutorial index</a><a class="" href="tutorials/data_preparation.html">Data preparation</a><a class="" href="tutorials/embedding.html">Embedding</a><a class="" href="tutorials/compartment.html">Compartment</a><a class="" href="tutorials/tad.html">Domain/TAD</a><a class="" href="tutorials/loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#1.-Choose-a-workflow">1. Choose a workflow</a></summary><div class="toc-subsections"></div></details><details class="toc-group" name="page-sections"><summary><a href="#2.-Read-the-retained-examples">2. Read the retained examples</a></summary><div class="toc-subsections"></div></details><details class="toc-group" name="page-sections"><summary><a href="#3.-Read-the-tutorials-and-inspect-their-implementation">3. Read the tutorials and inspect their implementation</a></summary><div class="toc-subsections"><a href="#Shared-path-prefix">Shared path prefix</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tutorials/tutorials.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-00"><div class="prompt input_prompt">
+</div></div></div><div class="modules"><a class="active" href="index.html">Tutorial index</a><a class="" href="tutorials/data_preparation.html">Data preparation</a><a class="" href="tutorials/embedding.html">Embedding</a><a class="" href="tutorials/compartment.html">Compartment</a><a class="" href="tutorials/tad.html">Domain/TAD</a><a class="" href="tutorials/loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Choose-a-workflow">1. Choose a workflow</a><a href="#2.-Read-the-retained-examples">2. Read the retained examples</a><a href="#Shared-path-prefix">3. Shared path setup</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tutorials/tutorials.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Single-cell-Hi-C-workflow-tutorials">Single-cell Hi-C workflow tutorials<a class="anchor-link" href="#Single-cell-Hi-C-workflow-tutorials">¶</a></h1><p>Choose a workflow below to read its steps, commands and existing example figures. Reading the pages does not run an analysis or require Jupyter.</p>
@@ -167,7 +167,9 @@ other caller branches and multimodal evaluations. Its ranking and figures sectio
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-03"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h2 id="3.-Read-the-tutorials-and-inspect-their-implementation">3. Read the tutorials and inspect their implementation<a class="anchor-link" href="#3.-Read-the-tutorials-and-inspect-their-implementation">¶</a></h2><p>The six main notebooks are included in this public test repository. Browse them on <a href="https://github.com/rawandy2001-design/benchmark-tutorials/tree/main/tutorials">GitHub</a> or download the repository to open them in Jupyter. They preserve the same command examples and embedded figures.</p><p>This website contains the Data preparation, Embedding, Compartment, Domain/TAD, Loop tutorials, including ranking and figures. Navigation and saved figures are available directly in the browser.</p><p>The <a href="https://github.com/rawandy2001-design/benchmark">companion code repository</a> contains the analysis scripts and per-task environment instructions. Access to that repository is required to view source files.</p><p>Commands shown in the tutorials use the code repository root as their working directory. Running those commands requires separately configured inputs, environments and checkpoints.</p><p>The presentation follows the official scHiCluster <a href="https://zhoujt1994.github.io/scHiCluster/Tan2021/imputation.html">imputation</a> and <a href="https://zhoujt1994.github.io/scHiCluster/hba/loop_majortype/01.diff.html">loop-analysis</a> tutorial style, with this benchmark's commands and metric definitions.</p><h3 id="Shared-path-prefix">Shared path prefix<a class="anchor-link" href="#Shared-path-prefix">¶</a></h3><p>All tutorial commands use <code>BENCHMARK_ROOT</code>. The local workspace contains
+<div class="text_cell_render border-box-sizing rendered_html"><p><a id="3.-Read-the-tutorials-and-inspect-their-implementation"></a></p>
+<p></p>
+<h2 id="Shared-path-prefix">3. Shared path setup<a class="anchor-link" href="#Shared-path-prefix">¶</a></h2><p>All tutorial commands use <code>BENCHMARK_ROOT</code>. The local workspace contains
 directory links to the existing code, inputs, software and saved records.
 The source files remain in their original locations.</p>
 <p>Run this once from the code checkout in WSL:</p>
@@ -185,57 +187,6 @@ set the corresponding environment variable in PowerShell:</p>
 
 <span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
 </pre></div>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Resource group</th>
-<th>Contents</th>
-<th>Used by</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Analysis implementation</td>
-<td>Task scripts and software instructions</td>
-<td>All tutorials</td>
-</tr>
-<tr>
-<td>Per-cell contacts and metadata</td>
-<td>Lee2019 cell identities, contacts and imputed maps</td>
-<td>Embedding and Domain/TAD</td>
-</tr>
-<tr>
-<td>Pseudo-bulk contacts and cell lists</td>
-<td>Matched Lee2019 Raw and imputed matrices</td>
-<td>Structural-feature workflows</td>
-</tr>
-<tr>
-<td>Multimodal measurements</td>
-<td>MouseBrain RNA/DEG inputs and Lee2019 methylation data</td>
-<td>RNA and mCG evaluation</td>
-</tr>
-<tr>
-<td>Genomic annotations</td>
-<td>Chromosome sizes, gene intervals and masking resources</td>
-<td>Input preparation and downstream analysis</td>
-</tr>
-<tr>
-<td>Native software and checkpoints</td>
-<td>Caller runtimes, model sources and trained weights</td>
-<td>Method-specific calling and imputation</td>
-</tr>
-<tr>
-<td>Saved records</td>
-<td>Metric tables, selected cells and run settings</td>
-<td>Worked-example summaries and figures</td>
-</tr>
-<tr>
-<td>Generated results</td>
-<td>Calls, scores, figures and execution records</td>
-<td>Inspection and comparison of workflow outputs</td>
-</tr>
-</tbody>
-</table></div>
 <p>The mappings and runtime settings are collected in <a href="https://github.com/rawandy2001-design/benchmark/blob/main/tutorials/paths.sh">paths.sh</a>.
 On another machine, set its <code>BENCHMARK_*_SOURCE</code> values to the corresponding
 existing directories. Original file excerpts retain the paths recorded in
@@ -243,7 +194,7 @@ their source files.</p>
 </div>
 </div>
 </div>
-<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+</main></div><script id="toc-hierarchy-script">
 (() => {
   function revealSection() {
     let id;

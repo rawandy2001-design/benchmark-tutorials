@@ -107,18 +107,16 @@ h3{scroll-margin-top:18px}
 <button aria-checked="true" data-theme-value="system" role="menuitemradio" type="button">System</button>
 <button aria-checked="false" data-theme-value="light" role="menuitemradio" type="button">Light</button>
 <button aria-checked="false" data-theme-value="dark" role="menuitemradio" type="button">Dark</button>
-</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="active" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-cell-selection">1. Inputs and cell selection</a></summary><div class="toc-subsections"><a href="#1.-Read-metadata-and-contact-tables">1.1. Read metadata and contact tables</a><a href="#2.-Filter-blacklisted-contacts">1.2. Filter blacklisted contacts</a><a href="#3.-Select-cell-types-and-construct-nested-subsets">1.3. Select cell types and construct nested subsets</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Raw-pseudo-bulk-preparation">2. Raw pseudo-bulk preparation</a></summary><div class="toc-subsections"><a href="#4.-Merge-each-selected-raw-cell-set">2.1. Merge each selected raw cell set</a><a href="#5.-Organize-the-Lee2019-pseudo-bulk-inputs">2.2. Organize the Lee2019 pseudo-bulk inputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Imputation-workflows">3. Imputation workflows</a></summary><div class="toc-subsections"><a href="#6.-Choose-the-imputation-branch">3.1. Choose the imputation branch</a><a href="#7.-Prepare-and-run-scHiCluster-imputation">3.2. Prepare and run scHiCluster imputation</a><a href="#8.-Run-Higashi-preprocessing-and-imputation">3.3. Run Higashi preprocessing and imputation</a><a href="#9.-Enhance-a-Lee2019-pseudo-bulk-matrix">3.4. Enhance a Lee2019 pseudo-bulk matrix</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Records-and-implementation">4. Records and implementation</a></summary><div class="toc-subsections"><a href="#10.-Keep-inputs-and-run-records-together">4.1. Keep inputs and run records together</a><a href="#11.-Continue-to-the-analysis-tutorials">4.2. Continue to the analysis tutorials</a><a href="#Software-and-implementation">4.3. Software and implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="data_preparation.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-00"><div class="prompt input_prompt">
+</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="active" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-cell-selection">1. Inputs and cell selection</a></summary><div class="toc-subsections"><a href="#1.-Read-metadata-and-contact-tables">1.1. Read metadata and contact tables</a><a href="#2.-Filter-blacklisted-contacts">1.2. Filter blacklisted contacts</a><a href="#3.-Select-cell-types-and-construct-nested-subsets">1.3. Select cell types and construct nested subsets</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Raw-pseudo-bulk-preparation">2. Raw pseudo-bulk preparation</a></summary><div class="toc-subsections"><a href="#4.-Merge-each-selected-raw-cell-set">2.1. Merge each selected raw cell set</a><a href="#5.-Organize-the-Lee2019-pseudo-bulk-inputs">2.2. Organize the Lee2019 pseudo-bulk inputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Imputation-workflows">3. Imputation workflows</a></summary><div class="toc-subsections"><a href="#6.-Choose-the-imputation-branch">3.1. Choose the imputation branch</a><a href="#7.-Prepare-and-run-scHiCluster-imputation">3.2. Prepare and run scHiCluster imputation</a><a href="#8.-Run-Higashi-preprocessing-and-imputation">3.3. Run Higashi preprocessing and imputation</a><a href="#9.-Enhance-a-Lee2019-pseudo-bulk-matrix">3.4. Enhance a Lee2019 pseudo-bulk matrix</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="data_preparation.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h1 id="Lee2019-data-preparation-and-imputation-tutorial">Lee2019 data preparation and imputation tutorial<a class="anchor-link" href="#Lee2019-data-preparation-and-imputation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Command paths refer to the <code>final_code3</code> analysis-code checkout. Scientific inputs and native software environments are configured separately.</p>
+<div class="text_cell_render border-box-sizing rendered_html"><h1 id="Lee2019-data-preparation-and-imputation-tutorial">Lee2019 data preparation and imputation tutorial<a class="anchor-link" href="#Lee2019-data-preparation-and-imputation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Commands use the companion analysis-code checkout as their working directory. Scientific inputs and native software environments are configured separately.</p>
 <p>These examples use Lee2019 contacts and hg38 genome resources.</p>
 <p>This tutorial follows the construction of raw and imputed inputs used by the
 analysis workflows. It shows the selection rule, cell-number subsets, raw
 pseudo-bulk aggregation and the two imputation branches. Commands are displayed
 as text: reading this notebook does not start a job or load contact files.</p>
-<p>The implementation scripts are identified beside each step. File excerpts below are read from the named local source files.
-Command settings use the corresponding Windows or WSL paths and configurable resources.
-The task-specific commands use their own software environments, described in
-<a href="#Software-and-implementation">software notes</a>.</p>
+<p>File excerpts below are read from the named local source files.
+Command settings use the corresponding Windows or WSL paths and configurable resources.</p>
 <p>Use the <a href="../index.html#Shared-path-prefix">shared path setup</a> for the commands below:</p>
 <div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
 <span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
@@ -474,119 +472,10 @@ method's output matrix.</p>
 </div>
 </div>
 </div>
-<div class="cell tutorial-section" id="cell-id=data_preparation-group-04"><h2 id="Records-and-implementation">4. Records and implementation<a class="anchor-link" href="#Records-and-implementation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-10"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h3 id="10.-Keep-inputs-and-run-records-together">4.1. Keep inputs and run records together<a class="anchor-link" href="#10.-Keep-inputs-and-run-records-together">¶</a></h3><p>The prepared inputs feed the downstream tasks below. Keep their cell identities
-and run settings with the corresponding outputs.</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Analysis</th>
-<th>Prepared inputs</th>
-<th>Records to retain</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Embedding</td>
-<td>Per-cell contacts or imputed matrices, as required by the tool</td>
-<td>Ordered cell IDs, original metadata labels, resolution and embedding settings</td>
-</tr>
-<tr>
-<td>Compartment</td>
-<td>Raw or imputed contact maps and matching genomic resources</td>
-<td>Caller, input modality, resolution, cell-type or pseudo-bulk membership and compartment tracks</td>
-</tr>
-<tr>
-<td>Domain/TAD</td>
-<td>Imputed per-cell maps and raw cell-type pseudo-bulk references</td>
-<td>Selected cells, caller parameters, boundary scores and reference tracks</td>
-</tr>
-<tr>
-<td>Loop</td>
-<td>Per-cell inputs for native scHiCluster; matched pseudo-bulk maps for bulk callers</td>
-<td>Cell-number condition, selected cells, caller parameters, loop sets and evaluation results</td>
-</tr>
-</tbody>
-</table></div>
-<p>Record the tool version and exact command. Include the checkpoint identifier
-when a model is used. Match raw and imputed inputs by the selected cells and genomic grid
-before comparing task outputs.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-11"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="11.-Continue-to-the-analysis-tutorials">4.2. Continue to the analysis tutorials<a class="anchor-link" href="#11.-Continue-to-the-analysis-tutorials">¶</a></h3><div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Next step</th>
-<th>Tutorial</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cell embeddings and ARI/AMI/V-measure</td>
-<td><a href="embedding.html">Embedding</a></td>
-</tr>
-<tr>
-<td>Per-cell boundaries and raw pseudo-bulk references</td>
-<td><a href="tad.html">Domain/TAD</a></td>
-</tr>
-<tr>
-<td>Loop calling, Dice, APA and multimodal correlation</td>
-<td><a href="loop.html">Loop</a></td>
-</tr>
-<tr>
-<td>Five-component min-max summaries</td>
-<td><a href="loop.html#Workflow-ranking-and-figures">Loop figures</a></td>
-</tr>
-</tbody>
-</table></div>
-<p>The <a href="../index.html">tutorial index</a> brings these entries together.
-The Compartment workflow is described in <a href="compartment.html">its tutorial</a>.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-software-notes"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Software-and-implementation">4.3. Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h3><div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Stage</th>
-<th>Software context</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Selection and contact aggregation</td>
-<td>Python, NumPy, pandas, Cooler and the selected scHiCluster merge command</td>
-</tr>
-<tr>
-<td>scHiCluster imputation</td>
-<td>Native scHiCluster, Bash and Snakemake</td>
-</tr>
-<tr>
-<td>Higashi imputation</td>
-<td>Native Higashi and its compatible PyTorch stack</td>
-</tr>
-<tr>
-<td>Pseudo-bulk methods</td>
-<td>Each upstream method's runtime and checkpoint</td>
-</tr>
-</tbody>
-</table></div>
-<p>Full installation notes remain at <a href="https://github.com/rawandy2001-design/benchmark/blob/main/data_preparation/ENVIRONMENT.md">data_preparation/ENVIRONMENT.md</a> in the
-code repository. Each method's command block above identifies its native
-program and resource inputs.</p>
-<p>Return to the <a href="../index.html">tutorial index</a>.</p>
-<p><a href="https://github.com/rawandy2001-design/benchmark/blob/main/data_preparation/ENVIRONMENT.md">Environment instructions</a> · <a href="https://github.com/rawandy2001-design/benchmark/blob/main/README.md">Repository guide</a></p>
-</div>
-</div>
-</div>
-<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+
+
+
+</main></div><script id="toc-hierarchy-script">
 (() => {
   function revealSection() {
     let id;

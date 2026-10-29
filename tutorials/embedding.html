@@ -107,7 +107,7 @@ h3{scroll-margin-top:18px}
 <button aria-checked="true" data-theme-value="system" role="menuitemradio" type="button">System</button>
 <button aria-checked="false" data-theme-value="light" role="menuitemradio" type="button">Light</button>
 <button aria-checked="false" data-theme-value="dark" role="menuitemradio" type="button">Dark</button>
-</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="active" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-cell-identities">1. Inputs and cell identities</a></summary><div class="toc-subsections"><a href="#1.-Prepare-the-same-biological-cells">1.1. Prepare the same biological cells</a><a href="#2.-Prepare-ordered-native-inputs">1.2. Prepare ordered native inputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Embedding-methods">2. Embedding methods</a></summary><div class="toc-subsections"><a href="#3.-Generate-scHiCluster-embeddings">2.1. Generate scHiCluster embeddings</a><a href="#4.-Generate-Higashi-embeddings">2.2. Generate Higashi embeddings</a><a href="#5.-Generate-Fast-Higashi-embeddings">2.3. Generate Fast-Higashi embeddings</a><a href="#6.-Generate-scVI-3D-embeddings">2.4. Generate scVI-3D embeddings</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Evaluation-and-resolutions">3. Evaluation and resolutions</a></summary><div class="toc-subsections"><a href="#7.-Export-vectors-with-their-cell-identities">3.1. Export vectors with their cell identities</a><a href="#8.-Evaluate-the-original-workflow-assignments">3.2. Evaluate the original workflow assignments</a><a href="#9.-Run-the-completed-fixed-group-example">3.3. Run the completed fixed-group example</a><a href="#10.-Read-ARI,-AMI-and-V-measure">3.4. Read ARI, AMI and V-measure</a><a href="#11.-Evaluate-other-resolutions">3.5. Evaluate other resolutions</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Outputs-and-implementation">4. Outputs and implementation</a></summary><div class="toc-subsections"><a href="#12.-Locate-outputs-and-implementation">4.1. Locate outputs and implementation</a><a href="#Software-and-implementation">4.2. Software and implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="embedding.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-00"><div class="prompt input_prompt">
+</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="active" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="" href="loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-cell-identities">1. Inputs and cell identities</a></summary><div class="toc-subsections"><a href="#1.-Prepare-the-same-biological-cells">1.1. Prepare the same biological cells</a><a href="#2.-Prepare-ordered-native-inputs">1.2. Prepare ordered native inputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Embedding-methods">2. Embedding methods</a></summary><div class="toc-subsections"><a href="#3.-Generate-scHiCluster-embeddings">2.1. Generate scHiCluster embeddings</a><a href="#4.-Generate-Higashi-embeddings">2.2. Generate Higashi embeddings</a><a href="#5.-Generate-Fast-Higashi-embeddings">2.3. Generate Fast-Higashi embeddings</a><a href="#6.-Generate-scVI-3D-embeddings">2.4. Generate scVI-3D embeddings</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Evaluation-and-resolutions">3. Evaluation and resolutions</a></summary><div class="toc-subsections"><a href="#7.-Export-vectors-with-their-cell-identities">3.1. Export vectors with their cell identities</a><a href="#8.-Evaluate-the-original-workflow-assignments">3.2. Evaluate the original workflow assignments</a><a href="#9.-Run-the-completed-fixed-group-example">3.3. Run the completed fixed-group example</a><a href="#10.-Read-ARI,-AMI-and-V-measure">3.4. Read ARI, AMI and V-measure</a><a href="#11.-Evaluate-other-resolutions">3.5. Evaluate other resolutions</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="embedding.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html"><h1 id="Embedding-and-cell-label-evaluation-tutorial">Embedding and cell-label evaluation tutorial<a class="anchor-link" href="#Embedding-and-cell-label-evaluation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Command paths refer to the <code>final_code3</code> analysis-code checkout. Scientific inputs and native software environments are configured separately.</p>
 <p>This tutorial follows four native embedding workflows from shared cell inputs
@@ -185,7 +185,8 @@ contacts retain the source values; labels are joined by biological cell ID.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-02"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h3 id="2.-Prepare-ordered-native-inputs">1.2. Prepare ordered native inputs<a class="anchor-link" href="#2.-Prepare-ordered-native-inputs">¶</a></h3><p>Run the existing preparation script with the native Embedding environment.
+<div class="text_cell_render border-box-sizing rendered_html"><p></p>
+<h3 id="2.-Prepare-ordered-native-inputs">1.2. Prepare ordered native inputs<a class="anchor-link" href="#2.-Prepare-ordered-native-inputs">¶</a></h3><p>Run the existing preparation script with the native Embedding environment.
 The commands below use the shared path prefix; the local data directory is
 <code>D:/benchmark_higashi/embedding_all_autosomes_example_42cells/</code>.</p>
 <div class="highlight"><pre><span></span><span class="s2">"</span><span class="si">${</span><span class="nv">EMBEDDING_PYTHON</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>embedding/tool/prepare_raw_embedding_example.py<span class="w"> </span><span class="se">\</span>
@@ -207,9 +208,7 @@ The latter records IDs, source hashes, genomic scope and example parameters.</p>
 <span class="w">  </span>--impute-root<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/higashi/impute"</span>
 </pre></div>
 <p>The convenience runner uses the explicitly supplied raw-contact root and
-metadata. Both commands accept the saved metadata for the same selected cells.
-Environment and pinned-source locations are documented in
-<a href="#Software-and-implementation">software notes</a>.</p>
+metadata. Both commands accept the saved metadata for the same selected cells.</p>
 <p>The native path list is recorded as follows:</p>
 <p>Source: <code>D:/benchmark_higashi/embedding_all_autosomes_example_42cells/input/filelist.txt</code> (first 2 lines).</p>
 <div class="highlight"><pre><span></span>/mnt/d/benchmark_higashi/embedding_all_autosomes_example_42cells/input/contacts/181218_snm3Cseq_hs_21yr_BA10_UMB5577_1_UMB5577_2_A10_AD001.txt
@@ -477,96 +476,9 @@ example. Its <code>--chromosomes</code> switch changes chromosome scope, not res
 </div>
 </div>
 </div>
-<div class="cell tutorial-section" id="cell-id=embedding-group-04"><h2 id="Outputs-and-implementation">4. Outputs and implementation<a class="anchor-link" href="#Outputs-and-implementation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-12"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="12.-Locate-outputs-and-implementation">4.1. Locate outputs and implementation<a class="anchor-link" href="#12.-Locate-outputs-and-implementation">¶</a></h3><p>The example produces the following inputs, representations and evaluation results:</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Stage</th>
-<th>Results</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Input preparation</td>
-<td>Selected contacts, original metadata, ordered cell IDs and preparation records</td>
-<td>Keep the same biological cells across methods</td>
-</tr>
-<tr>
-<td>Native embedding</td>
-<td>Method-specific vectors and command records</td>
-<td>Describe contact-derived similarities among cells</td>
-</tr>
-<tr>
-<td>Standardized export</td>
-<td>Embedding vectors paired with their cell identities</td>
-<td>Match native output rows to metadata</td>
-</tr>
-<tr>
-<td>Fixed-group example</td>
-<td>Predicted groups and clustering parameters for each method</td>
-<td>Document the assignments used in the worked scoring example</td>
-</tr>
-<tr>
-<td>Quantitative evaluation</td>
-<td>ARI, AMI and V-measure tables</td>
-<td>Compare predicted groups with the original metadata labels</td>
-</tr>
-<tr>
-<td>Visualization</td>
-<td>Metric summaries and paired label/prediction plots</td>
-<td>Inspect scores and cell-group patterns</td>
-</tr>
-<tr>
-<td>Run records</td>
-<td>Parameters, source identities and execution records</td>
-<td>Trace each result to its inputs and settings</td>
-</tr>
-</tbody>
-</table></div>
-<p>See the example guide (<a href="embedding.html">Embedding tutorial</a>),
-evaluation details (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/embedding/tool/evaluation/embedding_evaluation.py">Original-assignment evaluation</a>),
-<a href="#Software-and-implementation">software notes</a> and
-<a href="../index.html">the tutorial index</a>.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-software-notes"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Software-and-implementation">4.2. Software and implementation<a class="anchor-link" href="#Software-and-implementation">¶</a></h3><div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Stage</th>
-<th>Existing example runtime</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Four native embedding methods</td>
-<td>Ubuntu/WSL <code>schic-raw-embedding</code></td>
-</tr>
-<tr>
-<td>Fixed new groups and ARI/AMI/V-measure</td>
-<td><code>plot_loop_sum</code> evaluation environment</td>
-</tr>
-</tbody>
-</table></div>
-<p>The example uses scHiCluster 1.3.2. Pinned native sources are Higashi
-<code>42702a8c8e4aefce1d9a73ee5b9f7c28864f6c96</code>, Fast-Higashi
-<code>71182a9bdee2b96cd1676e1448285c5705a354e7</code> and scVI-3D
-<code>6750bb3daa6c711c936de8887605a4d3ff01406a</code>. Detailed dependencies and the
-native installer remain at <a href="https://github.com/rawandy2001-design/benchmark/blob/main/embedding/ENVIRONMENT.md">embedding/ENVIRONMENT.md</a> and
-<code>embedding/tool/environments/</code> in the code repository.</p>
-<p>Return to the <a href="../index.html">tutorial index</a>.</p>
-<p><a href="https://github.com/rawandy2001-design/benchmark/blob/main/embedding/ENVIRONMENT.md">Environment instructions</a> · <a href="https://github.com/rawandy2001-design/benchmark/blob/main/README.md">Repository guide</a></p>
-</div>
-</div>
-</div>
-<footer>Workflow tutorial. Displayed commands are not executed by this page.</footer></main></div><script id="toc-hierarchy-script">
+
+
+</main></div><script id="toc-hierarchy-script">
 (() => {
   function revealSection() {
     let id;
