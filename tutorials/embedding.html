@@ -479,20 +479,54 @@ example. Its <code>--chromosomes</code> switch changes chromosome scope, not res
 </div>
 <div class="cell tutorial-section" id="cell-id=embedding-group-04"><h2 id="Outputs-and-implementation">4. Outputs and implementation<a class="anchor-link" href="#Outputs-and-implementation">¶</a></h2></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=embedding-tutorial-12"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="12.-Locate-outputs-and-implementation">4.1. Locate outputs and implementation<a class="anchor-link" href="#12.-Locate-outputs-and-implementation">¶</a></h3><div class="highlight"><pre><span></span>embedding_all_autosomes_example_42cells/
-  input/                              selected contacts, metadata and manifest
-  native/&lt;method&gt;/                    native runs and command records
-  result/&lt;method&gt;/                    standardized native exports
-  result/clustering/kmeans_k14_seed0_ninit20/
-    embedding_metrics.csv
-    embedding_metrics.pdf / .png
-    example_manifest.json
-    &lt;method&gt;/predicted_groups.tsv
-    &lt;method&gt;/clustering_manifest.json
-    &lt;method&gt;/evaluation/
-    &lt;method&gt;/labels_and_predictions.pdf / .png
-</pre></div>
+<div class="text_cell_render border-box-sizing rendered_html"><p></p>
+<h3 id="12.-Locate-outputs-and-implementation">4.1. Locate outputs and implementation<a class="anchor-link" href="#12.-Locate-outputs-and-implementation">¶</a></h3><p>The example produces the following inputs, representations and evaluation results:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Results</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Input preparation</td>
+<td>Selected contacts, original metadata, ordered cell IDs and preparation records</td>
+<td>Keep the same biological cells across methods</td>
+</tr>
+<tr>
+<td>Native embedding</td>
+<td>Method-specific vectors and command records</td>
+<td>Describe contact-derived similarities among cells</td>
+</tr>
+<tr>
+<td>Standardized export</td>
+<td>Embedding vectors paired with their cell identities</td>
+<td>Match native output rows to metadata</td>
+</tr>
+<tr>
+<td>Fixed-group example</td>
+<td>Predicted groups and clustering parameters for each method</td>
+<td>Document the assignments used in the worked scoring example</td>
+</tr>
+<tr>
+<td>Quantitative evaluation</td>
+<td>ARI, AMI and V-measure tables</td>
+<td>Compare predicted groups with the original metadata labels</td>
+</tr>
+<tr>
+<td>Visualization</td>
+<td>Metric summaries and paired label/prediction plots</td>
+<td>Inspect scores and cell-group patterns</td>
+</tr>
+<tr>
+<td>Run records</td>
+<td>Parameters, source identities and execution records</td>
+<td>Trace each result to its inputs and settings</td>
+</tr>
+</tbody>
+</table></div>
 <p>See the example guide (<a href="embedding.html">Embedding tutorial</a>),
 evaluation details (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/embedding/tool/evaluation/embedding_evaluation.py">Original-assignment evaluation</a>),
 <a href="#Software-and-implementation">software notes</a> and

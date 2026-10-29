@@ -239,7 +239,8 @@ the specified filtering and aggregation.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=data_preparation-tutorial-05"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><h3 id="5.-Organize-the-Lee2019-pseudo-bulk-inputs">2.2. Organize the Lee2019 pseudo-bulk inputs<a class="anchor-link" href="#5.-Organize-the-Lee2019-pseudo-bulk-inputs">¶</a></h3><p>The Lee2019 ODC example uses a 10-kb hg38 grid. Keep the cell-number label
+<div class="text_cell_render border-box-sizing rendered_html"><p></p>
+<h3 id="5.-Organize-the-Lee2019-pseudo-bulk-inputs">2.2. Organize the Lee2019 pseudo-bulk inputs<a class="anchor-link" href="#5.-Organize-the-Lee2019-pseudo-bulk-inputs">¶</a></h3><p>The Lee2019 ODC example uses a 10-kb hg38 grid. Keep the cell-number label
 with each Raw and imputed matrix:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -272,13 +273,9 @@ with each Raw and imputed matrix:</p>
 </tr>
 </tbody>
 </table></div>
-<p>The local input paths are:</p>
-<div class="highlight"><pre><span></span>D:/data_new/lee2019/lee2019/ODC_raw_10k_line/ODC.raw.100.cool
-D:/data_new/lee2019/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool
-D:/data_new/lee2019/lee2019/ODC_raw_10k_line/ODC.raw.all.cool
-</pre></div>
-<p>When working in Linux or WSL, use the corresponding mounted paths. Match the
-Raw and imputed matrices by cell type, cell number and genomic grid.</p>
+<p>Keep the selected cell IDs, cell-type label, cell number and resolution
+with each matrix. Match these identities between the Raw and imputed
+query maps, and use the all-cell Raw map as the common APA input.</p>
 </div>
 </div>
 </div>

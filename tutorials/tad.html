@@ -515,26 +515,57 @@ under the example root.</p>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=tad-tutorial-11"><div class="prompt input_prompt">
 </div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="11.-Locate-outputs-and-implementation">4.3. Locate outputs and implementation<a class="anchor-link" href="#11.-Locate-outputs-and-implementation">¶</a></h3><div class="highlight"><pre><span></span>tad_chr21_all12_example/
-  input/&lt;condition&gt;/                  Coolers, cell tables and adapter records
-  higashi_from_cool/                   Higashi calls on the scHiCluster input
-  result/references/                  shared actual raw reference outputs
-  result/&lt;condition&gt;/                 native calls and per-cell scores
-  result/evaluation/
-    reference_agreement_summary_12.csv
-    reference_agreement_all_36.csv
-    domain_counts_primary_12.tsv
-    domain_counts_all_12.tsv
-    *.mean_boundary_score.tsv
-    evaluation_bin_mask.tsv
-    tad_chr21_all12_reference_agreement.pdf / .png
-    run_manifest.json
-</pre></div>
-<p>Native Higashi_0/5 results are reused from
-<code>D:/benchmark_higashi/higashi_chr21_example/</code>; the combined manifest records
-their exact locations. See the example guide (<a href="tad.html">Domain/TAD tutorial</a>),
-input requirements (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/tad/DATA_REQUIREMENTS.md">tad/DATA_REQUIREMENTS.md</a> in the code repository), <a href="#Software-and-implementation">software notes</a>
+<div class="text_cell_render border-box-sizing rendered_html"><p></p>
+<h3 id="11.-Locate-outputs-and-implementation">4.3. Locate outputs and implementation<a class="anchor-link" href="#11.-Locate-outputs-and-implementation">¶</a></h3><p>The combined example produces the following results:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Results</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Input preparation</td>
+<td>Per-cell contact maps, biological ID tables and adapter records</td>
+<td>Link each prepared input to its source cell and imputation condition</td>
+</tr>
+<tr>
+<td>Native calling</td>
+<td>Domain calls and per-cell scores for the twelve caller–input combinations</td>
+<td>Compare caller outputs across the three input conditions</td>
+</tr>
+<tr>
+<td>Raw reference calling</td>
+<td>Three boundary-label tracks from the same raw pseudo-bulk matrix</td>
+<td>Provide shared references for all query conditions</td>
+</tr>
+<tr>
+<td>Score alignment</td>
+<td>Mean boundary scores and the evaluation-bin mask</td>
+<td>Compare oriented scores on the same valid genomic bins</td>
+</tr>
+<tr>
+<td>Reference agreement</td>
+<td>AUROC and average-precision results for 36 reference comparisons and summaries for twelve combinations</td>
+<td>Report agreement with each reference and the combined summary</td>
+</tr>
+<tr>
+<td>Domain counts</td>
+<td>Per-cell domain counts and primary-chromosome summaries</td>
+<td>Inspect variation in the number of called domains</td>
+</tr>
+<tr>
+<td>Figures and run records</td>
+<td>Reference-agreement plots, parameters, commands and source hashes</td>
+<td>Inspect results and trace their provenance</td>
+</tr>
+</tbody>
+</table></div>
+<p>The combined workflow reuses the completed native Higashi_0/5 results
+and records their provenance in its run manifest. See the example guide (<a href="tad.html">Domain/TAD tutorial</a>),
+input requirements (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/tad/DATA_REQUIREMENTS.md">tad/DATA_REQUIREMENTS.md</a> in this folder), <a href="#Software-and-implementation">software notes</a>
 and <a href="../index.html">the tutorial index</a>.</p>
 </div>
 </div>
