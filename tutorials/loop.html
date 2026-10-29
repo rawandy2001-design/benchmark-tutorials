@@ -107,7 +107,7 @@ h3{scroll-margin-top:18px}
 <button aria-checked="true" data-theme-value="system" role="menuitemradio" type="button">System</button>
 <button aria-checked="false" data-theme-value="light" role="menuitemradio" type="button">Light</button>
 <button aria-checked="false" data-theme-value="dark" role="menuitemradio" type="button">Dark</button>
-</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="active" href="loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-caller-setup">1. Inputs and caller setup</a></summary><div class="toc-subsections"><a href="#1.-Prepare-the-inputs">1.1. Prepare the inputs</a><a href="#2.-Set-the-paths">1.2. Set the paths</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Loop-calling">2. Loop calling</a></summary><div class="toc-subsections"><a href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">2.1. Call the matched Raw and imputed maps with Mustache</a><a href="#4.-Run-the-other-bulk-callers">2.2. Run the other bulk callers</a><a href="#5.-Prepare-the-native-scHiCluster-loop-workflow">2.3. Prepare the native scHiCluster loop workflow</a><a href="#6.-Record-loop-num-and-caller-runtime">2.4. Record loop num and caller runtime</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Reference-and-biological-evaluation">3. Reference and biological evaluation</a></summary><div class="toc-subsections"><a href="#7.-Compare-loops-with-the-mapped-reference">3.1. Compare loops with the mapped reference</a><a href="#8.-Repeat-the-comparison-across-cell-numbers">3.2. Repeat the comparison across cell numbers</a><a href="#9.-Calculate-APA-on-the-common-Raw-contact-map">3.3. Calculate APA on the common Raw contact map</a><a href="#10.-Evaluate-RNA-correlation">3.4. Evaluate RNA correlation</a><a href="#11.-Evaluate-mCG-correlation">3.5. Evaluate mCG correlation</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Workflow-ranking-and-figures">4. Workflow ranking and figures</a></summary><div class="toc-subsections"><a href="#12.-Summarize-the-metrics-and-compare-workflows">4.1. Raw–imputed rank-product changes</a><a href="#1.-Select-the-comparison-and-metric-tables">4.2. Select the comparison and metric tables</a><a href="#2.-Transform-and-normalize-original-values">4.3. Transform and normalize original values</a><a href="#3.-Apply-the-five-fixed-weights">4.4. Apply the five fixed weights</a><a href="#4.-Generate-the-figures-from-selected-summary-inputs">4.5. Generate the figures from selected summary inputs</a><a href="#5.-View-the-retained-figures">4.6. View the retained figures</a><a href="#6.-Read-outputs-and-continue">4.7. Read the figure outputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Outputs-and-implementation">5. Outputs and implementation</a></summary><div class="toc-subsections"><a href="#13.-Read-the-outputs">5.1. Read the outputs</a><a href="#14.-Implementation-and-tutorial-references">5.2. Implementation and tutorial references</a><a href="#Software-and-implementation">5.3. Software and implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="loop.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-00"><div class="text_cell_render border-box-sizing rendered_html">
+</div></div></div><div class="modules"><a class="" href="../index.html">Tutorial index</a><a class="" href="data_preparation.html">Data preparation</a><a class="" href="embedding.html">Embedding</a><a class="" href="compartment.html">Compartment</a><a class="" href="tad.html">Domain/TAD</a><a class="active" href="loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><details class="toc-group" name="page-sections" open=""><summary><a href="#Inputs-and-caller-setup">1. Inputs and caller setup</a></summary><div class="toc-subsections"><a href="#1.-Prepare-the-inputs">1.1. Prepare the inputs</a><a href="#2.-Set-the-paths">1.2. Set the paths</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Loop-calling">2. Loop calling</a></summary><div class="toc-subsections"><a href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">2.1. Call the matched Raw and imputed maps with Mustache</a><a href="#4.-Run-the-other-bulk-callers">2.2. Run the other bulk callers</a><a href="#5.-Prepare-the-native-scHiCluster-loop-workflow">2.3. Prepare the native scHiCluster loop workflow</a><a href="#6.-Record-loop-num-and-caller-runtime">2.4. Record loop num and caller runtime</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Reference-and-biological-evaluation">3. Reference and biological evaluation</a></summary><div class="toc-subsections"><a href="#7.-Compare-loops-with-the-mapped-reference">3.1. Compare loops with the mapped reference</a><a href="#8.-Repeat-the-comparison-across-cell-numbers">3.2. Repeat the comparison across cell numbers</a><a href="#9.-Calculate-APA-on-the-common-Raw-contact-map">3.3. Calculate APA on the common Raw contact map</a><a href="#10.-Evaluate-RNA-correlation">3.4. Evaluate RNA correlation</a><a href="#11.-Evaluate-mCG-correlation">3.5. Evaluate mCG correlation</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Workflow-ranking-and-figures">4. Workflow ranking and figures</a></summary><div class="toc-subsections"><a href="#12.-Summarize-the-metrics-and-compare-workflows">4.1. Raw–imputed rank-product changes</a><a href="#1.-Select-the-comparison-and-metric-tables">4.2. Select the comparison and metric tables</a><a href="#2.-Transform-and-normalize-original-values">4.3. Transform and normalize original values</a><a href="#3.-Apply-the-five-fixed-weights">4.4. Apply the five fixed weights</a><a href="#4.-Generate-the-figures-from-selected-summary-inputs">4.5. Generate the figures from selected summary inputs</a><a href="#5.-View-the-retained-figures">4.6. View the retained figures</a><a href="#6.-Read-outputs-and-continue">4.7. Read the figure outputs</a></div></details><details class="toc-group" name="page-sections"><summary><a href="#Outputs-and-implementation">5. Outputs and implementation</a></summary><div class="toc-subsections"><a href="#13.-Read-the-outputs">5.1. Read the outputs</a><a href="#14.-Implementation-and-tutorial-references">5.2. Implementation and tutorial references</a><a href="#Software-and-implementation">5.3. Software and implementation</a></div></details></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="loop.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-00"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
 <h1 id="Loop-calling-and-evaluation-tutorial">Loop calling and evaluation tutorial<a class="anchor-link" href="#Loop-calling-and-evaluation-tutorial">¶</a></h1><p>This public tutorial includes explanations, command examples and embedded figures. Commands use the companion analysis-code checkout as their working directory. Scientific inputs and native software environments are configured separately.</p>
 <p>This tutorial follows the analysis from input contact maps to loop calls,
 task-specific metrics, workflow summaries and figures. The commands and Python examples
@@ -132,11 +132,6 @@ their own sections.</p>
 <p>Use the <a href="../index.html#Shared-path-prefix">shared path setup</a> for the commands below:</p>
 <div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
 <span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
-</pre></div>
-<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-
-<span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
 </pre></div>
 </div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-group-01"><div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Inputs-and-caller-setup">1. Inputs and caller setup<a class="anchor-link" href="#Inputs-and-caller-setup">¶</a></h2></div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-01"><div class="text_cell_render border-box-sizing rendered_html">
@@ -204,57 +199,67 @@ the existing local input locations are in DATA_REQUIREMENTS.md (<a href="https:/
 chr1	30790000	30800000	chr1	30900000	30910000	0.04316786880353285	2.111212657236631
 chr1	43230000	43240000	chr1	43370000	43380000	0.038127131296458706	2.111212657236631
 </pre></div>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-02"><div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.-Set-the-paths">1.2. Set the paths<a class="anchor-link" href="#2.-Set-the-paths">¶</a></h3><p>The following Python examples share these path variables. Replace <code>/path/to/</code>
-with the locations of the repository, inputs and desired outputs when using the
-code outside this tutorial.</p>
+</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-02"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
+<h3 id="2.-Set-the-paths">1.2. Set the paths<a class="anchor-link" href="#2.-Set-the-paths">¶</a></h3><p>The Bash caller commands use the following paths after the shared path setup:</p>
+<div class="highlight"><pre><span></span><span class="nv">REPO</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
+<span class="nv">RAW_100</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
+<span class="nv">IMPUTED_100</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool"</span>
+<span class="nv">RAW_ALL</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.all.cool"</span>
+<span class="nv">REFERENCE</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/records/data/raw_dice_example/Tian2023_ODC_raw_all_Mustache.tsv"</span>
+</pre></div>
+<p>For the Python evaluation examples, define the corresponding paths and query
+loop files:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="n">REPO</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"code"</span><span class="p">)</span>
+<span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
+<span class="n">REPO</span> <span class="o">=</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"code"</span>
 <span class="n">TOOL</span> <span class="o">=</span> <span class="n">REPO</span> <span class="o">/</span> <span class="s2">"call_loop/tool"</span>
 <span class="n">OUTPUT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"LOOP_OUTPUT_DIR"</span><span class="p">])</span>
 
 <span class="k">for</span> <span class="n">folder</span> <span class="ow">in</span> <span class="p">(</span><span class="n">TOOL</span><span class="p">,</span> <span class="n">TOOL</span> <span class="o">/</span> <span class="s2">"scripts"</span><span class="p">,</span> <span class="n">TOOL</span> <span class="o">/</span> <span class="s2">"callers"</span><span class="p">,</span> <span class="n">TOOL</span> <span class="o">/</span> <span class="s2">"plots"</span><span class="p">):</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">folder</span><span class="p">))</span>
 
-<span class="n">RAW_100</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span><span class="p">)</span>
-<span class="n">IMPUTED_100</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool"</span><span class="p">)</span>
-<span class="n">RAW_ALL</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/ODC_raw_10k_line/ODC.raw.all.cool"</span><span class="p">)</span>
-<span class="n">REFERENCE</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/raw_dice_example/Tian2023_ODC_raw_all_Mustache.tsv"</span><span class="p">)</span>
+<span class="n">RAW_100</span> <span class="o">=</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
+<span class="n">IMPUTED_100</span> <span class="o">=</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool"</span>
+<span class="n">RAW_ALL</span> <span class="o">=</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"data/lee2019/ODC_raw_10k_line/ODC.raw.all.cool"</span>
+<span class="n">REFERENCE</span> <span class="o">=</span> <span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"records/data/raw_dice_example/Tian2023_ODC_raw_all_Mustache.tsv"</span>
+
+<span class="n">QUERIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Raw"</span><span class="p">:</span> <span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling/raw/ODC.raw.100.10k_mustache_loop.tsv"</span><span class="p">,</span>
+    <span class="s2">"iEnhance"</span><span class="p">:</span> <span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling/ienhance/ODC.impute.100.iEnhance.10k_mustache_loop.tsv"</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 <p>Calling and evaluation use their respective software environments; the caller
 commands below are not intended to share one environment. Installation and
 version information are in <a href="#Software-and-implementation">software notes</a>.</p>
 </div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-group-02"><div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Loop-calling">2. Loop calling<a class="anchor-link" href="#Loop-calling">¶</a></h2></div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-03"><div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Loop-calling">2. Loop calling<a class="anchor-link" href="#Loop-calling">¶</a></h2></div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-03"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
 <h3 id="3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">2.1. Call the matched Raw and imputed maps with Mustache<a class="anchor-link" href="#3.-Call-the-matched-Raw-and-imputed-maps-with-Mustache">¶</a></h3><p>The example runs Mustache with a 10-kb resolution, a 5-Mb maximum distance and
-<code>-pt 0.05</code>. The native wrapper records the actual command, input and output
+<code>-pt 0.05</code>. The command-line helper records the actual command, input and output
 hashes, loop count, software environment and caller wall-clock time.</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">run_raw_mustache_example</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_example</span> <span class="k">as</span> <span class="n">call_mustache</span>
+<p>Run these Bash commands from the repository root in the prepared Mustache
+environment described in <a href="#Software-and-implementation">software notes</a>:</p>
+<div class="highlight"><pre><span></span><span class="nv">MUSTACHE_PYTHON</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>python<span class="k">)</span><span class="s2">"</span>
 
-<span class="n">NATIVE_PYTHON</span> <span class="o">=</span> <span class="p">(</span><span class="n">BENCHMARK_ROOT</span> <span class="o">/</span> <span class="s2">"software/Mustache/Scripts/python.exe"</span><span class="p">)</span>
+<span class="s2">"</span><span class="nv">$MUSTACHE_PYTHON</span><span class="s2">"</span><span class="w"> </span>call_loop/tool/callers/run_raw_mustache_example.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--cool<span class="w"> </span><span class="s2">"</span><span class="nv">$RAW_100</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--native-python<span class="w"> </span><span class="s2">"</span><span class="nv">$MUSTACHE_PYTHON</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output-dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/calling/raw"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--input-method<span class="w"> </span>Raw<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--processes<span class="w"> </span><span class="m">4</span>
 
-<span class="k">for</span> <span class="n">method</span><span class="p">,</span> <span class="n">cool_file</span><span class="p">,</span> <span class="n">folder</span> <span class="ow">in</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s2">"Raw"</span><span class="p">,</span> <span class="n">RAW_100</span><span class="p">,</span> <span class="s2">"raw"</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">"iEnhance"</span><span class="p">,</span> <span class="n">IMPUTED_100</span><span class="p">,</span> <span class="s2">"ienhance"</span><span class="p">),</span>
-<span class="p">]:</span>
-    <span class="n">call_mustache</span><span class="p">(</span>
-        <span class="n">cool_file</span><span class="o">=</span><span class="n">cool_file</span><span class="p">,</span>
-        <span class="n">native_python</span><span class="o">=</span><span class="n">NATIVE_PYTHON</span><span class="p">,</span>
-        <span class="n">output_dir</span><span class="o">=</span><span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling"</span> <span class="o">/</span> <span class="n">folder</span><span class="p">,</span>
-        <span class="n">input_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
-        <span class="n">processes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="s2">"</span><span class="nv">$MUSTACHE_PYTHON</span><span class="s2">"</span><span class="w"> </span>call_loop/tool/callers/run_raw_mustache_example.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--cool<span class="w"> </span><span class="s2">"</span><span class="nv">$IMPUTED_100</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--native-python<span class="w"> </span><span class="s2">"</span><span class="nv">$MUSTACHE_PYTHON</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output-dir<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">LOOP_OUTPUT_DIR</span><span class="si">}</span><span class="s2">/calling/ienhance"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--input-method<span class="w"> </span>iEnhance<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--processes<span class="w"> </span><span class="m">4</span>
 </pre></div>
 <p>Each run produces a native loop TSV, <code>loop_num_runtime.csv</code>, <code>mustache.log</code>
-and <code>run_manifest.json</code>. In this ODC/100-cell example, the query filenames are:</p>
-<div class="highlight"><pre><span></span><span class="n">QUERIES</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"Raw"</span><span class="p">:</span> <span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling/raw/ODC.raw.100.10k_mustache_loop.tsv"</span><span class="p">,</span>
-    <span class="s2">"iEnhance"</span><span class="p">:</span> <span class="n">OUTPUT</span> <span class="o">/</span> <span class="s2">"calling/ienhance/ODC.impute.100.iEnhance.10k_mustache_loop.tsv"</span><span class="p">,</span>
-<span class="p">}</span>
-</pre></div>
+and <code>run_manifest.json</code>. The two native loop files are the <code>QUERIES</code> inputs
+defined in section 1.2 for the Python evaluation steps.</p>
 <p>Implementation: run_raw_mustache_example.py (<a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/run_raw_mustache_example.py">call_loop/tool/callers/run_raw_mustache_example.py</a> in this folder).</p>
 </div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-04"><div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="4.-Run-the-other-bulk-callers">2.2. Run the other bulk callers<a class="anchor-link" href="#4.-Run-the-other-bulk-callers">¶</a></h3><p>The following command examples preserve the settings in
@@ -385,18 +390,22 @@ python<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUN
 <span class="w">    </span>--output<span class="w"> </span><span class="s2">"</span><span class="nv">$HICFOUNDATION_LOOP_OUTPUT_DIR</span><span class="s2">"</span>
 </pre></div>
 <p>The workflow uses the generated <code>HiCFoundation_loop_0.5.bedpe</code> file.</p>
-</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-05"><div class="text_cell_render border-box-sizing rendered_html">
+</div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-05"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
 <h3 id="5.-Prepare-the-native-scHiCluster-loop-workflow">2.3. Prepare the native scHiCluster loop workflow<a class="anchor-link" href="#5.-Prepare-the-native-scHiCluster-loop-workflow">¶</a></h3><p>scHiCluster uses per-cell imputed Coolers and cell-type metadata. Its
 preparation script groups cells, writes the per-group cell table and
 <code>Snakefile_master</code>, then creates <code>snakemake_cmds.txt</code>.</p>
 <p>For Lee2019, use hg38 resources and a cell table pointing to the 10-kb
 single-cell Coolers. In
 <a href="https://github.com/rawandy2001-design/benchmark/blob/main/call_loop/tool/callers/schicluster/prepare_loop.py">prepare_loop.py</a>,
-replace the dataset-settings block with the Lee2019 paths and metadata columns:</p>
+replace the dataset-settings block with the Lee2019 paths and metadata columns.
+This is Python configuration inside <code>prepare_loop.py</code>; the Bash launch commands
+follow below.</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
 
 <span class="n">metadata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"SCHICLUSTER_LOOP_METADATA"</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="s2">"cell_id"</span><span class="p">)</span>
 <span class="n">cell_table</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
@@ -419,8 +428,10 @@ replace the dataset-settings block with the Lee2019 paths and metadata columns:<
 <p>The cell table defines the input membership. Metadata keeps the original
 cell-type labels, while directory names use the cleaned <code>cluster</code> values.
 Run the preparation script from its directory:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>call_loop/tool/callers/schicluster
-python<span class="w"> </span>prepare_loop.py
+<div class="highlight"><pre><span></span><span class="o">(</span>
+<span class="w">    </span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">REPO</span><span class="si">}</span><span class="s2">/call_loop/tool/callers/schicluster"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">exit</span>
+<span class="w">    </span>python<span class="w"> </span>prepare_loop.py
+<span class="o">)</span>
 </pre></div>
 <p>Then launch the generated workflows:</p>
 <div class="highlight"><pre><span></span>bash<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">SCHICLUSTER_LOOP_OUTPUT</span><span class="si">}</span><span class="s2">/snakemake_cmds.txt"</span>
