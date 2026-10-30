@@ -1,0 +1,164 @@
+/* Shared left navigation for the tutorial pages. */
+.layout {
+  max-width: 1600px;
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 36px;
+  padding: 28px 32px;
+}
+.tutorial-sidebar {
+  position: sticky;
+  top: 20px;
+  align-self: start;
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border, #dae2ec) transparent;
+  border-right: 1px solid var(--border, #dae2ec);
+  border-bottom: 0;
+  padding: 0 20px 24px 0;
+}
+.sidebar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: var(--heading, #173653);
+}
+.sidebar-heading strong { margin: 0; font-size: 15px; }
+.tutorial-sidebar .modules {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding-bottom: 20px;
+}
+.tutorial-sidebar .modules a {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 3px solid transparent;
+  border-bottom: 0;
+  border-radius: 0 5px 5px 0;
+  color: var(--text, #243347);
+  line-height: 1.4;
+}
+.tutorial-sidebar .modules a:hover,
+.tutorial-sidebar .modules a:focus-visible {
+  background: var(--surface, #eff4fa);
+}
+.tutorial-sidebar .modules .active,
+.tutorial-sidebar .modules .current-section {
+  border-left-color: var(--link, #2463a0);
+  background: var(--surface, #eff4fa);
+  color: var(--link, #2463a0);
+  font-weight: 650;
+}
+.page-toc, .sidebar-versions {
+  border-top: 1px solid var(--border, #dae2ec);
+  padding-top: 18px;
+}
+.page-toc > strong, .sidebar-versions > strong {
+  color: var(--muted, #5b6c80);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .03em;
+  margin-bottom: 12px;
+}
+.sidebar-versions { margin-bottom: 18px; }
+.sidebar-versions .modules { padding-bottom: 0; }
+.page-toc a { overflow-wrap: anywhere; }
+.topbar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.topbar-heading .brand { flex: 1; min-width: 0; }
+.sidebar-toggle, .sidebar-close {
+  display: none;
+  border: 1px solid var(--border, #dae2ec);
+  border-radius: 6px;
+  background: var(--surface, #eff4fa);
+  color: var(--text, #243347);
+  padding: 7px 10px;
+  font: inherit;
+  cursor: pointer;
+}
+.sidebar-toggle:focus-visible, .sidebar-close:focus-visible {
+  outline: 2px solid var(--link, #2463a0);
+  outline-offset: 3px;
+}
+.sidebar-backdrop[hidden] { display: none; }
+@media (min-width: 761px) and (max-width: 1100px) {
+  .layout { grid-template-columns: 235px minmax(0, 1fr); gap: 24px; padding: 24px; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: minmax(0, 1fr); padding: 20px; gap: 20px; }
+  /* The complete navigation remains usable if JavaScript is unavailable. */
+  .tutorial-sidebar {
+    position: static;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--border, #dae2ec);
+    padding: 0 0 20px;
+  }
+  .topbar { padding: 14px 16px; }
+  .topbar-heading { gap: 10px; }
+  .topbar-heading .brand { font-size: 14px; line-height: 1.4; }
+  :root[data-sidebar-enhanced="true"] .sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    font-size: 13px;
+  }
+  :root[data-sidebar-enhanced="true"] .sidebar-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 4px;
+    font-size: 22px;
+    line-height: 1;
+  }
+  :root[data-sidebar-enhanced="true"] .tutorial-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    width: min(320px, calc(100vw - 36px));
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    padding: 20px 22px;
+    border-right: 1px solid var(--border, #dae2ec);
+    border-bottom: 0;
+    background: var(--page-bg, #fff);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 180ms ease, visibility 180ms ease;
+  }
+  :root[data-sidebar-open="true"] .tutorial-sidebar {
+    transform: translateX(0);
+    visibility: visible;
+  }
+  :root[data-sidebar-open="true"],
+  :root[data-sidebar-open="true"] body { overflow: hidden; }
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgb(0 0 0 / 55%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-sidebar-enhanced="true"] .tutorial-sidebar { transition: none; }
+}
+@media print {
+  .tutorial-sidebar, .sidebar-toggle, .sidebar-backdrop { display: none !important; }
+  .layout { display: block; max-width: none; padding: 0; }
+  :root[data-sidebar-open="true"],
+  :root[data-sidebar-open="true"] body { overflow: visible; }
+}
