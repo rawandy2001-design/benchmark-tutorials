@@ -163,9 +163,9 @@
   :root[data-sidebar-open="true"] body { overflow: visible; }
 }
 
-/* Project resources sit beneath the page contents in the left sidebar. */
+/* Project resources follow the workflow links, above the page contents. */
 .tutorial-sidebar .sidebar-info {
-  margin: 22px 0 0;
+  margin: 0 0 18px;
   padding: 12px 13px;
   border: 1px solid var(--border, #dae2ec);
   border-left: 3px solid var(--link, #2463a0);
