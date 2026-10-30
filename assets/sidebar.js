@@ -54,6 +54,32 @@
     const focusWasInSidebar = sidebar.contains(document.activeElement);
     setOpen(false, false);
     if (narrow.matches && focusWasInSidebar) toggle.focus();
+    scheduleSidebarHeight();
   });
   setOpen(false, false);
+
+  // Match the available viewport height, including the initial header offset.
+  function updateSidebarHeight() {
+    if (narrow.matches) {
+      sidebar.style.removeProperty('--sidebar-offset');
+      return;
+    }
+    const offset = Math.max(20, Math.round(sidebar.getBoundingClientRect().top));
+    const value = offset + 'px';
+    if (sidebar.style.getPropertyValue('--sidebar-offset') !== value) {
+      sidebar.style.setProperty('--sidebar-offset', value);
+    }
+  }
+  let framePending = false;
+  function scheduleSidebarHeight() {
+    if (framePending) return;
+    framePending = true;
+    window.requestAnimationFrame(() => {
+      framePending = false;
+      updateSidebarHeight();
+    });
+  }
+  window.addEventListener('resize', scheduleSidebarHeight);
+  window.addEventListener('scroll', scheduleSidebarHeight, { passive: true });
+  updateSidebarHeight();
 })();

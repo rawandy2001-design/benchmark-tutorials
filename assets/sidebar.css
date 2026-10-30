@@ -10,18 +10,29 @@
   position: sticky;
   top: 20px;
   align-self: start;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--sidebar-offset, 100px) - 20px);
+  height: calc(100dvh - var(--sidebar-offset, 100px) - 20px);
   max-height: calc(100vh - 40px);
   max-height: calc(100dvh - 40px);
+  overflow: hidden;
+  border-right: 1px solid var(--border, #dae2ec);
+  border-bottom: 0;
+  padding: 0 20px 0 0;
+}
+.sidebar-scroll {
+  flex: 1 1 0;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--border, #dae2ec) transparent;
-  border-right: 1px solid var(--border, #dae2ec);
-  border-bottom: 0;
-  padding: 0 20px 24px 0;
+  padding-right: 4px;
 }
 .sidebar-heading {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -100,10 +111,17 @@
   /* The complete navigation remains usable if JavaScript is unavailable. */
   .tutorial-sidebar {
     position: static;
+    height: auto;
     max-height: none;
     border-right: 0;
     border-bottom: 1px solid var(--border, #dae2ec);
     padding: 0 0 20px;
+  }
+  .tutorial-sidebar .sidebar-scroll { flex: 0 0 auto; overflow: visible; }
+  :root[data-sidebar-enhanced="true"] .tutorial-sidebar .sidebar-scroll {
+    flex: 1 1 0;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .topbar { padding: 14px 16px; }
   .topbar-heading { gap: 10px; }
@@ -163,9 +181,10 @@
   :root[data-sidebar-open="true"] body { overflow: visible; }
 }
 
-/* Project resources follow the workflow links, above the page contents. */
+/* Project links stay at the bottom while the directory scrolls above. */
 .tutorial-sidebar .sidebar-info {
-  margin: 0 0 18px;
+  flex: 0 0 auto;
+  margin: 16px 0 0;
   padding: 12px 13px;
   border: 1px solid var(--border, #dae2ec);
   border-left: 3px solid var(--link, #2463a0);
