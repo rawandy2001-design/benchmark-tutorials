@@ -181,7 +181,7 @@
   :root[data-sidebar-open="true"] body { overflow: visible; }
 }
 
-/* Project links stay at the bottom while the directory scrolls above. */
+/* Project resources follow On this page in the same scrolling directory. */
 .tutorial-sidebar .sidebar-info {
   flex: 0 0 auto;
   margin: 16px 0 0;
