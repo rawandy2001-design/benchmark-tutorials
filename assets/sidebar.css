@@ -41,45 +41,7 @@
   color: var(--heading, #173653);
 }
 .sidebar-heading strong { margin: 0; font-size: 15px; }
-.tutorial-sidebar .modules {
-  display: grid;
-  gap: 3px;
-  margin: 0;
-  padding-bottom: 20px;
-}
-.tutorial-sidebar .modules a {
-  margin: 0;
-  padding: 8px 10px;
-  border-left: 3px solid transparent;
-  border-bottom: 0;
-  border-radius: 0 5px 5px 0;
-  color: var(--text, #243347);
-  line-height: 1.4;
-}
-.tutorial-sidebar .modules a:hover,
-.tutorial-sidebar .modules a:focus-visible {
-  background: var(--surface, #eff4fa);
-}
-.tutorial-sidebar .modules .active,
-.tutorial-sidebar .modules .current-section {
-  border-left-color: var(--link, #2463a0);
-  background: var(--surface, #eff4fa);
-  color: var(--link, #2463a0);
-  font-weight: 650;
-}
-.page-toc, .sidebar-versions {
-  border-top: 1px solid var(--border, #dae2ec);
-  padding-top: 18px;
-}
-.page-toc > strong, .sidebar-versions > strong {
-  color: var(--muted, #5b6c80);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: .03em;
-  margin-bottom: 12px;
-}
-.sidebar-versions { margin-bottom: 18px; }
-.sidebar-versions .modules { padding-bottom: 0; }
+.page-toc { border-top: 0; padding-top: 0; }
 .page-toc a { overflow-wrap: anywhere; }
 .topbar-heading {
   display: flex;
@@ -203,3 +165,28 @@
   text-decoration: none;
 }
 .tutorial-sidebar .sidebar-info a:hover { text-decoration: underline; }
+
+/* Workflow navigation runs horizontally below the page title. */
+.topbar > .modules {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 12px;
+}
+.topbar .modules a { display: inline-block; margin: 0; }
+.topbar .modules .current-section {
+  font-weight: 700;
+  border-bottom: 2px solid var(--link, #2463a0);
+}
+.edition-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 16px;
+  margin-top: 10px;
+  color: var(--muted, #5b6c80);
+  font-size: 13px;
+}
+.edition-navigation > strong { font-size: 12px; }
+.edition-navigation .modules { margin: 0; gap: 8px 16px; }
