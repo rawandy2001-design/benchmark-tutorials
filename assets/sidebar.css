@@ -162,3 +162,25 @@
   :root[data-sidebar-open="true"],
   :root[data-sidebar-open="true"] body { overflow: visible; }
 }
+
+/* Project resources sit beneath the page contents in the left sidebar. */
+.tutorial-sidebar .sidebar-info {
+  margin: 22px 0 0;
+  padding: 12px 13px;
+  border: 1px solid var(--border, #dae2ec);
+  border-left: 3px solid var(--link, #2463a0);
+  border-radius: 0 5px 5px 0;
+  background: var(--surface, #eff4fa);
+  color: var(--muted, #5b6c80);
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.tutorial-sidebar .sidebar-info a {
+  display: inline;
+  margin: 0;
+  color: var(--link, #2463a0);
+  line-height: inherit;
+  text-decoration: none;
+}
+.tutorial-sidebar .sidebar-info a:hover { text-decoration: underline; }
