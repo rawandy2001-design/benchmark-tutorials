@@ -127,7 +127,7 @@ their own sections.</p>
                          |
            Rank-product changes / weighted workflow ranking
 </pre></div>
-<p>Use the <a href="../index.html#Shared-path-prefix">shared path setup</a> for the commands below:</p>
+<p><code>BENCHMARK_ROOT</code> denotes the workspace prefix used in the command examples.</p>
 <div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
 <span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
 </pre></div>
@@ -198,7 +198,7 @@ chr1	30790000	30800000	chr1	30900000	30910000	0.04316786880353285	2.111212657236
 chr1	43230000	43240000	chr1	43370000	43380000	0.038127131296458706	2.111212657236631
 </pre></div>
 </div></div><div class="cell border-box-sizing text_cell rendered" id="cell-id=loop-tutorial-02"><div class="text_cell_render border-box-sizing rendered_html"><p></p>
-<h3 id="2.-Set-the-paths">1.2. Set the paths<a class="anchor-link" href="#2.-Set-the-paths">¶</a></h3><p>The Bash caller commands use the following paths after the shared path setup:</p>
+<h3 id="2.-Set-the-paths">1.2. Set the paths<a class="anchor-link" href="#2.-Set-the-paths">¶</a></h3><p>The Bash caller commands use the following paths:</p>
 <div class="highlight"><pre><span></span><span class="nv">REPO</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
 <span class="nv">RAW_100</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/ODC_raw_10k_line/ODC.raw.100.cool"</span>
 <span class="nv">IMPUTED_100</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/data/lee2019/bulk_impute_10k/ODC/ODC.impute.100.iEnhance_10k.cool"</span>

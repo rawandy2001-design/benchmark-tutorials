@@ -105,7 +105,7 @@ h3{scroll-margin-top:18px}
 <span aria-hidden="true" class="theme-switch-track"><span class="theme-switch-thumb"></span></span>
 </button>
 <span class="theme-option" data-theme-value="light">Light</span>
-</div></div><div class="modules"><a class="active" href="index.html">Tutorial index</a><a class="" href="tutorials/data_preparation.html">Data preparation</a><a class="" href="tutorials/embedding.html">Embedding</a><a class="" href="tutorials/compartment.html">Compartment</a><a class="" href="tutorials/tad.html">Domain/TAD</a><a class="" href="tutorials/loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Choose-a-workflow">1. Choose a workflow</a><a href="#2.-Read-the-retained-examples">2. Read the retained examples</a><a href="#Shared-path-prefix">3. Shared path setup</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tutorials/tutorials.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-00"><div class="prompt input_prompt">
+</div></div><div class="modules"><a class="active" href="index.html">Tutorial index</a><a class="" href="tutorials/data_preparation.html">Data preparation</a><a class="" href="tutorials/embedding.html">Embedding</a><a class="" href="tutorials/compartment.html">Compartment</a><a class="" href="tutorials/tad.html">Domain/TAD</a><a class="" href="tutorials/loop.html">Loop</a></div></header><div class="layout"><nav><strong>On this page</strong><a href="#1.-Choose-a-workflow">1. Choose a workflow</a><a href="#2.-Read-the-retained-examples">2. Read the retained examples</a></nav><main><p class="edition-note">Public tutorial test · <a href="https://github.com/rawandy2001-design/benchmark-tutorials">Repository</a> · <a href="tutorials/tutorials.ipynb">Notebook</a> · <a href="https://github.com/rawandy2001-design/benchmark">Companion analysis code</a> (private)</p><div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-00"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Single-cell-Hi-C-workflow-tutorials">Single-cell Hi-C workflow tutorials<a class="anchor-link" href="#Single-cell-Hi-C-workflow-tutorials">¶</a></h1><p>Choose a workflow below to read its steps, commands and existing example figures. Reading the pages does not run an analysis or require Jupyter.</p>
@@ -163,35 +163,7 @@ other caller branches and multimodal evaluations. Its ranking and figures sectio
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered" id="cell-id=index-tutorial-03"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html"><p><a id="3.-Read-the-tutorials-and-inspect-their-implementation"></a></p>
-<p></p>
-<h2 id="Shared-path-prefix">3. Shared path setup<a class="anchor-link" href="#Shared-path-prefix">¶</a></h2><p>All tutorial commands use <code>BENCHMARK_ROOT</code>. The local workspace contains
-directory links to the existing code, inputs, software and saved records.
-The source files remain in their original locations.</p>
-<p>Run this once from the code checkout in WSL:</p>
-<div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>tutorials/paths.sh
-<span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">BENCHMARK_ROOT</span><span class="si">}</span><span class="s2">/code"</span>
-</pre></div>
-<p>The local prefix is <code>/mnt/f/project/test1/benchmark_workspace</code> in WSL and
-<code>F:/project/test1/benchmark_workspace</code> in Windows. For a Windows Python session,
-set the corresponding environment variable in PowerShell:</p>
-<div class="highlight"><pre><span></span><span class="nv">$env:BENCHMARK_ROOT</span> <span class="p">=</span> <span class="s2">"F:/project/test1/benchmark_workspace"</span>
-</pre></div>
-<p>Python examples use:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="n">BENCHMARK_ROOT</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"BENCHMARK_ROOT"</span><span class="p">])</span>
-</pre></div>
-<p>The mappings and runtime settings are collected in <a href="https://github.com/rawandy2001-design/benchmark/blob/main/tutorials/paths.sh">paths.sh</a>.
-On another machine, set its <code>BENCHMARK_*_SOURCE</code> values to the corresponding
-existing directories. Original file excerpts retain the paths recorded in
-their source files.</p>
-</div>
-</div>
-</div>
 </main></div><script id="toc-hierarchy-script">
 (() => {
   function revealSection() {
